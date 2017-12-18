@@ -6,7 +6,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "objects/world.cpp"
 
 #if defined(__APPLE__)
 #include <GLUT/glut.h>
@@ -15,6 +14,8 @@
 #endif
 #include <cmath>
 #include <ctime>
+
+#include "objects/world.cpp"
 #include "globals.h"
 
 using namespace std;
@@ -60,6 +61,8 @@ int main(int argc, char* argv[])
 	glutInitWindowSize( currWindowSize[0], currWindowSize[1] );
 	glutCreateWindow("Testing");
 
+	simulation = world();
+
 	mesh* obj = (mesh*) malloc(sizeof(mesh));
 	*obj = mesh();
 
@@ -73,9 +76,10 @@ int main(int argc, char* argv[])
 	*c = vertex(0,1,0);
 	*d = vertex(1,1,0);
 
-	obj->add(a,b,c);
-	obj->add(d,b,c);
+	obj->addTri(a,b,c);
+	obj->addTri(d,b,c);
 	simulation.add(obj);
+	
 
 	// Specify the resizing and refreshing routines.
 	glutReshapeFunc( ResizeWindow );
@@ -145,8 +149,9 @@ void TimerFunction(int value)
 {
 	//update
 	glutPostRedisplay();
-	glutTimerFunc(simulation.getTimeStep(), TimerFunction, 1);
-	simulation.update();
+	glutTimerFunc(20, TimerFunction, 1);
+	//glutTimerFunc(simulation.getTimeStep(), TimerFunction, 1);
+	//simulation.update();
 }
 
 // Principal display routine: sets up material, lighting, //
