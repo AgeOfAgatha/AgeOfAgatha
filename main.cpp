@@ -1,17 +1,12 @@
 ////////////////////////////////////////////////////////////////////
-//                                                                //
-// JumpingBrainDriver.cpp - Phillip Lorentz, Fall 2017, CS 482    //
-// This has been modified from the RunningMan source from         //
-// Bill White.                                                    //
-//                                                                //
-// This program displays multiple models of a Jumping Brain, with //
-// keyboard controls for altering camera orientation.             //
-// These brain will have gravity simulated for them and can fall  //
-// off the edge of the disk.                                      //
+/*
+//Main driver file - Initializes everything else
+*/
 ////////////////////////////////////////////////////////////////////
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "objects/world.cpp"
 
 #if defined(__APPLE__)
 #include <GLUT/glut.h>
@@ -27,84 +22,7 @@ using namespace std;
 /********************/
 /* GLOBAL VARIABLES */
 /********************/
-class vertex{
-public:
-	float x;
-	float y;
-	float z; 
-	vertex(){};
-	vertex(float xi, float yi, float zi){
-		x = xi;
-		y = yi;
-		z = zi;
-	}
-	~vertex(){};
-	bool operator==(const vertex &other) const {
-		return (this->x == other.x && this->y == other.y && this->z == other.z);
-	}
-	bool operator!=(const vertex &other) const {
-		return *this!=other;
-	}
-};
-class triangle{
-public:
-	float normal;
-	float texpos;
-	vertex** verts;
-	triangle(){
-		verts = (vertex**)malloc(sizeof(vertex*)*3);
-	};
-	triangle(vertex* a, vertex* b, vertex* c){
-		verts[0] = a;
-		verts[1] = b;
-		verts[2] = c;
-	}
-	~triangle(){};
-	bool operator==(const triangle &other) const {
-		return (this->verts[0] == other.verts[0] && this->verts[1] == other.verts[1] && this->verts[2] == other.verts[2]);
-	}
-	bool operator!=(const triangle &other) const {
-		return *this!=other;
-	}
-};
-class mesh{
-public:
-	int triangles;
-	vertex* verts;
-	triangle* tris;
-	mesh(){};
-	~mesh(){};
-	void add(vertex* a, vertex* b, vertex* c){
-		int i;
-		triangle* newtris = (triangle*)malloc(sizeof(triangle)*triangles+1);
-		for (i = 0; i < triangles; i++){
-			newtris[i] = tris[i];
-		}
-		newtris[i] = triangle(a, b, c);
-		tris = newtris;
-		triangles++;
-	};
-	void remove(triangle tri){
-		int i;
-		for (i = 0; i < triangles; i++){
-			if (tri == tris[i]){
-				triangle* newtris = (triangle*)malloc(sizeof(triangle)*triangles);
-				for (int j = 0; i < triangles; i++){
-					if (j < i){
-						newtris[j] = tris[j];
-					}else{
-						newtris[j] = tris[j+1];
-					}
-				}
-				tris = newtris;
-				triangles--;
-				return;
-			}
-		}
-	};
-};
-
-mesh obj;
+world simulation;
 
 // The initial window and viewport sizes (in pixels), set to ensure that
 // the aspect ration for the viewport, will be a constant. If the window
@@ -142,9 +60,22 @@ int main(int argc, char* argv[])
 	glutInitWindowSize( currWindowSize[0], currWindowSize[1] );
 	glutCreateWindow("Testing");
 
-	obj = mesh();
-	obj.add(new vertex(0,0,0), new vertex(1,0,0), new vertex(0,1,0));
-	obj.add(new vertex(1,1,1), new vertex(1,0,0), new vertex(0,1,0));
+	mesh* obj = (mesh*) malloc(sizeof(mesh));
+	*obj = mesh();
+
+	vertex* a = (vertex*) malloc(sizeof(vertex));
+	vertex* b = (vertex*) malloc(sizeof(vertex));
+	vertex* c = (vertex*) malloc(sizeof(vertex));
+	vertex* d = (vertex*) malloc(sizeof(vertex));
+
+	*a = vertex(0,0,0);
+	*b = vertex(1,0,0);
+	*c = vertex(0,1,0);
+	*d = vertex(1,1,0);
+
+	obj->add(a,b,c);
+	obj->add(d,b,c);
+	simulation.add(obj);
 
 	// Specify the resizing and refreshing routines.
 	glutReshapeFunc( ResizeWindow );
@@ -214,7 +145,8 @@ void TimerFunction(int value)
 {
 	//update
 	glutPostRedisplay();
-	glutTimerFunc(20, TimerFunction, 1);
+	glutTimerFunc(simulation.getTimeStep(), TimerFunction, 1);
+	simulation.update();
 }
 
 // Principal display routine: sets up material, lighting, //
@@ -255,14 +187,7 @@ void Display()
 		0.0, 1.0, 0.0);
 
 	// Draw the objects
-	for (int i = 0; i < obj.triangles; i++){
-		glBegin(GL_TRIANGLES);
-			glColor3f(1.0, 1.0, 1.0);
-			for (int j = 0; j < 3; j++){
-	            glVertex3f(obj.tris[i].verts[j]->x, obj.tris[i].verts[j]->y, obj.tris[i].verts[j]->z);
-			}
-        glEnd();
-	}
+	simulation.draw();
 
 	// Do the buffer swap.
 	glutSwapBuffers();

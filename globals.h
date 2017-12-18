@@ -1,12 +1,3 @@
-////////////////////////////////////////////////////////////////////
-// Phillip Lorentz, Fall 2017, CS 482                             //
-// This has been modified from the RunningMan source from         //
-// Bill White.                                                    //
-////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////
-// JumpingBrainGlobals.h - Global Constant Definitions //
-/////////////////////////////////////////////////////////
-
 #ifndef GLOBALS_H
 
 const float PI = 3.1415926535f;
@@ -33,13 +24,6 @@ const float VIEWER_DISTANCE         = 30.0f;
 const float INITIAL_VIEWER_AZIMUTH = PI / 2.0f;
 const float INITIAL_VIEWER_ALTITUDE = PI / 2.5f;
 const float VIEWER_ANGLE_INCREMENT  = PI / 60.0f;
-
-// World Constants
-const int	NUMBER_OF_BRAINS = 7;
-const float BRAIN_COLORS[7][3] = { { 0.9f, 0.0f, 0.0f },{ 0.0f, 0.9f, 0.0f },{ 0.0f, 0.0f, 0.9f },{ 0.9f, 0.9f, 0.0f },{ 0.0f, 0.9f, 0.9f },{ 0.9f, 0.0f, 0.9f },{ 0.9f, 0.9f, 0.9f } };
-const float BRAIN_START_DIST = 1.0f;
-const float DISK_SIZE = 15.0f;
-const float DISK_COLOR[3] = { 0.1f, 0.9f, 0.1f };
 
 // Material Properties Constants
 const float AMBIENT_COEFF  = -1.0f;    // Minimal ambient reflectance.
