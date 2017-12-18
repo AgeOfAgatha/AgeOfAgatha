@@ -80,9 +80,9 @@ class triangle{
 		//--------------------------------------------*/
 		~triangle(){
 			for (int i = 0; i < 3; i++){
-				delete (verts[i]);
+				free (verts[i]);
 			}
-			delete verts;
+			free (verts);
 		};
 
 		/*--------------------------------------------//
@@ -171,21 +171,20 @@ class mesh{
 		Add a triangle to the mesh by specifying points
 		//--------------------------------------------*/
 		void addTri(vertex* &a, vertex* &b, vertex* &c){
-			int i;
-			triangle** newtris = (triangle**)malloc(sizeof(triangle*)*(triCnt+1));
-			for (i = 0; i < triCnt; i++){
-				newtris[i] = tris[i];
-			}
-			newtris[i] = (triangle*)malloc(sizeof(triangle));
-			*(newtris[i]) = triangle();
-			newtris[i]->verts[0] = a;
-			newtris[i]->verts[1] = b;
-			newtris[i]->verts[2] = c;
+			triangle** newtris = (triangle**) realloc(tris, sizeof(triangle*)*(triCnt+1));
 
-			triangle** temp = tris;
-			tris = newtris;
-			//delete temp;
-			triCnt++;
+			if (newtris!=NULL) {
+				tris = newtris;
+
+				tris[triCnt] = new triangle();
+				tris[triCnt]->verts[0] = a;
+				tris[triCnt]->verts[1] = b;
+				tris[triCnt]->verts[2] = c;
+				triCnt++;
+			}else{
+				puts ("Error (re)allocating memory");
+				exit (1);
+			}
 		};
 
 		/*--------------------------------------------//
@@ -195,18 +194,18 @@ class mesh{
 			int i;
 			for (i = 0; i < triCnt; i++){
 				if (tri == *(tris[i])){
-					triangle** newtris = (triangle**)malloc(sizeof(triangle*)*triCnt);
-					for (int j = 0; i < triCnt; i++){
-						if (j < i){
-							newtris[j] = tris[j];
-						}else{
-							newtris[j] = tris[j+1];
-						}
+					//move last object to here
+					tris[i] = tris[triCnt-1];
+					//trim last object
+					triangle** newtris = (triangle**) realloc(tris, sizeof(triangle*)*(triCnt-1));
+					//check if memory was allocated
+					if (newtris!=NULL) {
+						tris = newtris;
+						triCnt--;
+					}else{
+						puts ("Error (re)allocating memory");
+						exit (1);
 					}
-					triangle** temp = tris;
-					tris = newtris;
-					delete temp;
-					triCnt--;
 					return;
 				}
 			}
@@ -263,7 +262,7 @@ class world{
 		//--------------------------------------------*/
 		~world(){
 			for (int i = 0; i < this->getObjectCount(); i++){
-				delete (mesh*)(this->getObject(i));
+				free ((mesh*)(this->getObject(i)));
 			}
 		};
 
@@ -272,16 +271,17 @@ class world{
 		takes a mesh as a parameter
 		//--------------------------------------------*/
 		void add(mesh* &obj){
-			int i;
-			mesh** newobjs = (mesh**)malloc(sizeof(mesh*)*(objCnt+1));
-			for (i = 0; i < objCnt; i++){
-				newobjs[i] = objects[i];
+			mesh** newobjs = (mesh**) realloc(objects, sizeof(mesh*)*(objCnt+1));
+
+			if (newobjs!=NULL) {
+				objects = newobjs;
+
+				objects[objCnt] = obj;
+				objCnt++;
+			}else{
+				puts ("Error (re)allocating memory");
+				exit (1);
 			}
-			newobjs[i] = obj;
-			mesh** temp = objects;
-			objects = newobjs;
-			delete temp;
-			objCnt++;
 		};
 
 		/*--------------------------------------------//
@@ -291,17 +291,20 @@ class world{
 		void remove(mesh* &obj){
 			int i;
 			for (i = 0; i < objCnt; i++){
+				//find object to remove
 				if (obj == objects[i]){
-					mesh** newobjs = (mesh**)malloc(sizeof(mesh*)*objCnt);
-					for (int j = 0; i < objCnt; i++){
-						if (j < i){
-							newobjs[j] = objects[j];
-						}else{
-							newobjs[j] = objects[j+1];
-						}
+					//move last object to here
+					objects[i] = objects[objCnt-1];
+					//trim last object
+					mesh** newobjs = (mesh**) realloc(objects, sizeof(mesh*)*(objCnt-1));
+					//check if memory was allocated
+					if (newobjs!=NULL) {
+						objects = newobjs;
+						objCnt--;
+					}else{
+						puts ("Error (re)allocating memory");
+						exit (1);
 					}
-					objects = newobjs;
-					objCnt--;
 					return;
 				}
 			}
