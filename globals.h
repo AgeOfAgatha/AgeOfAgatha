@@ -2,6 +2,9 @@
 
 const float PI = 3.1415926535f;
 
+// Driver Constants
+const int 	TIMER = 20;
+
 // Window Position/Resizing Constants
 const int   INIT_WINDOW_POSITION[2] = { 50, 50 };
 const float ASPECT_RATIO            = 1.0f;

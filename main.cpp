@@ -15,8 +15,8 @@
 #include <cmath>
 #include <ctime>
 
-#include "objects/world.cpp"
 #include "globals.h"
+#include "objects/world.cpp"
 
 using namespace std;
 
@@ -43,7 +43,7 @@ void NonASCIIKeyboardPress(int pressedKey, int mouseXPosition, int mouseYPositio
 void TimerFunction(int value);
 void Display();
 
-void  ResizeWindow(GLsizei w, GLsizei h);
+void ResizeWindow(GLsizei w, GLsizei h);
 float GenerateRandomNumber(float lowerBound, float upperBound);
 
 /****************************/
@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
 
 	obj->addTri(a,b,c);
 	obj->addTri(d,b,c);
-	simulation.add(obj);
+	simulation.addMesh(obj);
 	
 
 	// Specify the resizing and refreshing routines.
@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
 	glutKeyboardFunc( KeyboardPress );
 	glutSpecialFunc( NonASCIIKeyboardPress );
 	glutDisplayFunc( Display );
-	glutTimerFunc( 20, TimerFunction, 1 );
+	glutTimerFunc( TIMER, TimerFunction, 0 );
 	
 	/* Set up standard lighting, shading, and depth testing. */
 	glEnable(GL_LIGHTING);
@@ -147,11 +147,15 @@ void NonASCIIKeyboardPress(int pressedKey, int mouseXPosition, int mouseYPositio
 // Function to update any animation. //
 void TimerFunction(int value)
 {
+	value++;
 	//update
 	glutPostRedisplay();
-	glutTimerFunc(20, TimerFunction, 1);
-	//glutTimerFunc(simulation.getTimeStep(), TimerFunction, 1);
-	//simulation.update();
+	glutTimerFunc(TIMER, TimerFunction, value);
+
+	if (value % simulation.getTimeStep() == 0){
+		simulation.update();
+		value = 0;
+	}
 }
 
 // Principal display routine: sets up material, lighting, //
