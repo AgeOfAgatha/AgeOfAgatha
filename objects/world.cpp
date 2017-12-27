@@ -106,9 +106,75 @@ class world{
 		//--------------------------------------------*/
 		void update(){
 			for (int i = 0; i < objCnt; ++i){
+				//tell each object to advance a timestep
 				objects[i]->update();
 			}
+			//have each object test collisions with objects past it in the list.  this avoids doing repeat tests
+			for (int i = 0; i < objCnt; ++i){
+				//verify each item is in a valid state before continuing
+				testBpCollision(objects[i], i);
+			}
 			return;
+		};
+		/*--------------------------------------------//
+		Broadphase Collision detection
+		narrows down the possible objects that a given
+		object could be colliding with.
+		This is done using the 'meshes' 'radius'
+		attribute and treating it as a implicit bounding 
+		sphere and explicit bounding cube.
+		This allows for implicit object simplification.
+		//--------------------------------------------*/
+		void testBpCollision(mesh* &obj, int i){
+			//store objects that could be colliding
+			mesh** filter = (mesh**) malloc(sizeof(mesh*)*objCnt-1-i);
+			int filterCnt = 0;
+			//loop over all objects starting after 'i'th item.  the 'i'th item should be the current item
+			for (i++; i < objCnt-i; i++){
+				mesh* obj2 = objects[i];
+				//no self collision
+				if(obj2 != obj){
+					vector pos1 = obj->getPosition();
+					double rad1 = obj->getRadius();
+					vector pos2 = obj2->getPosition();
+					double rad2 = obj2->getRadius();
+
+					//find bounding cube position
+					vector pos3 = pos2;
+					if(pos2.x < pos1.x){
+						pos3.x += rad2;
+					}else{
+						pos3.x -= rad2;
+					}
+					if(pos2.y < pos1.y){
+						pos3.y += rad2;
+					}else{
+						pos3.y -= rad2;
+					}
+					if(pos2.z < pos1.z){
+						pos3.z += rad2;
+					}else{
+						pos3.z -= rad2;
+					}
+
+					//implicit function testing
+					if(pos3.x*pos3.x + pos3.y*pos3.y + pos3.z*pos3.z - rad1*rad1 <= 0){
+						//bounding sphere and bounding cube collide.  collision is possible
+						filter[filterCnt] = obj2;
+						filterCnt++;
+					}
+				}
+			}
+			//proceed to narrow phase collision detection with filter objects
+			if(filterCnt > 0){
+				testNpCollision(obj, filter, filterCnt);
+			}
+			return;
+		};
+		/*--------------------------------------------//
+		Narrowphase Collision detection
+		//--------------------------------------------*/
+		void testNpCollision(mesh* &obj, mesh** &filter, int &filterCnt){
 		};
 };
 #endif

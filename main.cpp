@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #if defined(__APPLE__)
 #include <GLUT/glut.h>

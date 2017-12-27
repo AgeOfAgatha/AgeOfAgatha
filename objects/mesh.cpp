@@ -20,11 +20,13 @@ class mesh{
 		int vertsCnt;//stores how many vertices are being used by the mesh
 		vertex** verts;//stores a list of vertices being used by this mesh
 		angles euler;//stores the meshes euler angles in relation to the world
+		bool deuler = true;//stores a true or false for if the angles have been changed since last update
 		quaternion quat;//stores our euler angles in a quaternion to avoid gimbal lock.  This is what is actually used for calculations
 		angles angVel;//stores the angular velocity
-		vertex position;//stores the position within the world of this mesh
-		vertex velocity;//store the positional velocity
-		vertex COM;//center of mass
+		vector position;//stores the position within the world of this mesh
+		vector velocity;//store the positional velocity
+		vector COM;//center of mass (technically center of detail because it uses vertices)
+		double radius;//maximum distance away from COM for the purposes of faster collision detection
 
 		/*--------------------------------------------//
 		Attempts to add a vertex to our vertex list
@@ -49,6 +51,17 @@ class mesh{
 				COM.x += v->x/vertsCnt;
 				COM.y += v->y/vertsCnt;
 				COM.z += v->z/vertsCnt;
+
+				//find largest radius
+				for (int i = 0; i < vertsCnt; ++i){
+					double dx = COM.x - verts[i]->x;
+					double dy = COM.y - verts[i]->y;
+					double dz = COM.z - verts[i]->z;
+					double dr = sqrt(dx*dx + dy*dy + dz*dz);
+					if (dr > radius){
+						radius = dr;
+					}
+				}
 			}else{
 				puts ("Error (re)allocating memory");
 				exit (1);
@@ -188,11 +201,32 @@ class mesh{
 		};
 
 		/*--------------------------------------------//
+		Returns the meshes radius for its bounding 
+		geometry
+		//--------------------------------------------*/
+		double getRadius(){
+			return radius;
+		};
+
+		/*--------------------------------------------//
 		Returns the meshes position in relation to the
 		world space
 		//--------------------------------------------*/
 		vector getPosition(){
 			return position;
+		};
+
+		/*--------------------------------------------//
+		Sets the meshes position in relation to the
+		world space
+		//--------------------------------------------*/
+		void setPosition(vector pos){
+			position = pos;
+			return;
+		};
+		void setPosition(double xpos, double ypos, double zpos){
+			this->setPosition(vector(xpos, ypos, zpos));
+			return;
 		};
 
 		/*--------------------------------------------//
@@ -204,6 +238,30 @@ class mesh{
 		};
 
 		/*--------------------------------------------//
+		Sets the meshes angles in relation to the world
+		space
+		//--------------------------------------------*/
+		void setAngles(angles ang){
+			this->setAngles(ang.p, ang.y, ang.r);
+			return;
+		};
+		void setAngles(double pitch, double yaw, double roll){
+			if(pitch != euler.p){
+				euler.p = pitch;
+				deuler = true;
+			}
+			if(yaw != euler.y){
+				euler.y = yaw;
+				deuler = true;
+			}
+			if(roll != euler.r){
+				euler.r = roll;
+				deuler = true;
+			}
+			return;
+		};
+
+		/*--------------------------------------------//
 		Returns the meshes velocity in relation to the
 		world space
 		//--------------------------------------------*/
@@ -212,11 +270,40 @@ class mesh{
 		};
 
 		/*--------------------------------------------//
+		Sets the meshes velocity in relation to the
+		world space
+		//--------------------------------------------*/
+		void setVelocity(vector vel){
+			velocity = vel;
+			return;
+		};
+		void setVelocity(double xvel, double yvel, double zvel){
+			this->setVelocity(vector(xvel, yvel, zvel));
+			return;
+		};
+
+		/*--------------------------------------------//
 		Returns the meshes angular velocity in relation
 		to the world space
 		//--------------------------------------------*/
 		angles getAngVelocity(){
 			return angVel;
+		};
+
+		/*--------------------------------------------//
+		Sets the meshes angular velocity in relation
+		to the world space
+		//--------------------------------------------*/
+		void setAngVelocity(angles ang){
+			if(ang != angVel){
+				angVel = ang;
+				deuler = true;
+			}
+			return;
+		};
+		void setAngVelocity(double pitch, double yaw, double roll){
+			this->setAngVelocity(angles(pitch, yaw, roll));
+			return;
 		};
 
 		/*--------------------------------------------//
@@ -243,11 +330,12 @@ class mesh{
 			position.y += velocity.y;
 			position.z += velocity.z;
 
-			euler.p += angVel.p;
-			euler.y += angVel.y;
-			euler.r += angVel.r;
+			this->setAngles(angles(euler.p + angVel.p, euler.y + angVel.y, euler.r + angVel.r));
 
-			quat.setAngles(euler.p, euler.y, euler.r);
+			if(deuler == true){
+				quat.setAngles(euler.p, euler.y, euler.r);
+				deuler = false;
+			}
 		};
 };
 #endif
