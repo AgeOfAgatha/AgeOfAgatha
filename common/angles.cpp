@@ -35,8 +35,17 @@ class angles{
 		/*--------------------------------------------//
 		Overridden operators
 		//--------------------------------------------*/
+		angles operator+(const angles &other) {
+			this->p += other.p;
+			this->y += other.y;
+			this->r += other.r;
+			return (*this);
+		};
 		bool operator==(const angles &other) const {
 			return (this->p == other.p && this->y == other.y && this->r == other.r);
+		};
+		bool operator==(const int &other) const {
+			return (this->p == other && this->y == other && this->r == other);
 		};
 		bool operator!=(const angles &other) const {
 			return *this!=other;

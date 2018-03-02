@@ -23,10 +23,17 @@ class mesh{
 		bool deuler = true;//stores a true or false for if the angles have been changed since last update
 		quaternion quat;//stores our euler angles in a quaternion to avoid gimbal lock.  This is what is actually used for calculations
 		angles angVel;//stores the angular velocity
+		angles angAcc;//stores the angular acceleration
+		angles angFrc;//stores the angular force
 		vector position;//stores the position within the world of this mesh
 		vector velocity;//store the positional velocity
+		vector acceleration;//store the positional acceleration
+		vector force;//store the positional force
 		vector COM;//center of mass (technically center of detail because it uses vertices)
 		double radius;//maximum distance away from COM for the purposes of faster collision detection
+		double mass;//amount of mass this object has
+		bool awake;//stores whether this object has moved recently or has been 'sleeping'
+		int timer;//time since last movement, used for deciding if awake
 
 		/*--------------------------------------------//
 		Attempts to add a vertex to our vertex list
@@ -121,10 +128,18 @@ class mesh{
 			
 			position = vertex(0,0,0);
 			velocity = vertex(0,0,0);
+			acceleration = vertex(0,0,0);
+			force = vertex(0,0,0);
 
 			euler = angles(0.0, 0.0, 0.0);
 			angVel = angles(0.0, 0.0, 0.0);
+			angAcc = angles(0.0, 0.0, 0.0);
+			angFrc = angles(0.0, 0.0, 0.0);
 			quat = quaternion(euler);
+
+			awake = true;
+
+			mass = 1;
 		};
 
 		/*--------------------------------------------//
@@ -186,6 +201,13 @@ class mesh{
 		};
 
 		/*--------------------------------------------//
+		Returns if the object is awake
+		//--------------------------------------------*/
+		bool isAwake(){
+			return awake;
+		};
+
+		/*--------------------------------------------//
 		Returns the number of triangles in the mesh
 		//--------------------------------------------*/
 		int getTriangleCount(){
@@ -206,27 +228,6 @@ class mesh{
 		//--------------------------------------------*/
 		double getRadius(){
 			return radius;
-		};
-
-		/*--------------------------------------------//
-		Returns the meshes position in relation to the
-		world space
-		//--------------------------------------------*/
-		vector getPosition(){
-			return position;
-		};
-
-		/*--------------------------------------------//
-		Sets the meshes position in relation to the
-		world space
-		//--------------------------------------------*/
-		void setPosition(vector pos){
-			position = pos;
-			return;
-		};
-		void setPosition(double xpos, double ypos, double zpos){
-			this->setPosition(vector(xpos, ypos, zpos));
-			return;
 		};
 
 		/*--------------------------------------------//
@@ -262,6 +263,90 @@ class mesh{
 		};
 
 		/*--------------------------------------------//
+		Returns the meshes angular velocity in relation
+		to the world space
+		//--------------------------------------------*/
+		angles getAngVel(){
+			return angVel;
+		};
+
+		/*--------------------------------------------//
+		Sets the meshes anglular velocity in relation to
+		the world space
+		//--------------------------------------------*/
+		void setAngVel(angles ang){
+			angVel = ang;
+			return;
+		};
+		void setAngVel(double pitch, double yaw, double roll){
+			this->setAngVel(angles(pitch,yaw,roll));
+			return;
+		};
+
+		/*--------------------------------------------//
+		Returns the meshes angular acceleration in 
+		relation to the world space
+		//--------------------------------------------*/
+		angles getAngAcc(){
+			return angAcc;
+		};
+
+		/*--------------------------------------------//
+		Sets the meshes anglular acceleration in 
+		relation to the world space
+		//--------------------------------------------*/
+		void setAngAcc(angles ang){
+			angAcc = ang;
+			return;
+		};
+		void setAngAcc(double pitch, double yaw, double roll){
+			this->setAngAcc(angles(pitch,yaw,roll));
+			return;
+		};
+
+		/*--------------------------------------------//
+		Returns the meshes angular force in relation to
+		the world space
+		//--------------------------------------------*/
+		angles getAngFrc(){
+			return angFrc;
+		};
+
+		/*--------------------------------------------//
+		Sets the meshes anglular force in relation to 
+		the world space
+		//--------------------------------------------*/
+		void setAngfrc(angles ang){
+			angFrc = ang;
+			return;
+		};
+		void setAngfrc(double pitch, double yaw, double roll){
+			this->setAngfrc(angles(pitch,yaw,roll));
+			return;
+		};
+
+		/*--------------------------------------------//
+		Returns the meshes position in relation to the
+		world space
+		//--------------------------------------------*/
+		vector getPosition(){
+			return position;
+		};
+
+		/*--------------------------------------------//
+		Sets the meshes position in relation to the
+		world space
+		//--------------------------------------------*/
+		void setPosition(vector pos){
+			position = pos;
+			return;
+		};
+		void setPosition(double xpos, double ypos, double zpos){
+			this->setPosition(vector(xpos, ypos, zpos));
+			return;
+		};
+
+		/*--------------------------------------------//
 		Returns the meshes velocity in relation to the
 		world space
 		//--------------------------------------------*/
@@ -283,27 +368,59 @@ class mesh{
 		};
 
 		/*--------------------------------------------//
-		Returns the meshes angular velocity in relation
-		to the world space
+		Returns the meshes acceleration in relation to 
+		the world space
 		//--------------------------------------------*/
-		angles getAngVelocity(){
-			return angVel;
+		vector getAcceleration(){
+			return acceleration;
 		};
 
 		/*--------------------------------------------//
-		Sets the meshes angular velocity in relation
-		to the world space
+		Sets the meshes acceleration in relation to the
+		world space
 		//--------------------------------------------*/
-		void setAngVelocity(angles ang){
-			if(ang != angVel){
-				angVel = ang;
-				deuler = true;
-			}
+		void setAcceleration(vector acc){
+			acceleration = acc;
 			return;
 		};
-		void setAngVelocity(double pitch, double yaw, double roll){
-			this->setAngVelocity(angles(pitch, yaw, roll));
+		void setAcceleration(double xacc, double yacc, double zacc){
+			this->setAcceleration(vector(xacc, yacc, zacc));
 			return;
+		};
+
+		/*--------------------------------------------//
+		Returns the meshes force in relation to the 
+		world space
+		//--------------------------------------------*/
+		vector getForce(){
+			return force;
+		};
+
+		/*--------------------------------------------//
+		Sets the meshes force in relation to the
+		world space
+		//--------------------------------------------*/
+		void setForce(vector frc){
+			force = frc;
+			return;
+		};
+		void setForce(double xfrc, double yfrc, double zfrc){
+			this->setForce(vector(xfrc, yfrc, zfrc));
+			return;
+		};
+
+		/*--------------------------------------------//
+		Returns the meshes mass
+		//--------------------------------------------*/
+		double getMass(){
+			return mass;
+		};
+
+		/*--------------------------------------------//
+		Sets the meshes mass
+		//--------------------------------------------*/
+		void getMass(double ma){
+			mass = ma;
 		};
 
 		/*--------------------------------------------//
@@ -325,12 +442,23 @@ class mesh{
 		Update functions
 		this advances the object's current motion/animation
 		//--------------------------------------------*/
-		void update(){
-			position.x += velocity.x;
-			position.y += velocity.y;
-			position.z += velocity.z;
-
-			this->setAngles(angles(euler.p + angVel.p, euler.y + angVel.y, euler.r + angVel.r));
+		void updateAcc(){
+			//check if we are moving or will move
+			if (force + acceleration + velocity == 0 && angFrc + angAcc + angVel == 0){
+				awake = false;
+			}else{
+				awake = true;
+			}
+			this->setAcceleration(force/mass);
+			this->setAngAcc(angAcc + angFrc);
+		};
+		void updateVel(){
+			this->setVelocity(velocity + acceleration);
+			this->setAngVel(angVel + angAcc);
+		};
+		void updatePos(){
+			this->setPosition(position + velocity);
+			this->setAngles(euler + angVel);
 
 			if(deuler == true){
 				quat.setAngles(euler.p, euler.y, euler.r);
