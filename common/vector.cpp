@@ -59,6 +59,13 @@ class vector{
 		}
 
 		/*--------------------------------------------//
+		dot product of two vectors
+		//--------------------------------------------*/
+		double dot(vector vec2){
+			return (this->x*vec2.x + this->y*vec2.y + this->z*vec2.z);
+		}
+
+		/*--------------------------------------------//
 		Overridden operators
 		//--------------------------------------------*/
 		//Addition
@@ -162,20 +169,80 @@ class vector{
 				return (*this);
 			};		
 		//Compairison
-			bool operator==(const vector &other) const {
-				return (this->x == other.x && this->y == other.y && this->z == other.z);
-			};
-			bool operator==(const int &other) const {
-				return (this->x == other && this->y == other && this->z == other);
-			};
-			bool operator==(const float &other) const {
-				return (this->x == other && this->y == other && this->z == other);
-			};
-			bool operator==(const double &other) const {
-				return (this->x == other && this->y == other && this->z == other);
-			};
-			bool operator!=(const vector &other) const {
-				return *this!=other;
-			};
+			//less than
+				bool operator<(const vector &other) const {
+					return (this->x < other.x && this->y < other.y && this->z < other.z);
+				};
+				bool operator<(const int &other) const {
+					return (this->x < other && this->y < other && this->z < other);
+				};
+				bool operator<(const float &other) const {
+					return (this->x < other && this->y < other && this->z < other);
+				};
+				bool operator<(const double &other) const {
+					return (this->x < other && this->y < other && this->z < other);
+				};
+				bool operator<=(const vector &other) const {
+					return (this->x <= other.x && this->y <= other.y && this->z <= other.z);
+				};
+				bool operator<=(const int &other) const {
+					return (this->x <= other && this->y <= other && this->z <= other);
+				};
+				bool operator<=(const float &other) const {
+					return (this->x <= other && this->y <= other && this->z <= other);
+				};
+				bool operator<=(const double &other) const {
+					return (this->x <= other && this->y <= other && this->z <= other);
+				};
+			//greater than
+				bool operator>(const vector &other) const {
+					return (this->x > other.x && this->y > other.y && this->z > other.z);
+				};
+				bool operator>(const int &other) const {
+					return (this->x > other && this->y > other && this->z > other);
+				};
+				bool operator>(const float &other) const {
+					return (this->x > other && this->y > other && this->z > other);
+				};
+				bool operator>(const double &other) const {
+					return (this->x > other && this->y > other && this->z > other);
+				};
+				bool operator>=(const vector &other) const {
+					return (this->x >= other.x && this->y >= other.y && this->z >= other.z);
+				};
+				bool operator>=(const int &other) const {
+					return (this->x >= other && this->y >= other && this->z >= other);
+				};
+				bool operator>=(const float &other) const {
+					return (this->x >= other && this->y >= other && this->z >= other);
+				};
+				bool operator>=(const double &other) const {
+					return (this->x >= other && this->y >= other && this->z >= other);
+				};
+			//equals
+				bool operator==(const vector &other) const {
+					return (this->x == other.x && this->y == other.y && this->z == other.z);
+				};
+				bool operator==(const int &other) const {
+					return (this->x == other && this->y == other && this->z == other);
+				};
+				bool operator==(const float &other) const {
+					return (this->x == other && this->y == other && this->z == other);
+				};
+				bool operator==(const double &other) const {
+					return (this->x == other && this->y == other && this->z == other);
+				};
+				bool operator!=(const vector &other) const {
+					return *this!=other;
+				};
+				bool operator!=(const int &other) const {
+					return *this!=other;
+				};
+				bool operator!=(const float &other) const {
+					return *this!=other;
+				};
+				bool operator!=(const double &other) const {
+					return *this!=other;
+				};
 };
 #endif

@@ -19,6 +19,8 @@ class mesh{
 		triangle** tris;//stores the triangles that make up this mesh
 		int vertsCnt;//stores how many vertices are being used by the mesh
 		vertex** verts;//stores a list of vertices being used by this mesh
+		int nearbyCnt;//how many nearby objects do we have in the array
+		mesh** nearby;//nearby objects from last collision test
 		angles euler;//stores the meshes euler angles in relation to the world
 		bool deuler = true;//stores a true or false for if the angles have been changed since last update
 		quaternion quat;//stores our euler angles in a quaternion to avoid gimbal lock.  This is what is actually used for calculations
@@ -32,7 +34,6 @@ class mesh{
 		vector COM;//center of mass (technically center of detail because it uses vertices)
 		double radius;//maximum distance away from COM for the purposes of faster collision detection
 		double mass;//amount of mass this object has
-		bool awake;//stores whether this object has moved recently or has been 'sleeping'
 		int timer;//time since last movement, used for deciding if awake
 
 		/*--------------------------------------------//
@@ -123,6 +124,8 @@ class mesh{
 			tris = NULL;
 			vertsCnt = 0;
 			verts = NULL;
+			nearbyCnt = 0;
+			nearby = NULL;
 
 			COM = vertex(0,0,0);
 			
@@ -137,7 +140,7 @@ class mesh{
 			angFrc = angles(0.0, 0.0, 0.0);
 			quat = quaternion(euler);
 
-			awake = true;
+			timer = 0;
 
 			mass = 1;
 		};
@@ -201,10 +204,94 @@ class mesh{
 		};
 
 		/*--------------------------------------------//
-		Returns if the object is awake
+		Attempts to add a vertex to our vertex list
 		//--------------------------------------------*/
-		bool isAwake(){
-			return awake;
+		void addNearby(mesh* &o){
+			//check if vertex is already in vertex list
+			for (int i = 0; i < nearbyCnt; i++){
+				if (nearby[i] == o){
+					return;
+				}
+			}
+			//if not add to list and update Center of mass
+			mesh** newnearby = (mesh**) realloc(nearby, sizeof(mesh*)*(nearbyCnt+1));
+			//check if memory allocated
+			if (newnearby!=NULL) {
+				nearby = newnearby;
+
+				nearby[nearbyCnt] = o;
+				nearbyCnt++;
+			}else{
+				puts ("Error (re)allocating memory");
+				exit (1);
+			}
+		};
+
+		/*--------------------------------------------//
+		Attempts to remove a vertex from our vertex list
+		//--------------------------------------------*/
+		void remNearby(mesh* &o){
+			for (int i = 0; i < nearbyCnt; i++){
+				if (o == (nearby[i])){
+					//move last object to here
+					nearby[i] = nearby[nearbyCnt-1];
+					//trim last object
+					mesh** newnearby = (mesh**) realloc(nearby, sizeof(mesh*)*(nearbyCnt-1));
+					//check if memory was allocated
+					if (newnearby!=NULL) {
+						nearby = newnearby;
+						nearbyCnt--;
+					}else{
+						puts ("Error (re)allocating memory");
+						exit (1);
+					}
+					return;
+				}
+			}
+		};
+
+		/*--------------------------------------------//
+		Returns the nearby object at the index
+		//--------------------------------------------*/
+		mesh* getNearby(int i){
+			return nearby[i];
+		};
+
+		/*--------------------------------------------//
+		Returns the number of nearby objects
+		//--------------------------------------------*/
+		int getNearbyCnt(){
+			return nearbyCnt;
+		};
+
+		/*--------------------------------------------//
+		Returns the objects last movement timer
+		//--------------------------------------------*/
+		int getTimer(){
+			return timer;
+		};
+
+		/*--------------------------------------------//
+		Decide how much force this object can handle
+		before deformation takes place
+		//--------------------------------------------*/
+		vector getMaxDisplacement(vector force){
+			return (force * 0.1);
+		};
+
+		/*--------------------------------------------//
+		Returns the number of vertices in the mesh
+		//--------------------------------------------*/
+		int getVertexCount(){
+			return vertsCnt;
+		};
+
+		/*--------------------------------------------//
+		Returns the vertex in our array of vertices
+		at the specified index
+		//--------------------------------------------*/
+		vertex* getVertex(int i){
+			return verts[i];
 		};
 
 		/*--------------------------------------------//
@@ -408,6 +495,14 @@ class mesh{
 			this->setForce(vector(xfrc, yfrc, zfrc));
 			return;
 		};
+		void applyForce(vector frc){
+			force = force + frc;
+			return;
+		};
+		void applyForce(double xfrc, double yfrc, double zfrc){
+			this->applyForce(vector(xfrc, yfrc, zfrc));
+			return;
+		};
 
 		/*--------------------------------------------//
 		Returns the meshes mass
@@ -419,7 +514,7 @@ class mesh{
 		/*--------------------------------------------//
 		Sets the meshes mass
 		//--------------------------------------------*/
-		void getMass(double ma){
+		void setMass(double ma){
 			mass = ma;
 		};
 
@@ -443,12 +538,6 @@ class mesh{
 		this advances the object's current motion/animation
 		//--------------------------------------------*/
 		void updateAcc(){
-			//check if we are moving or will move
-			if (force + acceleration + velocity == 0 && angFrc + angAcc + angVel == 0){
-				awake = false;
-			}else{
-				awake = true;
-			}
 			this->setAcceleration(force/mass);
 			this->setAngAcc(angAcc + angFrc);
 		};
@@ -463,6 +552,13 @@ class mesh{
 			if(deuler == true){
 				quat.setAngles(euler.p, euler.y, euler.r);
 				deuler = false;
+			}
+
+			//check if we moved
+			if(velocity > 0 && angVel > 0){
+				timer = 0;
+			}else{
+				timer++;
 			}
 		};
 };

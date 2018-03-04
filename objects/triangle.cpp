@@ -13,6 +13,10 @@ Smallest object that can be drawn
 #include "../common/plane.cpp"
 #endif
 
+#ifndef LINE
+#include "../common/line.cpp"
+#endif
+
 class triangle{
 	private:
 		double texpos;

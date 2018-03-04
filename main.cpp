@@ -19,16 +19,11 @@
 #include "objects/world.cpp"
 
 using namespace std;
-/********************/
-/* CONSTANT DEFINES */
-/********************/
-	#define TIMESTEP 3 //how often do we calculate physics?
-	#define TIMEOUT 3 //how many iterations before an object is considered 'asleep'
 
 /********************/
 /* GLOBAL VARIABLES */
 /********************/
-	world simulation = world(TIMESTEP, TIMEOUT);
+	world simulation = world(TIMESTEP, TIMEOUT, VERTEXRAD, GRAVOBJMASS, GRAVITYCONSTANT, FRICTIONDIST, FRICTIONCONSTANT, DEFORMCONSTANT);
 
 	// The initial window and viewport sizes (in pixels), set to ensure that
 	// the aspect ration for the viewport, will be a constant. If the window
@@ -39,6 +34,9 @@ using namespace std;
 	// Application-specific variables
 	float viewerAzimuth = INITIAL_VIEWER_AZIMUTH;
 	float viewerAltitude = INITIAL_VIEWER_ALTITUDE;
+
+	// Performance Tracking
+	double oldtime = glutGet(GLUT_ELAPSED_TIME);
 
 /***********************/
 /* FUNCTION PROTOTYPES */
@@ -56,14 +54,13 @@ using namespace std;
 /****************************/
 	// The main function sets up the data and the  //
 	// environment to display the scene's objects. //
-	int main(int argc, char* argv[])
-	{
+	int main(int argc, char* argv[]){
 		// Set up the display window.
 		glutInit(&argc, argv);
 		glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH );
 	    glutInitWindowPosition( INIT_WINDOW_POSITION[0], INIT_WINDOW_POSITION[1] );
 		glutInitWindowSize( currWindowSize[0], currWindowSize[1] );
-		glutCreateWindow("Testing");world(TIMESTEP, TIMEOUT);
+		glutCreateWindow("Testing");
 
 		mesh* obj = (mesh*) malloc(sizeof(mesh));
 		*obj = mesh();
@@ -81,7 +78,6 @@ using namespace std;
 		obj->addTri(a,b,c);
 		obj->addTri(d,b,c);
 		simulation.addMesh(obj);
-		
 
 		// Specify the resizing and refreshing routines.
 		glutReshapeFunc( ResizeWindow );
@@ -104,8 +100,7 @@ using namespace std;
 
 	// Function to react to ASCII keyboard keys pressed by the user. //
 	// Used to alter arms/legs body speed                            //
-	void KeyboardPress(unsigned char pressedKey, int mouseXPosition, int mouseYPosition)
-	{
+	void KeyboardPress(unsigned char pressedKey, int mouseXPosition, int mouseYPosition){
 		// char pressedChar = char(pressedKey);
 		// switch(pressedKey)
 		// {
@@ -114,8 +109,7 @@ using namespace std;
 
 	// Function to react to non-ASCII keyboard keys pressed by the user. //
 	// This rotates the viewer giving different angles of the hopper.    //
-	void NonASCIIKeyboardPress(int pressedKey, int mouseXPosition, int mouseYPosition)
-	{
+	void NonASCIIKeyboardPress(int pressedKey, int mouseXPosition, int mouseYPosition){
 		glutIgnoreKeyRepeat(false);
 		switch (pressedKey)
 		{
@@ -147,8 +141,7 @@ using namespace std;
 	}
 
 	// Function to update any animation. //
-	void TimerFunction(int value)
-	{
+	void TimerFunction(int value){
 		value++;
 		//update
 		glutPostRedisplay();
@@ -163,8 +156,7 @@ using namespace std;
 	// Principal display routine: sets up material, lighting, //
 	// and camera properties, clears the frame buffer, and    //
 	// draws all objects within the window.                   //
-	void Display()
-	{
+	void Display(){
 		/* Set up the properties of the surface material. */
 		GLfloat matAmbient[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		GLfloat matDiffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -175,12 +167,6 @@ using namespace std;
 		glMaterialfv(GL_FRONT, GL_SPECULAR, matSpecular);
 		glMaterialfv(GL_FRONT, GL_SHININESS, matShininess);
 
-		/* Set up the properties of the light source. */
-		GLfloat lightIntensity[] = { 0.7f, 0.7f, 0.7f, 1.0f };
-		GLfloat lightPosition[] = { 2.0f, 5.0f, 2.0f, 0.0f };
-		glLightfv(GL_LIGHT0, GL_DIFFUSE, lightIntensity);
-		glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
-
 		// Set up the properties of the viewing camera.
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
@@ -188,6 +174,30 @@ using namespace std;
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
+
+		// Draw frame delay text
+		glPushMatrix();
+			glDisable( GL_DEPTH_TEST );
+			// Measure speed
+			double newtime = glutGet(GLUT_ELAPSED_TIME);
+			char text[10];
+			sprintf (text, "%0.0lfms", newtime - oldtime);
+			glTranslatef(-0.57f,0.55f,-1.0f);
+			glRasterPos3f(0.0, 0.0, 0.0);
+			glColor3f(1.0, 0.0, 0.0);
+			int len = strlen(text);
+			for (int i = 0; i < len; i++) {
+			    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, text[i]);
+			}
+			oldtime = newtime;
+			glEnable( GL_DEPTH_TEST );
+		glPopMatrix();
+
+		/* Set up the properties of the light source. */
+		GLfloat lightIntensity[] = { 0.7f, 0.7f, 0.7f, 1.0f };
+		GLfloat lightPosition[] = { 2.0f, 5.0f, 2.0f, 0.0f };
+		glLightfv(GL_LIGHT0, GL_DIFFUSE, lightIntensity);
+		glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 
 		// Position and orient viewer.
 		float position[] = { 0.0f, 0.0f, 0.0f };
@@ -209,8 +219,7 @@ using namespace std;
 
 	// Window-reshaping callback, adjusting the viewport to be as large  //
 	// as possible within the window, without changing its aspect ratio. //
-	void ResizeWindow(GLsizei w, GLsizei h)
-	{
+	void ResizeWindow(GLsizei w, GLsizei h){
 		currWindowSize[0] = w;
 		currWindowSize[1] = h;
 		if (ASPECT_RATIO > w / h)
@@ -234,8 +243,7 @@ using namespace std;
 	}
 
 	// Generate a random floating-point value between the two parameterized values. //
-	float GenerateRandomNumber(float lowerBound, float upperBound)
-	{
+	float GenerateRandomNumber(float lowerBound, float upperBound){
 		static bool firstTime = true;
 		static time_t randomNumberSeed;
 
