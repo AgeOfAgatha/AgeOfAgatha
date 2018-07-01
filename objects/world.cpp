@@ -4,31 +4,15 @@ This is where the simulation is controlled
 //--------------------------------------------*/
 #ifndef WORLD
 #define WORLD
-
-#ifndef MESH
-#include "mesh.cpp"
-#endif
-
-class world{
-	private:
-		//set by external at time of creation
-		int timestep;//how often is this world updated
-		int timeout;//how many iterations can an object not move before it is considered asleep
-		double vertexrad;//used for implicit function tests, determines how large of a collision sphere the vertex is considered as
-		double gravObjMass;//the mass value above which will be simulated as an object applying gravity to everyone else
-		double gravConst;//multiplier for gravity within this 'world'.  works just like the real life gravity constant
-		double frictionDist;//used to 'feather' objects during broad phase collision detection
-		double frictionConst;//multiplier for friciton within this 'world'
-		double deformConst;//multiplier for all deformation within this 'world'
-		//used to keep track of simulation specifics
-		int objCnt;
-		mesh** objects;
-		int gravObjCnt;
-		mesh** gravObj;
-		/*--------------------------------------------//
-		Default constructor
-		//--------------------------------------------*/
-		world(){
+	/*--------------------------------------------//
+	Includes
+	//--------------------------------------------*/
+		#include "world.h"
+	
+	/*--------------------------------------------//
+	Default constructor
+	//--------------------------------------------*/
+		world::world(){
 			timestep = 1;
 			timeout = 1;
 			vertexrad = 1.0;
@@ -38,53 +22,10 @@ class world{
 			gravObj = NULL;
 		};
 
-		/*--------------------------------------------//
-		Adds a object to the gravity object list
-		takes a mesh as a parameter
-		//--------------------------------------------*/
-		void addGravObj(mesh* &obj){
-			mesh** newobjs = (mesh**) realloc(gravObj, sizeof(mesh*)*(gravObjCnt+1));
-
-			if (newobjs!=NULL) {
-				gravObj = newobjs;
-
-				gravObj[gravObjCnt] = obj;
-				gravObjCnt++;
-			}else{
-				puts ("Error (re)allocating memory");
-				exit (1);
-			}
-		};
-
-		/*--------------------------------------------//
-		Removes the specified mesh as a gravity object
-		does nothing if it is not found
-		//--------------------------------------------*/
-		void remGravObj(mesh* &obj){
-			for (int i = 0; i < gravObjCnt; i++){
-				//find object to remove
-				if (obj == gravObj[i]){
-					//move last object to here
-					gravObj[i] = gravObj[gravObjCnt-1];
-					//trim last object
-					mesh** newobjs = (mesh**) realloc(gravObj, sizeof(mesh*)*(gravObjCnt-1));
-					//check if memory was allocated
-					if (newobjs!=NULL) {
-						gravObj = newobjs;
-						gravObjCnt--;
-					}else{
-						puts ("Error (re)allocating memory");
-						exit (1);
-					}
-					return;
-				}
-			}
-		};
-	public:
-		/*--------------------------------------------//
-		Overloaded constructor
-		//--------------------------------------------*/
-		world(int ts, int to, double vr, double gom, double gc, double fd, double fc, double dc):world(){
+	/*--------------------------------------------//
+	Overloaded constructor
+	//--------------------------------------------*/
+		world::world(int ts, int to, double vr, double gom, double gc, double fd, double fc, double dc):world(){
 			timestep = ts;
 			timeout = to;
 			vertexrad = vr;
@@ -95,20 +36,20 @@ class world{
 			deformConst = dc;
 		};
 
-		/*--------------------------------------------//
-		Destructor
-		//--------------------------------------------*/
-		~world(){
+	/*--------------------------------------------//
+	Destructor
+	//--------------------------------------------*/
+		world::~world(){
 			for (int i = 0; i < this->getObjectCount(); i++){
 				free ((mesh*)(this->getObject(i)));
 			}
 		};
 
-		/*--------------------------------------------//
-		Adds a object to the world space
-		takes a mesh as a parameter
-		//--------------------------------------------*/
-		void addMesh(mesh* &obj){
+	/*--------------------------------------------//
+	Adds a object to the world space
+	takes a mesh as a parameter
+	//--------------------------------------------*/
+		void world::addMesh(mesh* &obj){
 			mesh** newobjs = (mesh**) realloc(objects, sizeof(mesh*)*(objCnt+1));
 
 			if (newobjs!=NULL) {
@@ -122,11 +63,11 @@ class world{
 			}
 		};
 
-		/*--------------------------------------------//
-		Removes the specified mesh from the world
-		does nothing if it is not found
-		//--------------------------------------------*/
-		void remMesh(mesh* &obj){
+	/*--------------------------------------------//
+	Removes the specified mesh from the world
+	does nothing if it is not found
+	//--------------------------------------------*/
+		void world::remMesh(mesh* &obj){
 			for (int i = 0; i < objCnt; i++){
 				//find object to remove
 				if (obj == objects[i]){
@@ -148,43 +89,35 @@ class world{
 			}
 		};
 
-		/*--------------------------------------------//
-		Getters
-		//--------------------------------------------*/
-		int getTimeStep(){
+	/*--------------------------------------------//
+	Getters
+	//--------------------------------------------*/
+		int world::getTimeStep(){
 			return timestep;
 		};
-		int getObjectCount(){
+		int world::getObjectCount(){
 			return objCnt;
 		};
-		mesh* getObject(int i){
+		mesh* world::getObject(int i){
 			return objects[i];
 		};
 
-		/*--------------------------------------------//
-		Drawing function
-		defers drawing to individual object
-		implementation
-		//--------------------------------------------*/
-		void draw(){
+	/*--------------------------------------------//
+	Drawing function
+	defers drawing to individual object
+	implementation
+	//--------------------------------------------*/
+		void world::draw(){
 			for (int i = 0; i < this->getObjectCount(); i++){
 				this->getObject(i)->draw();
 			}
 		};
 
-		/*--------------------------------------------//
-		Checks if an object is awake or not
-		does this by compairing to our timeout value
-		//--------------------------------------------*/
-		bool isAwake(mesh* &obj){
-			return obj->getTimer() > timeout;
-		};
-
-		/*--------------------------------------------//
-		Gravity function
-		calculates gravity for inputted object
-		//--------------------------------------------*/
-		void applyGravity(mesh* &obj){
+	/*--------------------------------------------//
+	Gravity function
+	calculates gravity for inputted object
+	//--------------------------------------------*/
+		void world::applyGravity(mesh* &obj){
 			//only simulate gravity for objects listed as gravity objects
 			for (int i = 0; i < gravObjCnt; i++){
 				mesh* obj2 = gravObj[i];
@@ -201,11 +134,11 @@ class world{
 			}
 		};
 
-		/*--------------------------------------------//
-		Friction function
-		calculates friction for inputted object
-		//--------------------------------------------*/
-		void applyFriction(mesh* &obj){
+	/*--------------------------------------------//
+	Friction function
+	calculates friction for inputted object
+	//--------------------------------------------*/
+		void world::applyFriction(mesh* &obj){
 			for (int i = 0; i < obj->getNearbyCnt(); i++){
 				//setup variables
 				mesh* obj2 = obj->getNearby(i);
@@ -234,11 +167,11 @@ class world{
 			}
 		};
 
-		/*--------------------------------------------//
-		Update function
-		proceeds all objects forward by one timestep
-		//--------------------------------------------*/
-		void update(){
+	/*--------------------------------------------//
+	Update function
+	proceeds all objects forward by one timestep
+	//--------------------------------------------*/
+		void world::update(){
 			for (int i = 0; i < objCnt; ++i){
 				applyGravity(objects[i]);
 				testBpCollision(objects[i], i);
@@ -253,39 +186,17 @@ class world{
 			}
 			return;
 		};
-		/*--------------------------------------------//
-		Implicit test function
-		checks if two implicit function defined spheres
-		intersect
-		//--------------------------------------------*/
-		bool implicitTest(vector pos1, vector pos2, double rad1, double rad2, vector vel1, vector vel2){
-			//calculate x portion
-			(pos2.x > pos1.x) ? /*Decide which direction to go*/
-				(pos1.x + rad1 + vel1.x > pos2.x - vel2.x) ? pos1.x = pos2.x : pos1.x += rad1 + vel1.x - vel2.x:
-				(pos1.x - rad1 - vel1.x > pos2.x + vel2.x) ? pos1.x = pos2.x : pos1.x -= rad1 + vel1.x - vel2.x;
 
-			//calculate y portion
-			(pos2.y > pos1.y) ? /*Decide which direction to go*/
-				(pos1.y + rad1 + vel1.y > pos2.y - vel2.y) ? pos1.y = pos2.y : pos1.y += rad1 + vel1.y - vel2.y:
-				(pos1.y - rad1 - vel1.y > pos2.y + vel2.y) ? pos1.y = pos2.y : pos1.y -= rad1 + vel1.y - vel2.y;
-
-			//calculate z portion
-			(pos2.z > pos1.z) ? /*Decide which direction to go*/
-				(pos1.z + rad1 + vel1.z > pos2.z - vel2.z) ? pos1.z = pos2.z : pos1.z += rad1 + vel1.z - vel2.z:
-				(pos1.z - rad1 - vel1.z > pos2.z + vel2.z) ? pos1.z = pos2.z : pos1.z -= rad1 + vel1.z - vel2.z;
-
-			return (pos2.x*pos2.x + pos2.y*pos2.y + pos2.z*pos2.z - rad1*rad1 <= 0);
-		};
-		/*--------------------------------------------//
-		Broadphase Collision detection
-		narrows down the possible objects that a given
-		object could be colliding with.
-		This is done using the 'meshes' 'radius'
-		attribute and treating it as a implicit bounding 
-		sphere and explicit bounding cube.
-		This allows for implicit object simplification.
-		//--------------------------------------------*/
-		void testBpCollision(mesh* &obj, int i){
+	/*--------------------------------------------//
+	Broadphase Collision detection
+	narrows down the possible objects that a given
+	object could be colliding with.
+	This is done using the 'meshes' 'radius'
+	attribute and treating it as a implicit bounding 
+	sphere and explicit bounding cube.
+	This allows for implicit object simplification.
+	//--------------------------------------------*/
+		void world::testBpCollision(mesh* &obj, int i){
 			//store objects that could be colliding
 			mesh** filter = (mesh**) malloc(sizeof(mesh*)*objCnt-1-i);
 			int filterCnt = 0;
@@ -316,6 +227,7 @@ class world{
 					obj2->remNearby(obj);
 				}
 			}
+			//-- From this point forward we start to affect more than one object, be careful with multithreading --//
 			//apply friction to this object before any collision resolution occurs
 			applyFriction(obj);
 
@@ -326,10 +238,35 @@ class world{
 			free (filter);
 			return;
 		};
-		/*--------------------------------------------//
-		Narrowphase Collision detection
-		//--------------------------------------------*/
-		void testNpCollision(mesh* &obj, mesh** &filter, int &filterCnt){
+
+	/*--------------------------------------------//
+	Narrowphase Collision detection
+	Sorts the objects by an estimated collision time
+	Then resolves collisions vertex by vertex
+	//--------------------------------------------*/
+		void world::testNpCollision(mesh* &obj, mesh** &filter, int &filterCnt){
+			//We first need to sort by order of collision
+			HeapSort heap;
+			double times[filterCnt];
+			for (int i = 0; i < filterCnt; i++){
+				//setup variables
+				mesh* obj2 = filter[i];
+				vector vel1 = obj->getVelocity() + obj->getForce()/obj->getMass();
+				vector vel2 = obj2->getVelocity() + obj2->getForce()/obj2->getMass();
+				vector pos1 = obj->getPosition();
+				vector pos2 = obj2->getPosition();
+
+				//estimate time
+				vector velNet = vel1 - vel2;
+				vector intercept = vector(0,0,0);
+				line projection = line(pos1, velNet);
+				double u = 0.0;
+				projection.distance(pos2, intercept, u);
+				times[i] = u;
+			}
+			//finally use our time estimates to sort our filter
+			heap = HeapSort((void**)filter, (double**)&times, filterCnt);
+
 			//loop over all objects that could still collide
 			for (int i = 0; i < filterCnt; i++){
 				//setup variables
@@ -361,14 +298,14 @@ class world{
 				int vert1cnt = obj->getVertexCount();
 				for (int j = 0; j < vert1cnt; j++){
 					vertex* vert1 = obj->getVertex(j);
-					vector vert1pos = vector(vert1->x, vert1->y, vert1->z) + pos1;
+					vector vert1pos = vector(vert1->x(), vert1->y(), vert1->z()) + pos1;
 					//implicit function test on vert1 to obj2
 					if(implicitTest(vert1pos, pos2, vertexrad, rad2, vel1, vel2)){
 						int vert2cnt = obj2->getVertexCount();
 						//loop over all vertices on object 2
 						for (int k = 0; k < vert2cnt; k++){
 							vertex* vert2 = obj2->getVertex(k);
-							vector vert2pos = vector(vert2->x, vert2->y, vert2->z) + pos2;
+							vector vert2pos = vector(vert2->x(), vert2->y(), vert2->z()) + pos2;
 							//implicit function on vert2 to obj1
 							if(implicitTest(pos1, vert2pos, rad1, vertexrad, vel1, vel2)){
 								//both vert1 and vert2 might collide with something on the other object
@@ -466,5 +403,79 @@ class world{
 				//*/
 			}
 		};
-};
+
+	/*--------------------------------------------//
+	Adds a object to the gravity object list
+	takes a mesh as a parameter
+	//--------------------------------------------*/
+		void world::addGravObj(mesh* &obj){
+			mesh** newobjs = (mesh**) realloc(gravObj, sizeof(mesh*)*(gravObjCnt+1));
+
+			if (newobjs!=NULL) {
+				gravObj = newobjs;
+
+				gravObj[gravObjCnt] = obj;
+				gravObjCnt++;
+			}else{
+				puts ("Error (re)allocating memory");
+				exit (1);
+			}
+		};
+
+	/*--------------------------------------------//
+	Removes the specified mesh as a gravity object
+	does nothing if it is not found
+	//--------------------------------------------*/
+		void world::remGravObj(mesh* &obj){
+			for (int i = 0; i < gravObjCnt; i++){
+				//find object to remove
+				if (obj == gravObj[i]){
+					//move last object to here
+					gravObj[i] = gravObj[gravObjCnt-1];
+					//trim last object
+					mesh** newobjs = (mesh**) realloc(gravObj, sizeof(mesh*)*(gravObjCnt-1));
+					//check if memory was allocated
+					if (newobjs!=NULL) {
+						gravObj = newobjs;
+						gravObjCnt--;
+					}else{
+						puts ("Error (re)allocating memory");
+						exit (1);
+					}
+					return;
+				}
+			}
+		};
+
+	/*--------------------------------------------//
+	Implicit test function
+	checks if two implicit function defined spheres
+	intersect
+	//--------------------------------------------*/
+		bool world::implicitTest(vector pos1, vector pos2, double rad1, double rad2, vector vel1, vector vel2){
+			//calculate x portion
+			(pos2.x() > pos1.x()) ? /*Decide which direction to go*/
+				(pos1.x() + rad1 + vel1.x() > pos2.x() - vel2.x()) ? pos1.x(pos2.x()) : pos1.x(pos1.x() + rad1 + vel1.x() - vel2.x()):
+				(pos1.x() - rad1 - vel1.x() > pos2.x() + vel2.x()) ? pos1.x(pos2.x()) : pos1.x(pos1.x() - rad1 + vel1.x() - vel2.x());
+
+			//calculate y portion
+			(pos2.y() > pos1.y()) ? /*Decide which direction to go*/
+				(pos1.y() + rad1 + vel1.y() > pos2.y() - vel2.y()) ? pos1.y(pos2.y()) : pos1.y(pos1.y() + rad1 + vel1.y() - vel2.y()):
+				(pos1.y() - rad1 - vel1.y() > pos2.y() + vel2.y()) ? pos1.y(pos2.y()) : pos1.y(pos1.y() - rad1 + vel1.y() - vel2.y());
+
+			//calculate z portion
+			(pos2.z() > pos1.z()) ? /*Decide which direction to go*/
+				(pos1.z() + rad1 + vel1.z() > pos2.z() - vel2.z()) ? pos1.z(pos2.z()) : pos1.z(pos1.z() + rad1 + vel1.z() - vel2.z()):
+				(pos1.z() - rad1 - vel1.z() > pos2.z() + vel2.z()) ? pos1.z(pos2.z()) : pos1.z(pos1.z() - rad1 + vel1.z() - vel2.z());
+
+			return (pos2.x()*pos2.x() + pos2.y()*pos2.y() + pos2.z()*pos2.z() - rad1*rad1 <= 0);
+		};
+
+	/*--------------------------------------------//
+	Checks if an object is awake or not
+	does this by compairing to our timeout value
+	//--------------------------------------------*/
+		bool world::isAwake(mesh* &obj){
+			return obj->getTimer() > timeout;
+		};
 #endif

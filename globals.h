@@ -42,5 +42,10 @@ const float 	DIFFUSE_COEFF  =  1.0f;    // Maximal diffuse reflectance.
 const float 	SPECULAR_COEFF =  1.0f;    // Maximal specular reflectance.
 const float 	SPECULAR_EXPON =  20.0f;    // Low level of shininess (scale: 0-128).
 
+// UI Property Constants
+const int 		MAX_CHARACTERS_TEXT = 1024; 					//Max amount of characters in one text element.
+const float 	DEFAULT_TEXT_COLOR[] = {1.0f, 0.0f, 0.0f}; 		//Default color for text
+const float 	DEFAULT_TEXT_POS[] = {-0.57f, 0.55f, -1.0f}; 	//Default position for text
+
 #define GLOBALS_H
 #endif

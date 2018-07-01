@@ -8,15 +8,19 @@
 #include <math.h>
 
 #if defined(__APPLE__)
-#include <GLUT/glut.h>
+	#include <GLUT/glut.h>
 #else
-#include <GL/glut.h>
+	#include <GL/glut.h>
 #endif
+
+#include <thread>
 #include <cmath>
 #include <ctime>
 
 #include "globals.h"
-#include "objects/world.cpp"
+#include "objects/world.h"
+#include "interface/interface.h"
+#include "interface/text/frameDelay.h"
 
 using namespace std;
 
@@ -24,6 +28,7 @@ using namespace std;
 /* GLOBAL VARIABLES */
 /********************/
 	world simulation = world(TIMESTEP, TIMEOUT, VERTEXRAD, GRAVOBJMASS, GRAVITYCONSTANT, FRICTIONDIST, FRICTIONCONSTANT, DEFORMCONSTANT);
+	interface ui = interface();
 
 	// The initial window and viewport sizes (in pixels), set to ensure that
 	// the aspect ration for the viewport, will be a constant. If the window
@@ -34,9 +39,6 @@ using namespace std;
 	// Application-specific variables
 	float viewerAzimuth = INITIAL_VIEWER_AZIMUTH;
 	float viewerAltitude = INITIAL_VIEWER_ALTITUDE;
-
-	// Performance Tracking
-	double oldtime = glutGet(GLUT_ELAPSED_TIME);
 
 /***********************/
 /* FUNCTION PROTOTYPES */
@@ -78,6 +80,9 @@ using namespace std;
 		obj->addTri(a,b,c);
 		obj->addTri(d,b,c);
 		simulation.addMesh(obj);
+
+		FrameDelay* frames = new FrameDelay();
+		ui.add((element*)frames);
 
 		// Specify the resizing and refreshing routines.
 		glutReshapeFunc( ResizeWindow );
@@ -178,18 +183,7 @@ using namespace std;
 		// Draw frame delay text
 		glPushMatrix();
 			glDisable( GL_DEPTH_TEST );
-			// Measure speed
-			double newtime = glutGet(GLUT_ELAPSED_TIME);
-			char text[10];
-			sprintf (text, "%0.0lfms", newtime - oldtime);
-			glTranslatef(-0.57f,0.55f,-1.0f);
-			glRasterPos3f(0.0, 0.0, 0.0);
-			glColor3f(1.0, 0.0, 0.0);
-			int len = strlen(text);
-			for (int i = 0; i < len; i++) {
-			    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, text[i]);
-			}
-			oldtime = newtime;
+			ui.draw();
 			glEnable( GL_DEPTH_TEST );
 		glPopMatrix();
 

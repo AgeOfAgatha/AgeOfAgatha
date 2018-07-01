@@ -5,272 +5,270 @@ on a triangular surface of a mesh
 //--------------------------------------------*/
 #ifndef VERTEX
 #define VERTEX
+	/*--------------------------------------------//
+	Includes
+	//--------------------------------------------*/
+		#include "vertex.h"
 
-#ifndef VECTOR
-#include "../common/vector.cpp"
-#endif
+	/*--------------------------------------------//
+	Default constructor
+	//--------------------------------------------*/
+		vertex::vertex():vector(){};
 
-class vertex: public vector{
-	public:
-		/*--------------------------------------------//
-		Default constructor
-		//--------------------------------------------*/
-		vertex():vector(){};
+	/*--------------------------------------------//
+	Constuctor with positions specified
+	//--------------------------------------------*/
+		vertex::vertex(double xi, double yi, double zi):vector(xi, yi, zi){};
 
-		/*--------------------------------------------//
-		Constuctor with positions specified
-		//--------------------------------------------*/
-		vertex(double xi, double yi, double zi):vector(xi, yi, zi){};
+	/*--------------------------------------------//
+	Destructor
+	//--------------------------------------------*/
+		vertex::~vertex(){};
 
-		/*--------------------------------------------//
-		Destructor
-		//--------------------------------------------*/
-		~vertex(){};
-
-		/*--------------------------------------------//
-		Overridden operators
-		//--------------------------------------------*/
-		//Addition
-			vertex operator+(const int &other) {
-				this->x += other;
-				this->y += other;
-				this->z += other;
-				return (*this);
-			};
-			vertex operator+(const float &other) {
-				this->x += other;
-				this->y += other;
-				this->z += other;
-				return (*this);
-			};
-			vertex operator+(const double &other) {
-				this->x += other;
-				this->y += other;
-				this->z += other;
-				return (*this);
-			};
-			vertex operator+(const vector &other) {
-				this->x += other.x;
-				this->y += other.y;
-				this->z += other.z;
-				return (*this);
-			};
-		//Subtraction
-			vertex operator-(const int &other) {
-				this->x -= other;
-				this->y -= other;
-				this->z -= other;
-				return (*this);
-			};
-			vertex operator-(const float &other) {
-				this->x -= other;
-				this->y -= other;
-				this->z -= other;
-				return (*this);
-			};
-			vertex operator-(const double &other) {
-				this->x -= other;
-				this->y -= other;
-				this->z -= other;
-				return (*this);
-			};
-			vertex operator-(const vector &other) {
-				this->x -= other.x;
-				this->y -= other.y;
-				this->z -= other.z;
-				return (*this);
-			};
-		//Divison
-			vertex operator/(const int &other) {
-				this->x /= other;
-				this->y /= other;
-				this->z /= other;
-				return (*this);
-			};
-			vertex operator/(const float &other) {
-				this->x /= other;
-				this->y /= other;
-				this->z /= other;
-				return (*this);
-			};
-			vertex operator/(const double &other) {
-				this->x /= other;
-				this->y /= other;
-				this->z /= other;
-				return (*this);
-			};
-			vertex operator/(const vector &other) {
-				this->x /= other.x;
-				this->y /= other.y;
-				this->z /= other.z;
-				return (*this);
-			};
-		//Multiplication
-			vertex operator*(const int &other) {
-				this->x *= other;
-				this->y *= other;
-				this->z *= other;
-				return (*this);
-			};
-			vertex operator*(const float &other) {
-				this->x *= other;
-				this->y *= other;
-				this->z *= other;
-				return (*this);
-			};
-			vertex operator*(const double &other) {
-				this->x *= other;
-				this->y *= other;
-				this->z *= other;
-				return (*this);
-			};
-			vertex operator*(const vector &other) {
-				this->x *= other.x;
-				this->y *= other.y;
-				this->z *= other.z;
-				return (*this);
-			};		
+	/*--------------------------------------------//
+	Overridden operators
+	//--------------------------------------------*/
+		//Arithmetic
+			//Addition
+				vertex vertex::operator+(const int &other) {
+					this->pos[0] += other;
+					this->pos[1] += other;
+					this->pos[2] += other;
+					return (*this);
+				};
+				vertex vertex::operator+(const float &other) {
+					this->pos[0] += other;
+					this->pos[1] += other;
+					this->pos[2] += other;
+					return (*this);
+				};
+				vertex vertex::operator+(const double &other) {
+					this->pos[0] += other;
+					this->pos[1] += other;
+					this->pos[2] += other;
+					return (*this);
+				};
+				vertex vertex::operator+(const vector &other) {
+					this->pos[0] += other.pos[0];
+					this->pos[1] += other.pos[1];
+					this->pos[2] += other.pos[2];
+					return (*this);
+				};
+			//Subtraction
+				vertex vertex::operator-(const int &other) {
+					this->pos[0] -= other;
+					this->pos[1] -= other;
+					this->pos[2] -= other;
+					return (*this);
+				};
+				vertex vertex::operator-(const float &other) {
+					this->pos[0] -= other;
+					this->pos[1] -= other;
+					this->pos[2] -= other;
+					return (*this);
+				};
+				vertex vertex::operator-(const double &other) {
+					this->pos[0] -= other;
+					this->pos[1] -= other;
+					this->pos[2] -= other;
+					return (*this);
+				};
+				vertex vertex::operator-(const vector &other) {
+					this->pos[0] -= other.pos[0];
+					this->pos[1] -= other.pos[1];
+					this->pos[2] -= other.pos[2];
+					return (*this);
+				};
+			//Divison
+				vertex vertex::operator/(const int &other) {
+					this->pos[0] /= other;
+					this->pos[1] /= other;
+					this->pos[2] /= other;
+					return (*this);
+				};
+				vertex vertex::operator/(const float &other) {
+					this->pos[0] /= other;
+					this->pos[1] /= other;
+					this->pos[2] /= other;
+					return (*this);
+				};
+				vertex vertex::operator/(const double &other) {
+					this->pos[0] /= other;
+					this->pos[1] /= other;
+					this->pos[2] /= other;
+					return (*this);
+				};
+				vertex vertex::operator/(const vector &other) {
+					this->pos[0] /= other.pos[0];
+					this->pos[1] /= other.pos[1];
+					this->pos[2] /= other.pos[2];
+					return (*this);
+				};
+			//Multiplication
+				vertex vertex::operator*(const int &other) {
+					this->pos[0] *= other;
+					this->pos[1] *= other;
+					this->pos[2] *= other;
+					return (*this);
+				};
+				vertex vertex::operator*(const float &other) {
+					this->pos[0] *= other;
+					this->pos[1] *= other;
+					this->pos[2] *= other;
+					return (*this);
+				};
+				vertex vertex::operator*(const double &other) {
+					this->pos[0] *= other;
+					this->pos[1] *= other;
+					this->pos[2] *= other;
+					return (*this);
+				};
+				vertex vertex::operator*(const vector &other) {
+					this->pos[0] *= other.pos[0];
+					this->pos[1] *= other.pos[1];
+					this->pos[2] *= other.pos[2];
+					return (*this);
+				};		
 		//Compairison
 			//less than
-				bool operator<(const vector &other) const {
-					return (this->x < other.x && this->y < other.y && this->z < other.z);
+				bool vertex::operator<(const vector &other) const {
+					return (this->pos[0] < other.pos[0] && this->pos[1] < other.pos[1] && this->pos[2] < other.pos[2]);
 				};
-				bool operator<(const int &other) const {
-					return (this->x < other && this->y < other && this->z < other);
+				bool vertex::operator<(const int &other) const {
+					return (this->pos[0] < other && this->pos[1] < other && this->pos[2] < other);
 				};
-				bool operator<(const float &other) const {
-					return (this->x < other && this->y < other && this->z < other);
+				bool vertex::operator<(const float &other) const {
+					return (this->pos[0] < other && this->pos[1] < other && this->pos[2] < other);
 				};
-				bool operator<(const double &other) const {
-					return (this->x < other && this->y < other && this->z < other);
+				bool vertex::operator<(const double &other) const {
+					return (this->pos[0] < other && this->pos[1] < other && this->pos[2] < other);
 				};
-				bool operator<=(const vector &other) const {
-					return (this->x <= other.x && this->y <= other.y && this->z <= other.z);
+				bool vertex::operator<=(const vector &other) const {
+					return (this->pos[0] <= other.pos[0] && this->pos[1] <= other.pos[1] && this->pos[2] <= other.pos[2]);
 				};
-				bool operator<=(const int &other) const {
-					return (this->x <= other && this->y <= other && this->z <= other);
+				bool vertex::operator<=(const int &other) const {
+					return (this->pos[0] <= other && this->pos[1] <= other && this->pos[2] <= other);
 				};
-				bool operator<=(const float &other) const {
-					return (this->x <= other && this->y <= other && this->z <= other);
+				bool vertex::operator<=(const float &other) const {
+					return (this->pos[0] <= other && this->pos[1] <= other && this->pos[2] <= other);
 				};
-				bool operator<=(const double &other) const {
-					return (this->x <= other && this->y <= other && this->z <= other);
+				bool vertex::operator<=(const double &other) const {
+					return (this->pos[0] <= other && this->pos[1] <= other && this->pos[2] <= other);
 				};
 			//greater than
-				bool operator>(const vector &other) const {
-					return (this->x > other.x && this->y > other.y && this->z > other.z);
+				bool vertex::operator>(const vector &other) const {
+					return (this->pos[0] > other.pos[0] && this->pos[1] > other.pos[1] && this->pos[2] > other.pos[2]);
 				};
-				bool operator>(const int &other) const {
-					return (this->x > other && this->y > other && this->z > other);
+				bool vertex::operator>(const int &other) const {
+					return (this->pos[0] > other && this->pos[1] > other && this->pos[2] > other);
 				};
-				bool operator>(const float &other) const {
-					return (this->x > other && this->y > other && this->z > other);
+				bool vertex::operator>(const float &other) const {
+					return (this->pos[0] > other && this->pos[1] > other && this->pos[2] > other);
 				};
-				bool operator>(const double &other) const {
-					return (this->x > other && this->y > other && this->z > other);
+				bool vertex::operator>(const double &other) const {
+					return (this->pos[0] > other && this->pos[1] > other && this->pos[2] > other);
 				};
-				bool operator>=(const vector &other) const {
-					return (this->x >= other.x && this->y >= other.y && this->z >= other.z);
+				bool vertex::operator>=(const vector &other) const {
+					return (this->pos[0] >= other.pos[0] && this->pos[1] >= other.pos[1] && this->pos[2] >= other.pos[2]);
 				};
-				bool operator>=(const int &other) const {
-					return (this->x >= other && this->y >= other && this->z >= other);
+				bool vertex::operator>=(const int &other) const {
+					return (this->pos[0] >= other && this->pos[1] >= other && this->pos[2] >= other);
 				};
-				bool operator>=(const float &other) const {
-					return (this->x >= other && this->y >= other && this->z >= other);
+				bool vertex::operator>=(const float &other) const {
+					return (this->pos[0] >= other && this->pos[1] >= other && this->pos[2] >= other);
 				};
-				bool operator>=(const double &other) const {
-					return (this->x >= other && this->y >= other && this->z >= other);
+				bool vertex::operator>=(const double &other) const {
+					return (this->pos[0] >= other && this->pos[1] >= other && this->pos[2] >= other);
 				};
 			//equals
-				bool operator==(const vector &other) const {
-					return (this->x == other.x && this->y == other.y && this->z == other.z);
+				bool vertex::operator==(const vector &other) const {
+					return (this->pos[0] == other.pos[0] && this->pos[1] == other.pos[1] && this->pos[2] == other.pos[2]);
 				};
-				bool operator==(const int &other) const {
-					return (this->x == other && this->y == other && this->z == other);
+				bool vertex::operator==(const int &other) const {
+					return (this->pos[0] == other && this->pos[1] == other && this->pos[2] == other);
 				};
-				bool operator==(const float &other) const {
-					return (this->x == other && this->y == other && this->z == other);
+				bool vertex::operator==(const float &other) const {
+					return (this->pos[0] == other && this->pos[1] == other && this->pos[2] == other);
 				};
-				bool operator==(const double &other) const {
-					return (this->x == other && this->y == other && this->z == other);
+				bool vertex::operator==(const double &other) const {
+					return (this->pos[0] == other && this->pos[1] == other && this->pos[2] == other);
 				};
-				bool operator!=(const vector &other) const {
+				bool vertex::operator!=(const vector &other) const {
 					return *this!=other;
 				};
-				bool operator!=(const int &other) const {
+				bool vertex::operator!=(const int &other) const {
 					return *this!=other;
 				};
-				bool operator!=(const float &other) const {
+				bool vertex::operator!=(const float &other) const {
 					return *this!=other;
 				};
-				bool operator!=(const double &other) const {
+				bool vertex::operator!=(const double &other) const {
 					return *this!=other;
 				};
 		//Assignment
 			///=
-				vertex operator/=(const vertex &other){
-					this->x /= other.x;
-					this->y /= other.y;
-					this->z /= other.z;
+				vertex vertex::operator/=(const vertex &other){
+					this->pos[0] /= other.pos[0];
+					this->pos[1] /= other.pos[1];
+					this->pos[2] /= other.pos[2];
 					return *this;
 				}
-				vertex operator/=(const vector &other){
-					this->x /= other.x;
-					this->y /= other.y;
-					this->z /= other.z;
+				vertex vertex::operator/=(const vector &other){
+					this->pos[0] /= other.pos[0];
+					this->pos[1] /= other.pos[1];
+					this->pos[2] /= other.pos[2];
 					return *this;
 				}
 			//*=
-				vertex operator*=(const vertex &other){
-					this->x *= other.x;
-					this->y *= other.y;
-					this->z *= other.z;
+				vertex vertex::operator*=(const vertex &other){
+					this->pos[0] *= other.pos[0];
+					this->pos[1] *= other.pos[1];
+					this->pos[2] *= other.pos[2];
 					return *this;
 				}
-				vertex operator*=(const vector &other){
-					this->x *= other.x;
-					this->y *= other.y;
-					this->z *= other.z;
+				vertex vertex::operator*=(const vector &other){
+					this->pos[0] *= other.pos[0];
+					this->pos[1] *= other.pos[1];
+					this->pos[2] *= other.pos[2];
 					return *this;
 				}
 			//-=
-				vertex operator-=(const vertex &other){
-					this->x -= other.x;
-					this->y -= other.y;
-					this->z -= other.z;
+				vertex vertex::operator-=(const vertex &other){
+					this->pos[0] -= other.pos[0];
+					this->pos[1] -= other.pos[1];
+					this->pos[2] -= other.pos[2];
 					return *this;
 				}
-				vertex operator-=(const vector &other){
-					this->x -= other.x;
-					this->y -= other.y;
-					this->z -= other.z;
+				vertex vertex::operator-=(const vector &other){
+					this->pos[0] -= other.pos[0];
+					this->pos[1] -= other.pos[1];
+					this->pos[2] -= other.pos[2];
 					return *this;
 				}
 			//+=
-				vertex operator+=(const vertex &other){
-					this->x += other.x;
-					this->y += other.y;
-					this->z += other.z;
+				vertex vertex::operator+=(const vertex &other){
+					this->pos[0] += other.pos[0];
+					this->pos[1] += other.pos[1];
+					this->pos[2] += other.pos[2];
 					return *this;
 				}
-				vertex operator+=(const vector &other){
-					this->x += other.x;
-					this->y += other.y;
-					this->z += other.z;
+				vertex vertex::operator+=(const vector &other){
+					this->pos[0] += other.pos[0];
+					this->pos[1] += other.pos[1];
+					this->pos[2] += other.pos[2];
 					return *this;
 				}
 			//==
-				vertex operator=(const vertex &other){
-					this->x = other.x;
-					this->y = other.y;
-					this->z = other.z;
+				vertex vertex::operator=(const vertex &other){
+					this->pos[0] = other.pos[0];
+					this->pos[1] = other.pos[1];
+					this->pos[2] = other.pos[2];
 					return *this;
 				}
-				vertex operator=(const vector &other){
-					this->x = other.x;
-					this->y = other.y;
-					this->z = other.z;
+				vertex vertex::operator=(const vector &other){
+					this->pos[0] = other.pos[0];
+					this->pos[1] = other.pos[1];
+					this->pos[2] = other.pos[2];
 					return *this;
 				}
-};
 #endif
