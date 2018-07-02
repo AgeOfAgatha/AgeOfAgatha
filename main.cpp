@@ -1,168 +1,61 @@
 ////////////////////////////////////////////////////////////////////
-/*
-//Main driver file - Initializes everything else
-*/
+//Main driver file - Gets everything started
 ////////////////////////////////////////////////////////////////////
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-
-#if defined(__APPLE__)
-	#include <GLUT/glut.h>
-#else
-	#include <GL/glut.h>
-#endif
-
-#include <thread>
-#include <cmath>
-#include <ctime>
-
-#include "globals.h"
-#include "objects/world.h"
-#include "interface/interface.h"
-#include "interface/text/frameDelay.h"
-
 using namespace std;
 
-/********************/
-/* GLOBAL VARIABLES */
-/********************/
-	world simulation = world(TIMESTEP, TIMEOUT, VERTEXRAD, GRAVOBJMASS, GRAVITYCONSTANT, FRICTIONDIST, FRICTIONCONSTANT, DEFORMCONSTANT);
-	interface ui = interface();
+/*--------------------------------------------//
+Includes
+//--------------------------------------------*/
+	#include "simulation/game.h"
 
-	// The initial window and viewport sizes (in pixels), set to ensure that
-	// the aspect ration for the viewport, will be a constant. If the window
-	// is resized, the viewport will be adjusted to preserve the aspect ratio.
-	GLint currWindowSize[2]   = { INIT_WINDOW_SIZE[0], INIT_WINDOW_SIZE[1] };
-	GLint currViewportSize[2] = { INIT_WINDOW_SIZE[0], INIT_WINDOW_SIZE[1] };
+/*--------------------------------------------//
+Globals
+//--------------------------------------------*/
+	GLint currWindowSize[2];//Size of the window
+	GLint currViewportSize[2];//Size of the viewport
+	game session;
 
-	// Application-specific variables
-	float viewerAzimuth = INITIAL_VIEWER_AZIMUTH;
-	float viewerAltitude = INITIAL_VIEWER_ALTITUDE;
-
-/***********************/
-/* FUNCTION PROTOTYPES */
-/***********************/
-	void KeyboardPress(unsigned char pressedKey, int mouseXPosition, int mouseYPosition);
-	void NonASCIIKeyboardPress(int pressedKey, int mouseXPosition, int mouseYPosition);
-	void TimerFunction(int value);
-	void Display();
-
-	void ResizeWindow(GLsizei w, GLsizei h);
-	float GenerateRandomNumber(float lowerBound, float upperBound);
-
-/****************************/
-/* Function implementations */
-/****************************/
-	// The main function sets up the data and the  //
-	// environment to display the scene's objects. //
-	int main(int argc, char* argv[]){
-		// Set up the display window.
-		glutInit(&argc, argv);
-		glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH );
-	    glutInitWindowPosition( INIT_WINDOW_POSITION[0], INIT_WINDOW_POSITION[1] );
-		glutInitWindowSize( currWindowSize[0], currWindowSize[1] );
-		glutCreateWindow("Testing");
-
-		mesh* obj = (mesh*) malloc(sizeof(mesh));
-		*obj = mesh();
-
-		vertex* a = (vertex*) malloc(sizeof(vertex));
-		vertex* b = (vertex*) malloc(sizeof(vertex));
-		vertex* c = (vertex*) malloc(sizeof(vertex));
-		vertex* d = (vertex*) malloc(sizeof(vertex));
-
-		*a = vertex(0,0,0);
-		*b = vertex(1,0,0);
-		*c = vertex(0,1,0);
-		*d = vertex(1,1,0);
-
-		obj->addTri(a,b,c);
-		obj->addTri(d,b,c);
-		simulation.addMesh(obj);
-
-		FrameDelay* frames = new FrameDelay();
-		ui.add((element*)frames);
-
-		// Specify the resizing and refreshing routines.
-		glutReshapeFunc( ResizeWindow );
-		glutKeyboardFunc( KeyboardPress );
-		glutSpecialFunc( NonASCIIKeyboardPress );
-		glutDisplayFunc( Display );
-		glutTimerFunc( TIMER, TimerFunction, 0 );
-		
-		/* Set up standard lighting, shading, and depth testing. */
-		glEnable(GL_LIGHTING);
-		glEnable(GL_LIGHT0);
-		glShadeModel(GL_SMOOTH);
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_NORMALIZE);
-		glClearColor(BACKGROUND_COLOR[0], BACKGROUND_COLOR[1], BACKGROUND_COLOR[2], 0.0f);
-		glViewport(0, 0, currWindowSize[0], currWindowSize[1]);
-		glutMainLoop();
-		return 0;
-	}
-
-	// Function to react to ASCII keyboard keys pressed by the user. //
-	// Used to alter arms/legs body speed                            //
+/*--------------------------------------------//
+Keyboard Press Event Handler
+Handles any keyboard key inputs from user
+//--------------------------------------------*/
 	void KeyboardPress(unsigned char pressedKey, int mouseXPosition, int mouseYPosition){
-		// char pressedChar = char(pressedKey);
-		// switch(pressedKey)
-		// {
-		// }
+		glutIgnoreKeyRepeat(false);
+		session.keypressASCII(pressedKey, mouseXPosition, mouseYPosition);
 	}
 
-	// Function to react to non-ASCII keyboard keys pressed by the user. //
-	// This rotates the viewer giving different angles of the hopper.    //
+/*--------------------------------------------//
+Non ASCII Keyboard Press Event Handler
+Handles any Non ASCII keyboard key inputs from user
+This will catch certain events unable to be caught
+normally
+//--------------------------------------------*/
 	void NonASCIIKeyboardPress(int pressedKey, int mouseXPosition, int mouseYPosition){
 		glutIgnoreKeyRepeat(false);
-		switch (pressedKey)
-		{
-			case GLUT_KEY_RIGHT: {
-				viewerAzimuth += VIEWER_ANGLE_INCREMENT;
-				if (viewerAzimuth > 2 * PI)
-					viewerAzimuth -= 2 * PI;
-				break;
-			}
-			case GLUT_KEY_LEFT: {
-				viewerAzimuth -= VIEWER_ANGLE_INCREMENT;
-				if (viewerAzimuth < 0.0)
-					viewerAzimuth += 2 * PI;
-				break;
-			}
-			case GLUT_KEY_UP: {
-				viewerAltitude += VIEWER_ANGLE_INCREMENT;
-				if (viewerAltitude > PI - VIEWER_ANGLE_INCREMENT)
-					viewerAltitude = PI - VIEWER_ANGLE_INCREMENT;
-				break;
-			}
-			case GLUT_KEY_DOWN: {
-				viewerAltitude -= VIEWER_ANGLE_INCREMENT;
-				if (viewerAltitude < VIEWER_ANGLE_INCREMENT)
-					viewerAltitude = VIEWER_ANGLE_INCREMENT;
-				break;
-			}
-		}
+		session.keypressNonASCII(pressedKey, mouseXPosition, mouseYPosition);
 	}
 
-	// Function to update any animation. //
+/*--------------------------------------------//
+Timer Function
+This serves as our clock for the game
+All updates to animation or changes in the game's
+state should start here
+//--------------------------------------------*/
 	void TimerFunction(int value){
-		value++;
-		//update
-		glutPostRedisplay();
-		glutTimerFunc(TIMER, TimerFunction, value);
-
-		if (value % simulation.getTimeStep() == 0){
-			simulation.update();
-			value = 0;
-		}
+		glutPostRedisplay();//Update
+		glutTimerFunc(TIMER, TimerFunction, value);//Reschedule ourselves
+		value = session.update(value);
 	}
 
-	// Principal display routine: sets up material, lighting, //
-	// and camera properties, clears the frame buffer, and    //
-	// draws all objects within the window.                   //
+/*--------------------------------------------//
+Display Function
+This is the main rendering hook
+All graphically related tasks start here
+Must handle things like drawing each element,
+lights, shading, depth, etc etc
+//--------------------------------------------*/
 	void Display(){
-		/* Set up the properties of the surface material. */
+		//Set up the properties of the surface material.
 		GLfloat matAmbient[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		GLfloat matDiffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		GLfloat matSpecular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -172,7 +65,7 @@ using namespace std;
 		glMaterialfv(GL_FRONT, GL_SPECULAR, matSpecular);
 		glMaterialfv(GL_FRONT, GL_SHININESS, matShininess);
 
-		// Set up the properties of the viewing camera.
+		//Set up the properties of the viewing camera.
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		gluPerspective(60.0, ASPECT_RATIO, 0.2, 100.0);
@@ -180,39 +73,30 @@ using namespace std;
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
-		// Draw frame delay text
-		glPushMatrix();
-			glDisable( GL_DEPTH_TEST );
-			ui.draw();
-			glEnable( GL_DEPTH_TEST );
-		glPopMatrix();
+		//Pre light source draw
+		session.predraw();
 
-		/* Set up the properties of the light source. */
+		//Set up the properties of the light source.
 		GLfloat lightIntensity[] = { 0.7f, 0.7f, 0.7f, 1.0f };
 		GLfloat lightPosition[] = { 2.0f, 5.0f, 2.0f, 0.0f };
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, lightIntensity);
 		glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 
-		// Position and orient viewer.
-		float position[] = { 0.0f, 0.0f, 0.0f };
-		gluLookAt(position[0] + VIEWER_DISTANCE * sin(viewerAltitude) * sin(viewerAzimuth),
-			position[1] + VIEWER_DISTANCE * cos(viewerAltitude),
-			position[2] + VIEWER_DISTANCE * sin(viewerAltitude) * cos(viewerAzimuth),
-			position[0], position[1], position[2],
-			0.0, 1.0, 0.0);
+		//Post light source draw
+		session.postdraw();
 
-		// Draw the objects
-		simulation.draw();
-
-		// Do the buffer swap.
+		//Do the buffer swap.
 		glutSwapBuffers();
 
-		// Tell GLUT to do it again.
+		//Tell GLUT to do it again.
 		glutPostRedisplay();
 	}
 
-	// Window-reshaping callback, adjusting the viewport to be as large  //
-	// as possible within the window, without changing its aspect ratio. //
+/*--------------------------------------------//
+Resize Window Funciton
+This hook needs to detect and resolve changes
+in resolution and aspect ratio due to resizing
+//--------------------------------------------*/
 	void ResizeWindow(GLsizei w, GLsizei h){
 		currWindowSize[0] = w;
 		currWindowSize[1] = h;
@@ -236,17 +120,40 @@ using namespace std;
 		glLoadIdentity();
 	}
 
-	// Generate a random floating-point value between the two parameterized values. //
-	float GenerateRandomNumber(float lowerBound, float upperBound){
-		static bool firstTime = true;
-		static time_t randomNumberSeed;
+/*--------------------------------------------//
+Main program entry point
+//--------------------------------------------*/
+	int main(int argc, char* argv[]){
+		//setup default window size
+		currWindowSize[0] = INIT_WINDOW_SIZE[0];
+		currWindowSize[1] = INIT_WINDOW_SIZE[1];
+		//setup session
+		session = game();
 
-		if (firstTime)
-		{
-			time(&randomNumberSeed);
-			firstTime = false;
-			srand(int(randomNumberSeed));
-		}
+		//set up the display window.
+		glutInit(&argc, argv);
+		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+	    glutInitWindowPosition(INIT_WINDOW_POSITION[0], INIT_WINDOW_POSITION[1]);
+		glutInitWindowSize(currWindowSize[0], currWindowSize[1]);
+		glutCreateWindow("Testing");//Placeholder window name here for now
 
-		return (lowerBound + ((upperBound - lowerBound) * (float(rand()) / RAND_MAX)));
+		//hook in the proper routines to OpenGL
+		glutReshapeFunc(ResizeWindow);
+		glutKeyboardFunc(KeyboardPress);
+		glutSpecialFunc(NonASCIIKeyboardPress);
+		glutDisplayFunc(Display);
+		glutTimerFunc(TIMER, TimerFunction, 0);
+		
+		//setup lighting parameters
+		glEnable(GL_LIGHTING);
+		glEnable(GL_LIGHT0);
+		glShadeModel(GL_SMOOTH);
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_NORMALIZE);
+		glClearColor(BACKGROUND_COLOR[0], BACKGROUND_COLOR[1], BACKGROUND_COLOR[2], 0.0f);
+		glViewport(0, 0, currWindowSize[0], currWindowSize[1]);
+
+		//start the game
+		glutMainLoop();
+		return 0;
 	}

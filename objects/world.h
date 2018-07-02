@@ -34,21 +34,18 @@ class world{
 			mesh** gravObj;
 
 		/*--------------------------------------------//
-		Constructors
-		//--------------------------------------------*/
-			world();
-
-		/*--------------------------------------------//
 		Functions
 		//--------------------------------------------*/
 			void addGravObj(mesh* &obj);
 			void remGravObj(mesh* &obj);
 			bool implicitTest(vector pos1, vector pos2, double rad1, double rad2, vector vel1, vector vel2);
 			bool isAwake(mesh* &obj);
+			
 	public:
 		/*--------------------------------------------//
 		Constructors
 		//--------------------------------------------*/
+			world();
 			world(int ts, int to, double vr, double gom, double gc, double fd, double fc, double dc);
 
 		/*--------------------------------------------//
