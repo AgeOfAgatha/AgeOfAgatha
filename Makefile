@@ -8,8 +8,5 @@ all:
 	g++ -Wall -g *.cpp *.o -o projexec.exe -lglut32cu -lglu32 -lopengl32
 	del *.o
 
-old:
-	g++ -Wall -g *.cpp common/*.cpp objects/*.cpp objects/actors/*.cpp interface/*.cpp interface/text/*.cpp -o projexec.exe -lglut32cu -lglu32 -lopengl32
-
 clean:
 	del *.o
