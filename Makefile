@@ -1,12 +1,18 @@
+CC = g++
+CFLAGS = -Wl,--enable-stdcall-fixup -Wall -g
+LIBS = -lglu32 -lopengl32 -L ./ -lglut32
+
+.PHONY: all build clean
+
 all:
-	g++ -Wall -g -c common/*.cpp -lglut32cu -lglu32 -lopengl32
-	g++ -Wall -g -c objects/*.cpp -lglut32cu -lglu32 -lopengl32
-	g++ -Wall -g -c objects/actors/*.cpp -lglut32cu -lglu32 -lopengl32
-	g++ -Wall -g -c interface/*.cpp -lglut32cu -lglu32 -lopengl32
-	g++ -Wall -g -c interface/text/*.cpp -lglut32cu -lglu32 -lopengl32
-	g++ -Wall -g -c simulation/*.cpp -lglut32cu -lglu32 -lopengl32
-	g++ -Wall -g *.cpp *.o -o projexec.exe -lglut32cu -lglu32 -lopengl32
-	del *.o
+	$(MAKE) -C bin all --no-print-directory
+	$(MAKE) build --no-print-directory
+
+build:
+	$(MAKE) run$(EXEEXT) --no-print-directory
 
 clean:
-	del *.o
+	$(MAKE) -C bin clean --no-print-directory
+
+run$(EXEEXT):
+	$(CC) $(CFLAGS) bin/*.o -o run$(EXEEXT) $(LIBS)
