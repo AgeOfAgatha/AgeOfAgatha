@@ -116,6 +116,8 @@ This is our basic object
 			timer = 0;
 
 			mass = 1;
+
+			material = NULL;
 		};
 
 	/*--------------------------------------------//
@@ -126,6 +128,13 @@ This is our basic object
 				free ((triangle*)(this->getTriangle(i)));
 			}
 		};
+
+	/*--------------------------------------------//
+	Add a material/texture
+	//--------------------------------------------*/
+		void mesh::addMat(char* path, int flags){
+			material = new texture(path,flags);
+		}
 
 	/*--------------------------------------------//
 	Add a triangle to the mesh by specifying points
@@ -497,14 +506,42 @@ This is our basic object
 	//--------------------------------------------*/
 		void mesh::draw(){
 			glPushMatrix();
+				//apply texture
+				if (material != NULL)
+					material->use();
+				//apply rotation
 				glMultMatrixd(this->quat.toMatrix());
+				//apply translation
 				glTranslated(this->position.x(), this->position.y(), this->position.z());
+				//draw geometry
+				unsigned int VBO, VAO, EBO;
+				glGenVertexArrays(1, &VAO);
+				glGenBuffers(1, &VBO);
+				glGenBuffers(1, &EBO);
+
+				glBindVertexArray(VAO);
+				glBindBuffer(GL_ARRAY_BUFFER, VBO);
+				//glBufferData(GL_ARRAY_BUFFER, )
 				for (int i = 0; i < this->getTriangleCount(); i++){
 					triangle* k = this->getTriangle(i);
 					k->draw();
 				}
 			glPopMatrix();
 		};
+
+	/*--------------------------------------------//
+	Convert the mesh into an array and return it
+	//--------------------------------------------*/
+		double* mesh::getMeshArray(){
+			double* vertices = (double*)malloc(sizeof(double)*3*vertsCnt);
+
+			for(int i = 0; i < vertsCnt; i++){
+				vertices[i*3+0] = verts[i]->x();
+				vertices[i*3+1] = verts[i]->y();
+				vertices[i*3+2] = verts[i]->z();
+			}
+			return vertices;
+		}
 
 	/*--------------------------------------------//
 	Update functions

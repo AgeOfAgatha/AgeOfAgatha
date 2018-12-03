@@ -20,6 +20,9 @@ Includes
 	#include "../interface/interface.h"
 	#include "../interface/text/frameDelay.h"
 
+	#include <cstring>
+	#include <string>
+
 class game{
 	private:
 	protected:

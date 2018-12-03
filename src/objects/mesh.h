@@ -15,6 +15,7 @@ Includes
 	#include "../../deps/gl/glut.h"
 	#endif
 	
+	#include "texture.h"
 	#include "triangle.h"
 	#include "../common/vector.h"
 	#include "../common/quaternion.h"
@@ -47,6 +48,7 @@ class mesh{
 			double radius;//maximum distance away from COM for the purposes of faster collision detection
 			double mass;//amount of mass this object has
 			int timer;//time since last movement, used for deciding if awake
+			texture* material;//stores the class object for our texture
 
 		/*--------------------------------------------//
 		Functions
@@ -67,6 +69,8 @@ class mesh{
 		/*--------------------------------------------//
 		Functions
 		//--------------------------------------------*/
+			void addMat(char* path, int flags);
+			double* getMeshArray();
 			void addTri(vertex* &a, vertex* &b, vertex* &c);
 			void remTri(triangle &tri);
 			void addNearby(mesh* &o);

@@ -15,6 +15,7 @@ Smallest object that can be drawn
 		triangle::triangle(){
 			verts = (vertex**)malloc(sizeof(vertex*)*3);
 		};
+		
 	/*--------------------------------------------//
 	Constructor with the positions specified
 	//--------------------------------------------*/

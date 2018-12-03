@@ -29,7 +29,6 @@ class FrameDelay:public element{
 		Class Variables
 		//--------------------------------------------*/
 			double oldtime;//For Performance Tracking
-			char text[MAX_CHARACTERS_TEXT];
 			float color[3];//color of text
 			float pos[3];//position of text
 	public:

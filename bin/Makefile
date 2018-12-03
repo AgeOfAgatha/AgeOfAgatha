@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -Wno-attributes -Wno-unknown-pragmas -Wno-unused-function -g -c
+CFLAGS = -Wall -Wno-attributes -Wno-unknown-pragmas -Wno-unused-function -Wno-write-strings -g -c
 
 .PHONY: all dependencies common objects actors interface interface_text simulation main clean
 
@@ -13,18 +13,27 @@ all:
 	$(MAKE) simulation --no-print-directory
 	$(MAKE) main --no-print-directory
 
+#########################
+#Build groups
+#########################
 dependencies: glew.o
 common: angles.o line.o plane.o quaternion.o sorting.o vector.o
-objects: common dependencies vertex.o triangle.o mesh.o world.o
+objects: common dependencies texture.o vertex.o triangle.o mesh.o world.o
 actors: common dependencies bone.o joint.o boneVertex.o skeleton.o
 interface: common dependencies element.o interface.o
 interface_text: common dependencies frameDelay.o
 simulation: interface_text interface actors objects dependencies game.o
 main: simulation dependencies main.o
 
+#########################
+#Dependencies Section
+#########################
 glew.o: ../deps/gl/*.c
 	$(CC) $(CFLAGS) ../deps/gl/glew.c
 
+#########################
+#Common Section
+#########################
 angles.o: ../src/common/angles.cpp ../src/common/angles.h
 	$(CC) $(CFLAGS) ../src/common/angles.cpp
 
@@ -43,6 +52,9 @@ sorting.o: ../src/common/sorting.cpp ../src/common/sorting.h
 vector.o: ../src/common/vector.cpp ../src/common/vector.h
 	$(CC) $(CFLAGS) ../src/common/vector.cpp
 
+#########################
+#Actor Section
+#########################
 bone.o: ../src/objects/actors/bone.cpp ../src/objects/actors/bone.h
 	$(CC) $(CFLAGS) ../src/objects/actors/bone.cpp
 
@@ -54,6 +66,12 @@ boneVertex.o: ../src/objects/actors/boneVertex.cpp ../src/objects/actors/boneVer
 
 skeleton.o: ../src/objects/actors/skeleton.cpp ../src/objects/actors/skeleton.h
 	$(CC) $(CFLAGS) ../src/objects/actors/skeleton.cpp
+
+#########################
+#Object Section
+#########################
+texture.o: ../src/objects/texture.cpp ../src/objects/texture.h
+	$(CC) $(CFLAGS) ../src/objects/texture.cpp
 
 vertex.o: ../src/objects/vertex.cpp ../src/objects/vertex.h
 	$(CC) $(CFLAGS) ../src/objects/vertex.cpp
@@ -67,6 +85,9 @@ mesh.o: ../src/objects/mesh.cpp ../src/objects/mesh.h
 world.o: ../src/objects/world.cpp ../src/objects/world.h
 	$(CC) $(CFLAGS) ../src/objects/world.cpp
 
+#########################
+#Interface Section
+#########################
 element.o: ../src/interface/element.cpp ../src/interface/element.h
 	$(CC) $(CFLAGS) ../src/interface/element.cpp
 
@@ -76,9 +97,15 @@ interface.o: ../src/interface/interface.cpp ../src/interface/interface.h
 frameDelay.o: ../src/interface/text/frameDelay.cpp ../src/interface/text/frameDelay.h
 	$(CC) $(CFLAGS) ../src/interface/text/frameDelay.cpp
 
+#########################
+#Simulation Section
+#########################
 game.o: ../src/simulation/game.cpp ../src/simulation/game.h
 	$(CC) $(CFLAGS) ../src/simulation/game.cpp
 
+#########################
+#Main section
+#########################
 main.o: ../src/main.cpp
 	$(CC) $(CFLAGS) ../src/main.cpp
 

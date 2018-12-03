@@ -22,8 +22,9 @@ and the ui interface.
 			display = new interface();
 
 			//setup frame delay display
-			FrameDelay* frames = new FrameDelay();
-			display->add((element*)frames);
+			FrameDelay* frame;
+			frame = new FrameDelay();
+			display->add(frame);
 
 			//add model to world
 			mesh* obj = new mesh();
@@ -33,6 +34,7 @@ and the ui interface.
 			vertex* d = new vertex(0,1,1);
 			obj->addTri(a,b,c);
 			obj->addTri(d,b,c);
+			obj->addMat("textures/test.png",0);
 			worldspace->addMesh(obj);
 		}
 

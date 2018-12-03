@@ -14,8 +14,6 @@ left hand corner of the window
 	Constructors
 	//--------------------------------------------*/
 		FrameDelay::FrameDelay():element(){
-			//set text to blank
-			memset(text, 0, MAX_CHARACTERS_TEXT);
 			//default color
 			color[0] = DEFAULT_TEXT_COLOR[0];
 			color[1] = DEFAULT_TEXT_COLOR[1];
@@ -85,17 +83,21 @@ left hand corner of the window
 	//--------------------------------------------*/
 		void FrameDelay::draw(){
 			glPushMatrix();
-				// Measure speed
+				//measure speed
 				double newtime = glutGet(GLUT_ELAPSED_TIME);
-				sprintf (text, "%0.0lfms", newtime - oldtime);
+				char format[MAX_CHARACTERS_TEXT];
+				memset(format, '\0', sizeof(format));
+				sprintf (format, "%0.0lfms", newtime-oldtime);
+				oldtime = newtime;
+
+				//display
 				glTranslatef(pos[0], pos[1], pos[2]);
 				glRasterPos3f(0.0, 0.0, 0.0);
 				glColor3f(color[0], color[1], color[2]);
-				int len = strlen(text);
+				int len = strlen(format);
 				for (int i = 0; i < len; i++) {
-				    //glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, text[i]);
+				    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, format[i]);
 				}
-				oldtime = newtime;
 			glPopMatrix();
 		}
 #endif

@@ -26,6 +26,13 @@ on a triangular surface of a mesh
 		vertex::~vertex(){};
 
 	/*--------------------------------------------//
+	Array converter
+	//--------------------------------------------*/
+		double* vertex::toArray(){
+			return this->pos;
+		}
+
+	/*--------------------------------------------//
 	Overridden operators
 	//--------------------------------------------*/
 		//Arithmetic

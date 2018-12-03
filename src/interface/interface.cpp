@@ -27,7 +27,7 @@ interface.  This is like the world for physics.
 			if (newui!=NULL) {
 				ui = newui;
 				ui[uiNum] = e;
-				e->setInterface(this);
+				ui[uiNum]->setInterface(this);
 				uiNum++;
 			}else{
 				puts ("Error (re)allocating memory");

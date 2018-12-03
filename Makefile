@@ -2,17 +2,11 @@ CC = g++
 CFLAGS = -Wl,--enable-stdcall-fixup -Wall -g
 LIBS = -lglu32 -lopengl32 -L ./ -lglut32
 
-.PHONY: all build clean
+.PHONY: all clean
 
 all:
-	$(MAKE) -C bin all --no-print-directory
-	$(MAKE) build --no-print-directory
-
-build:
-	$(MAKE) run$(EXEEXT) --no-print-directory
+	$(MAKE) -C bin all --no-print-directory | FIND /V /I "Nothing to be done for"
+	$(CC) $(CFLAGS) bin/*.o -o run$(EXEEXT) $(LIBS)
 
 clean:
-	$(MAKE) -C bin clean --no-print-directory
-
-run$(EXEEXT):
-	$(CC) $(CFLAGS) bin/*.o -o run$(EXEEXT) $(LIBS)
+	$(MAKE) -C bin clean --no-print-directory	
