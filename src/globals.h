@@ -14,9 +14,9 @@ const double 	DEFORMCONSTANT = 0.1;//multiplier for all deformation applied in t
 const int 		TIMER = 20;//how often do we run the timer function which updates the world
 
 // Window Position/Resizing Constants
-const int   	INIT_WINDOW_POSITION[2] = { 50, 50 };
-const float 	ASPECT_RATIO            = 1.0f;
-const int   	INIT_WINDOW_SIZE[2]     = { 900, int(900/ASPECT_RATIO) };
+const float 	ASPECT_RATIO            = 1.33f;
+const int   	INIT_WINDOW_POSITION[2] = { 0, 0 };
+const int   	INIT_WINDOW_SIZE[2]     = { 800, int(900/ASPECT_RATIO) };
 const float 	FRUSTUM_FIELD_OF_VIEW   = 35.0f;
 const float 	FRUSTUM_NEAR_PLANE      = 0.1f;
 const float 	FRUSTUM_FAR_PLANE       = 100.0f;
@@ -31,7 +31,7 @@ const float 	LIGHT_SPECULAR[]      = { 1.0f, 1.0f, 1.0f, 1.0f};
 const float 	LIGHT_MODEL_AMBIENT[] = { 0.7f, 0.7f, 0.7f, 1.0f};
 
 // Viewer Positioning Constants
-const float 	VIEWER_DISTANCE         = 30.0f;
+const float 	VIEWER_DISTANCE         = 5.0f;
 const float 	INITIAL_VIEWER_AZIMUTH = PI / 2.0f;
 const float 	INITIAL_VIEWER_ALTITUDE = PI / 2.5f;
 const float 	VIEWER_ANGLE_INCREMENT  = PI / 60.0f;

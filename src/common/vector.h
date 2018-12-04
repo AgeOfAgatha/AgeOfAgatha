@@ -66,6 +66,11 @@ class vec1{
 			double dot(vec1 other) const;
 
 		/*--------------------------------------------//
+		get pointer to data
+		//--------------------------------------------*/
+			double* at();
+
+		/*--------------------------------------------//
 		Overridden operators
 		//--------------------------------------------*/
 			double operator[](const int &index) const;
@@ -169,6 +174,11 @@ class vec2{
 		dot product of two vectors
 		//--------------------------------------------*/
 			double dot(vec2 other) const;
+
+		/*--------------------------------------------//
+		get pointer to data
+		//--------------------------------------------*/
+			double* at();
 
 		/*--------------------------------------------//
 		Overridden operators
@@ -278,6 +288,11 @@ class vec3{
 			double dot(vec3 other) const;
 
 		/*--------------------------------------------//
+		get pointer to data
+		//--------------------------------------------*/
+			double* at();
+
+		/*--------------------------------------------//
 		Overridden operators
 		//--------------------------------------------*/
 			double operator[](const int &index) const;
@@ -385,6 +400,11 @@ class vec4{
 		dot product of two vectors
 		//--------------------------------------------*/
 			double dot(vec4 other) const;
+
+		/*--------------------------------------------//
+		get pointer to data
+		//--------------------------------------------*/
+			double* at();
 
 		/*--------------------------------------------//
 		Overridden operators

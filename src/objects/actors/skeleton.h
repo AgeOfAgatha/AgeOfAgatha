@@ -10,11 +10,7 @@ class skeleton;
 /*--------------------------------------------//
 Pre Includes
 //--------------------------------------------*/
-	#ifndef GLEW_STATIC
-    #define GLEW_STATIC
-	#include "../../../deps/gl/glew.h"
 	#include "../../../deps/gl/glut.h"
-	#endif
 
 	#include "../mesh.h"
 	#include "bone.h"

@@ -134,26 +134,26 @@ This is used to simplify definition of points
 	makes the sum of each component equal to one
 	//--------------------------------------------*/
 		void vec1::normalize(){
-			int a = abs(pos[0]);
-			pos[0] = pos[0]/a;
+			int a = abs(x());
+			x(pos[0]/a);
 		}
 		void vec2::normalize(){
-			int a = abs(pos[0])+abs(pos[1]);
-			pos[0] = pos[0]/a;
-			pos[1] = pos[1]/a;
+			int a = abs(x())+abs(y());
+			x(x()/a);
+			y(y()/a);
 		}
 		void vec3::normalize(){
-			int a = abs(pos[0])+abs(pos[1])+abs(pos[2]);
-			pos[0] = pos[0]/a;
-			pos[1] = pos[1]/a;
-			pos[2] = pos[2]/a;
+			int a = abs(x())+abs(y())+abs(z());
+			x(x()/a);
+			y(y()/a);
+			z(z()/a);
 		}
 		void vec4::normalize(){
-			int a = abs(pos[0])+abs(pos[1])+abs(pos[2])+abs(pos[3]);
-			pos[0] = pos[0]/a;
-			pos[1] = pos[1]/a;
-			pos[2] = pos[2]/a;
-			pos[3] = pos[3]/a;
+			int a = abs(x())+abs(y())+abs(z())+abs(w());
+			x(x()/a);
+			y(y()/a);
+			z(z()/a);
+			w(w()/a);
 		}
 
 	/*--------------------------------------------//
@@ -176,16 +176,16 @@ This is used to simplify definition of points
 	Distance between two points
 	//--------------------------------------------*/
 		double vec1::distance(vec1 other) const{
-			return (sqrt( pow(this->pos[0] - other.x(), 2) ));
+			return (sqrt( pow(this->x() - other.x(), 2) ));
 		}
 		double vec2::distance(vec2 other) const{
-			return (sqrt( pow(this->pos[0] - other.x(), 2) + pow(this->pos[1] - other.y(), 2) ));
+			return (sqrt( pow(this->x() - other.x(), 2) + pow(this->y() - other.y(), 2) ));
 		}
 		double vec3::distance(vec3 other) const{
-			return (sqrt( pow(this->pos[0] - other.x(), 2) + pow(this->pos[1] - other.y(), 2) + pow(this->pos[2] - other.z(), 2) ));
+			return (sqrt( pow(this->x() - other.x(), 2) + pow(this->y() - other.y(), 2) + pow(this->z() - other.z(), 2) ));
 		}
 		double vec4::distance(vec4 other) const{
-			return (sqrt( pow(this->pos[0] - other.x(), 2) + pow(this->pos[1] - other.y(), 2) + pow(this->pos[2] - other.z(), 2) + pow(this->pos[2] - other.w(), 2) ));
+			return (sqrt( pow(this->x() - other.x(), 2) + pow(this->y() - other.y(), 2) + pow(this->z() - other.z(), 2) + pow(this->w() - other.w(), 2) ));
 		}
 
 	/*--------------------------------------------//
@@ -202,6 +202,22 @@ This is used to simplify definition of points
 		}
 		double vec4::dot(vec4 other) const{
 			return (this->x()*other.x() + this->y()*other.y() + this->z()*other.z() + this->w()*other.w());
+		}
+
+	/*--------------------------------------------//
+	get pointer to data
+	//--------------------------------------------*/
+		double* vec1::at(){
+			return pos;
+		}
+		double* vec2::at(){
+			return pos;
+		}
+		double* vec3::at(){
+			return pos;
+		}
+		double* vec4::at(){
+			return pos;
 		}
 
 	/*--------------------------------------------//
@@ -226,358 +242,358 @@ This is used to simplify definition of points
 		//Arithmetic
 			//Addition
 				vec1 vec1::operator+(const int &other) {
-					this->pos[0] += other;
+					this->x(x()+other);
 					return (*this);
 				};
 				vec1 vec1::operator+(const float &other) {
-					this->pos[0] += other;
+					this->x(x()+other);
 					return (*this);
 				};
 				vec1 vec1::operator+(const double &other) {
-					this->pos[0] += other;
+					this->x(x()+other);
 					return (*this);
 				};
 				vec1 vec1::operator+(const vec1 &other) {
-					this->pos[0] += other.pos[0];
+					this->x(x()+other.x());
 					return (*this);
 				};
 				vec2 vec2::operator+(const int &other) {
-					this->pos[0] += other;
-					this->pos[1] += other;
+					this->x(x()+other);
+					this->y(y()+other);
 					return (*this);
 				};
 				vec2 vec2::operator+(const float &other) {
-					this->pos[0] += other;
-					this->pos[1] += other;
+					this->x(x()+other);
+					this->y(y()+other);
 					return (*this);
 				};
 				vec2 vec2::operator+(const double &other) {
-					this->pos[0] += other;
-					this->pos[1] += other;
+					this->x(x()+other);
+					this->y(y()+other);
 					return (*this);
 				};
 				vec2 vec2::operator+(const vec2 &other) {
-					this->pos[0] += other.pos[0];
-					this->pos[1] += other.pos[1];
+					this->x(x()+other.x());
+					this->y(y()+other.y());
 					return (*this);
 				};
 				vec3 vec3::operator+(const int &other) {
-					this->pos[0] += other;
-					this->pos[1] += other;
-					this->pos[2] += other;
+					this->x(x()+other);
+					this->y(y()+other);
+					this->z(z()+other);
 					return (*this);
 				};
 				vec3 vec3::operator+(const float &other) {
-					this->pos[0] += other;
-					this->pos[1] += other;
-					this->pos[2] += other;
+					this->x(x()+other);
+					this->y(y()+other);
+					this->z(z()+other);
 					return (*this);
 				};
 				vec3 vec3::operator+(const double &other) {
-					this->pos[0] += other;
-					this->pos[1] += other;
-					this->pos[2] += other;
+					this->x(x()+other);
+					this->y(y()+other);
+					this->z(z()+other);
 					return (*this);
 				};
 				vec3 vec3::operator+(const vec3 &other) {
-					this->pos[0] += other.pos[0];  
-					this->pos[1] += other.pos[1]; 
-					this->pos[2] += other.pos[2];
+					this->x(x()+other.x());
+					this->y(y()+other.y());
+					this->z(z()+other.z());
 					return (*this);
 				};
 				vec4 vec4::operator+(const int &other) {
-					this->pos[0] += other;
-					this->pos[1] += other;
-					this->pos[2] += other;
-					this->pos[3] += other;
+					this->x(x()+other);
+					this->y(y()+other);
+					this->z(z()+other);
+					this->w(w()+other);
 					return (*this);
 				};
 				vec4 vec4::operator+(const float &other) {
-					this->pos[0] += other;
-					this->pos[1] += other;
-					this->pos[2] += other;
-					this->pos[3] += other;
+					this->x(x()+other);
+					this->y(y()+other);
+					this->z(z()+other);
+					this->w(w()+other);
 					return (*this);
 				};
 				vec4 vec4::operator+(const double &other) {
-					this->pos[0] += other;
-					this->pos[1] += other;
-					this->pos[2] += other;
-					this->pos[3] += other;
+					this->x(x()+other);
+					this->y(y()+other);
+					this->z(z()+other);
+					this->w(w()+other);
 					return (*this);
 				};
 				vec4 vec4::operator+(const vec4 &other) {
-					this->pos[0] += other.pos[0];  
-					this->pos[1] += other.pos[1]; 
-					this->pos[2] += other.pos[2];
-					this->pos[3] += other.pos[2];
+					this->x(x()+other.x());
+					this->y(y()+other.y());
+					this->z(z()+other.z());
+					this->w(w()+other.w());
 					return (*this);
 				};
 			//Subtraction
 				vec1 vec1::operator-(const int &other) {
-					this->pos[0] -= other;
+					this->x(x()-other);
 					return (*this);
 				};
 				vec1 vec1::operator-(const float &other) {
-					this->pos[0] -= other;
+					this->x(x()-other);
 					return (*this);
 				};
 				vec1 vec1::operator-(const double &other) {
-					this->pos[0] -= other;
+					this->x(x()-other);
 					return (*this);
 				};
 				vec1 vec1::operator-(const vec1 &other) {
-					this->pos[0] -= other.pos[0];
+					this->x(x()-other.x());
 					return (*this);
 				};
 				vec2 vec2::operator-(const int &other) {
-					this->pos[0] -= other;
-					this->pos[1] -= other;
+					this->x(x()-other);
+					this->y(y()-other);
 					return (*this);
 				};
 				vec2 vec2::operator-(const float &other) {
-					this->pos[0] -= other;
-					this->pos[1] -= other;
+					this->x(x()-other);
+					this->y(y()-other);
 					return (*this);
 				};
 				vec2 vec2::operator-(const double &other) {
-					this->pos[0] -= other;
-					this->pos[1] -= other;
+					this->x(x()-other);
+					this->y(y()-other);
 					return (*this);
 				};
 				vec2 vec2::operator-(const vec2 &other) {
-					this->pos[0] -= other.pos[0];
-					this->pos[1] -= other.pos[1];
+					this->x(x()-other.x());
+					this->y(y()-other.y());
 					return (*this);
 				};
 				vec3 vec3::operator-(const int &other) {
-					this->pos[0] -= other;
-					this->pos[1] -= other;
-					this->pos[2] -= other;
+					this->x(x()-other);
+					this->y(y()-other);
+					this->z(z()-other);
 					return (*this);
 				};
 				vec3 vec3::operator-(const float &other) {
-					this->pos[0] -= other;
-					this->pos[1] -= other;
-					this->pos[2] -= other;
+					this->x(x()-other);
+					this->y(y()-other);
+					this->z(z()-other);
 					return (*this);
 				};
 				vec3 vec3::operator-(const double &other) {
-					this->pos[0] -= other;
-					this->pos[1] -= other;
-					this->pos[2] -= other;
+					this->x(x()-other);
+					this->y(y()-other);
+					this->z(z()-other);
 					return (*this);
 				};
 				vec3 vec3::operator-(const vec3 &other) {
-					this->pos[0] -= other.pos[0];
-					this->pos[1] -= other.pos[1];
-					this->pos[2] -= other.pos[2];
+					this->x(x()-other.x());
+					this->y(y()-other.y());
+					this->z(z()-other.z());
 					return (*this);
 				};
 				vec4 vec4::operator-(const int &other) {
-					this->pos[0] -= other;
-					this->pos[1] -= other;
-					this->pos[2] -= other;
-					this->pos[3] -= other;
+					this->x(x()-other);
+					this->y(y()-other);
+					this->z(z()-other);
+					this->w(w()-other);
 					return (*this);
 				};
 				vec4 vec4::operator-(const float &other) {
-					this->pos[0] -= other;
-					this->pos[1] -= other;
-					this->pos[2] -= other;
-					this->pos[3] -= other;
+					this->x(x()-other);
+					this->y(y()-other);
+					this->z(z()-other);
+					this->w(w()-other);
 					return (*this);
 				};
 				vec4 vec4::operator-(const double &other) {
-					this->pos[0] -= other;
-					this->pos[1] -= other;
-					this->pos[2] -= other;
-					this->pos[3] -= other;
+					this->x(x()-other);
+					this->y(y()-other);
+					this->z(z()-other);
+					this->w(w()-other);
 					return (*this);
 				};
 				vec4 vec4::operator-(const vec4 &other) {
-					this->pos[0] -= other.pos[0];  
-					this->pos[1] -= other.pos[1];  
-					this->pos[2] -= other.pos[2];
-					this->pos[3] -= other.pos[3];
+					this->x(x()-other.x());
+					this->y(y()-other.y());
+					this->z(z()-other.z());
+					this->w(w()-other.w());
 					return (*this);
 				};
 			//Divison
 				vec1 vec1::operator/(const int &other) {
-					this->pos[0] /= other;
+					this->x(x()/other);
 					return (*this);
 				};
 				vec1 vec1::operator/(const float &other) {
-					this->pos[0] /= other;
+					this->x(x()/other);
 					return (*this);
 				};
 				vec1 vec1::operator/(const double &other) {
-					this->pos[0] /= other;
+					this->x(x()/other);
 					return (*this);
 				};
 				vec1 vec1::operator/(const vec1 &other) {
-					this->pos[0] /= other.pos[0];
+					this->x(x()/other.x());
 					return (*this);
 				};
 				vec2 vec2::operator/(const int &other) {
-					this->pos[0] /= other;
-					this->pos[1] /= other;
+					this->x(x()/other);
+					this->y(y()/other);
 					return (*this);
 				};
 				vec2 vec2::operator/(const float &other) {
-					this->pos[0] /= other;
-					this->pos[1] /= other;
+					this->x(x()/other);
+					this->y(y()/other);
 					return (*this);
 				};
 				vec2 vec2::operator/(const double &other) {
-					this->pos[0] /= other;
-					this->pos[1] /= other;
+					this->x(x()/other);
+					this->y(y()/other);
 					return (*this);
 				};
 				vec2 vec2::operator/(const vec2 &other) {
-					this->pos[0] /= other.pos[0];
-					this->pos[1] /= other.pos[1];
+					this->x(x()/other.x());
+					this->y(y()/other.y());
 					return (*this);
 				};
 				vec3 vec3::operator/(const int &other) {
-					this->pos[0] /= other;
-					this->pos[1] /= other;
-					this->pos[2] /= other;
+					this->x(x()/other);
+					this->y(y()/other);
+					this->z(z()/other);
 					return (*this);
 				};
 				vec3 vec3::operator/(const float &other) {
-					this->pos[0] /= other;
-					this->pos[1] /= other;
-					this->pos[2] /= other;
+					this->x(x()/other);
+					this->y(y()/other);
+					this->z(z()/other);
 					return (*this);
 				};
 				vec3 vec3::operator/(const double &other) {
-					this->pos[0] /= other;
-					this->pos[1] /= other;
-					this->pos[2] /= other;
+					this->x(x()/other);
+					this->y(y()/other);
+					this->z(z()/other);
 					return (*this);
 				};
 				vec3 vec3::operator/(const vec3 &other) {
-					this->pos[0] /= other.pos[0];
-					this->pos[1] /= other.pos[1];
-					this->pos[2] /= other.pos[2];
+					this->x(x()/other.x());
+					this->y(y()/other.y());
+					this->z(z()/other.z());
 					return (*this);
 				};
 				vec4 vec4::operator/(const int &other) {
-					this->pos[0] /= other;
-					this->pos[1] /= other;
-					this->pos[2] /= other;
-					this->pos[3] /= other;
+					this->x(x()/other);
+					this->y(y()/other);
+					this->z(z()/other);
+					this->w(w()/other);
 					return (*this);
 				};
 				vec4 vec4::operator/(const float &other) {
-					this->pos[0] /= other;
-					this->pos[1] /= other;
-					this->pos[2] /= other;
-					this->pos[3] /= other;
+					this->x(x()/other);
+					this->y(y()/other);
+					this->z(z()/other);
+					this->w(w()/other);
 					return (*this);
 				};
 				vec4 vec4::operator/(const double &other) {
-					this->pos[0] /= other;
-					this->pos[1] /= other;
-					this->pos[2] /= other;
-					this->pos[3] /= other;
+					this->x(x()/other);
+					this->y(y()/other);
+					this->z(z()/other);
+					this->w(w()/other);
 					return (*this);
 				};
 				vec4 vec4::operator/(const vec4 &other) {
-					this->pos[0] /= other.pos[0];
-					this->pos[1] /= other.pos[1];
-					this->pos[2] /= other.pos[2];
-					this->pos[3] /= other.pos[3];
+					this->x(x()/other.x());
+					this->y(y()/other.y());
+					this->z(z()/other.z());
+					this->w(w()/other.w());
 					return (*this);
 				};
 			//Multiplication
 				vec1 vec1::operator*(const int &other) {
-					this->pos[0] *= other;
+					this->x(x()*other);
 					return (*this);
 				};
 				vec1 vec1::operator*(const float &other) {
-					this->pos[0] *= other;
+					this->x(x()*other);
 					return (*this);
 				};
 				vec1 vec1::operator*(const double &other) {
-					this->pos[0] *= other;
+					this->x(x()*other);
 					return (*this);
 				};
 				vec1 vec1::operator*(const vec1 &other) {
-					this->pos[0] *= other.pos[0];
+					this->x(x()*other.x());
 					return (*this);
 				};
 				vec2 vec2::operator*(const int &other) {
-					this->pos[0] *= other;
-					this->pos[1] *= other;
+					this->x(x()*other);
+					this->y(y()*other);
 					return (*this);
 				};
 				vec2 vec2::operator*(const float &other) {
-					this->pos[0] *= other;
-					this->pos[1] *= other;
+					this->x(x()*other);
+					this->y(y()*other);
 					return (*this);
 				};
 				vec2 vec2::operator*(const double &other) {
-					this->pos[0] *= other;
-					this->pos[1] *= other;
+					this->x(x()*other);
+					this->y(y()*other);
 					return (*this);
 				};
 				vec2 vec2::operator*(const vec2 &other) {
-					this->pos[0] *= other.pos[0];
-					this->pos[1] *= other.pos[1];
+					this->x(x()*other.x());
+					this->y(y()*other.y());
 					return (*this);
 				};
 				vec3 vec3::operator*(const int &other) {
-					this->pos[0] *= other;
-					this->pos[1] *= other;
-					this->pos[2] *= other;
+					this->x(x()*other);
+					this->y(y()*other);
+					this->z(z()*other);
 					return (*this);
 				};
 				vec3 vec3::operator*(const float &other) {
-					this->pos[0] *= other;
-					this->pos[1] *= other;
-					this->pos[2] *= other;
+					this->x(x()*other);
+					this->y(y()*other);
+					this->z(z()*other);
 					return (*this);
 				};
 				vec3 vec3::operator*(const double &other) {
-					this->pos[0] *= other;
-					this->pos[1] *= other;
-					this->pos[2] *= other;
+					this->x(x()*other);
+					this->y(y()*other);
+					this->z(z()*other);
 					return (*this);
 				};
 				vec3 vec3::operator*(const vec3 &other) {
-					this->pos[0] *= other.pos[0];
-					this->pos[1] *= other.pos[1];
-					this->pos[2] *= other.pos[2];
+					this->x(x()*other.x());
+					this->y(y()*other.y());
+					this->z(z()*other.z());
 					return (*this);
 				};
 				vec4 vec4::operator*(const int &other) {
-					this->pos[0] *= other;
-					this->pos[1] *= other;
-					this->pos[2] *= other;
-					this->pos[3] *= other;
+					this->x(x()*other);
+					this->y(y()*other);
+					this->z(z()*other);
+					this->w(w()*other);
 					return (*this);
 				};
 				vec4 vec4::operator*(const float &other) {
-					this->pos[0] *= other;
-					this->pos[1] *= other;
-					this->pos[2] *= other;
-					this->pos[3] *= other;
+					this->x(x()*other);
+					this->y(y()*other);
+					this->z(z()*other);
+					this->w(w()*other);
 					return (*this);
 				};
 				vec4 vec4::operator*(const double &other) {
-					this->pos[0] *= other;
-					this->pos[1] *= other;
-					this->pos[2] *= other;
-					this->pos[3] *= other;
+					this->x(x()*other);
+					this->y(y()*other);
+					this->z(z()*other);
+					this->w(w()*other);
 					return (*this);
 				};
 				vec4 vec4::operator*(const vec4 &other) {
-					this->pos[0] *= other.pos[0];
-					this->pos[1] *= other.pos[1];
-					this->pos[2] *= other.pos[2];
-					this->pos[3] *= other.pos[3];
+					this->x(x()*other.x());
+					this->y(y()*other.y());
+					this->z(z()*other.z());
+					this->w(w()*other.w());
 					return (*this);
 				};
 		//Compairison
@@ -586,207 +602,207 @@ This is used to simplify definition of points
 					return (this->length() < other.length());
 				};
 				bool vec1::operator<(const int &other) const {
-					return (this->pos[0] < other);
+					return (this->x() < other);
 				};
 				bool vec1::operator<(const float &other) const {
-					return (this->pos[0] < other);
+					return (this->x() < other);
 				};
 				bool vec1::operator<(const double &other) const {
-					return (this->pos[0] < other);
+					return (this->x() < other);
 				};
 				bool vec1::operator<=(const vec1 &other) const {
 					return (this->length() <= other.length());
 				};
 				bool vec1::operator<=(const int &other) const {
-					return (this->pos[0] <= other);
+					return (this->x() <= other);
 				};
 				bool vec1::operator<=(const float &other) const {
-					return (this->pos[0] <= other);
+					return (this->x() <= other);
 				};
 				bool vec1::operator<=(const double &other) const {
-					return (this->pos[0] <= other);
+					return (this->x() <= other);
 				};
 				bool vec2::operator<(const vec2 &other) const {
 					return (this->length() < other.length());
 				};
 				bool vec2::operator<(const int &other) const {
-					return (this->pos[0] < other && this->pos[1] < other);
+					return (this->x() < other && this->y() < other);
 				};
 				bool vec2::operator<(const float &other) const {
-					return (this->pos[0] < other && this->pos[1] < other);
+					return (this->x() < other && this->y() < other);
 				};
 				bool vec2::operator<(const double &other) const {
-					return (this->pos[0] < other && this->pos[1] < other);
+					return (this->x() < other && this->y() < other);
 				};
 				bool vec2::operator<=(const vec2 &other) const {
 					return (this->length() <= other.length());
 				};
 				bool vec2::operator<=(const int &other) const {
-					return (this->pos[0] <= other && this->pos[1] <= other);
+					return (this->x() <= other && this->y() <= other);
 				};
 				bool vec2::operator<=(const float &other) const {
-					return (this->pos[0] <= other && this->pos[1] <= other);
+					return (this->x() <= other && this->y() <= other);
 				};
 				bool vec2::operator<=(const double &other) const {
-					return (this->pos[0] <= other && this->pos[1] <= other);
+					return (this->x() <= other && this->y() <= other);
 				};
 				bool vec3::operator<(const vec3 &other) const {
 					return (this->length() < other.length());
 				};
 				bool vec3::operator<(const int &other) const {
-					return (this->pos[0] < other && this->pos[1] < other && this->pos[2] < other);
+					return (this->x() < other && this->y() < other && this->z() < other);
 				};
 				bool vec3::operator<(const float &other) const {
-					return (this->pos[0] < other && this->pos[1] < other && this->pos[2] < other);
+					return (this->x() < other && this->y() < other && this->z() < other);
 				};
 				bool vec3::operator<(const double &other) const {
-					return (this->pos[0] < other && this->pos[1] < other && this->pos[2] < other);
+					return (this->x() < other && this->y() < other && this->z() < other);
 				};
 				bool vec3::operator<=(const vec3 &other) const {
 					return (this->length() <= other.length());
 				};
 				bool vec3::operator<=(const int &other) const {
-					return (this->pos[0] <= other && this->pos[1] <= other && this->pos[2] <= other);
+					return (this->x() <= other && this->y() <= other && this->z() <= other);
 				};
 				bool vec3::operator<=(const float &other) const {
-					return (this->pos[0] <= other && this->pos[1] <= other && this->pos[2] <= other);
+					return (this->x() <= other && this->y() <= other && this->z() <= other);
 				};
 				bool vec3::operator<=(const double &other) const {
-					return (this->pos[0] <= other && this->pos[1] <= other && this->pos[2] <= other);
+					return (this->x() <= other && this->y() <= other && this->z() <= other);
 				};
 				bool vec4::operator<(const vec4 &other) const {
 					return (this->length() < other.length());
 				};
 				bool vec4::operator<(const int &other) const {
-					return (this->pos[0] < other && this->pos[1] < other && this->pos[2] < other && this->pos[3] < other);
+					return (this->x() < other && this->y() < other && this->z() < other && this->w() < other);
 				};
 				bool vec4::operator<(const float &other) const {
-					return (this->pos[0] < other && this->pos[1] < other && this->pos[2] < other && this->pos[3] < other);
+					return (this->x() < other && this->y() < other && this->z() < other && this->w() < other);
 				};
 				bool vec4::operator<(const double &other) const {
-					return (this->pos[0] < other && this->pos[1] < other && this->pos[2] < other && this->pos[3] < other);
+					return (this->x() < other && this->y() < other && this->z() < other && this->w() < other);
 				};
 				bool vec4::operator<=(const vec4 &other) const {
 					return (this->length() <= other.length());
 				};
 				bool vec4::operator<=(const int &other) const {
-					return (this->pos[0] <= other && this->pos[1] <= other && this->pos[2] <= other && this->pos[3] <= other);
+					return (this->x() <= other && this->y() <= other && this->z() <= other && this->w() <= other);
 				};
 				bool vec4::operator<=(const float &other) const {
-					return (this->pos[0] <= other && this->pos[1] <= other && this->pos[2] <= other && this->pos[3] <= other);
+					return (this->x() <= other && this->y() <= other && this->z() <= other && this->w() <= other);
 				};
 				bool vec4::operator<=(const double &other) const {
-					return (this->pos[0] <= other && this->pos[1] <= other && this->pos[2] <= other && this->pos[3] <= other);
+					return (this->x() <= other && this->y() <= other && this->z() <= other && this->w() <= other);
 				};
 			//greater than
 				bool vec1::operator>(const vec1 &other) const {
 					return (this->length() > other.length());
 				};
 				bool vec1::operator>(const int &other) const {
-					return (this->pos[0] > other);
+					return (this->x() > other);
 				};
 				bool vec1::operator>(const float &other) const {
-					return (this->pos[0] > other);
+					return (this->x() > other);
 				};
 				bool vec1::operator>(const double &other) const {
-					return (this->pos[0] > other);
+					return (this->x() > other);
 				};
 				bool vec1::operator>=(const vec1 &other) const {
 					return (this->length() >= other.length());
 				};
 				bool vec1::operator>=(const int &other) const {
-					return (this->pos[0] >= other);
+					return (this->x() >= other);
 				};
 				bool vec1::operator>=(const float &other) const {
-					return (this->pos[0] >= other);
+					return (this->x() >= other);
 				};
 				bool vec1::operator>=(const double &other) const {
-					return (this->pos[0] >= other);
+					return (this->x() >= other);
 				};
 				bool vec2::operator>(const vec2 &other) const {
 					return (this->length() > other.length());
 				};
 				bool vec2::operator>(const int &other) const {
-					return (this->pos[0] > other && this->pos[1] > other);
+					return (this->x() > other && this->y() > other);
 				};
 				bool vec2::operator>(const float &other) const {
-					return (this->pos[0] > other && this->pos[1] > other);
+					return (this->x() > other && this->y() > other);
 				};
 				bool vec2::operator>(const double &other) const {
-					return (this->pos[0] > other && this->pos[1] > other);
+					return (this->x() > other && this->y() > other);
 				};
 				bool vec2::operator>=(const vec2 &other) const {
 					return (this->length() >= other.length());
 				};
 				bool vec2::operator>=(const int &other) const {
-					return (this->pos[0] >= other && this->pos[1] >= other);
+					return (this->x() >= other && this->y() >= other);
 				};
 				bool vec2::operator>=(const float &other) const {
-					return (this->pos[0] >= other && this->pos[1] >= other);
+					return (this->x() >= other && this->y() >= other);
 				};
 				bool vec2::operator>=(const double &other) const {
-					return (this->pos[0] >= other && this->pos[1] >= other);
+					return (this->x() >= other && this->y() >= other);
 				};
 				bool vec3::operator>(const vec3 &other) const {
 					return (this->length() > other.length());
 				};
 				bool vec3::operator>(const int &other) const {
-					return (this->pos[0] > other && this->pos[1] > other && this->pos[2] > other);
+					return (this->x() > other && this->y() > other && this->z() > other);
 				};
 				bool vec3::operator>(const float &other) const {
-					return (this->pos[0] > other && this->pos[1] > other && this->pos[2] > other);
+					return (this->x() > other && this->y() > other && this->z() > other);
 				};
 				bool vec3::operator>(const double &other) const {
-					return (this->pos[0] > other && this->pos[1] > other && this->pos[2] > other);
+					return (this->x() > other && this->y() > other && this->z() > other);
 				};
 				bool vec3::operator>=(const vec3 &other) const {
 					return (this->length() >= other.length());
 				};
 				bool vec3::operator>=(const int &other) const {
-					return (this->pos[0] >= other && this->pos[1] >= other && this->pos[2] >= other);
+					return (this->x() >= other && this->y() >= other && this->z() >= other);
 				};
 				bool vec3::operator>=(const float &other) const {
-					return (this->pos[0] >= other && this->pos[1] >= other && this->pos[2] >= other);
+					return (this->x() >= other && this->y() >= other && this->z() >= other);
 				};
 				bool vec3::operator>=(const double &other) const {
-					return (this->pos[0] >= other && this->pos[1] >= other && this->pos[2] >= other);
+					return (this->x() >= other && this->y() >= other && this->z() >= other);
 				};
 				bool vec4::operator>(const vec4 &other) const {
 					return (this->length() > other.length());
 				};
 				bool vec4::operator>(const int &other) const {
-					return (this->pos[0] > other && this->pos[1] > other && this->pos[2] > other && this->pos[3] > other);
+					return (this->x() > other && this->y() > other && this->z() > other && this->w() > other);
 				};
 				bool vec4::operator>(const float &other) const {
-					return (this->pos[0] > other && this->pos[1] > other && this->pos[2] > other && this->pos[3] > other);
+					return (this->x() > other && this->y() > other && this->z() > other && this->w() > other);
 				};
 				bool vec4::operator>(const double &other) const {
-					return (this->pos[0] > other && this->pos[1] > other && this->pos[2] > other && this->pos[3] > other);
+					return (this->x() > other && this->y() > other && this->z() > other && this->w() > other);
 				};
 				bool vec4::operator>=(const vec4 &other) const {
 					return (this->length() >= other.length());
 				};
 				bool vec4::operator>=(const int &other) const {
-					return (this->pos[0] >= other && this->pos[1] >= other && this->pos[2] >= other && this->pos[3] >= other);
+					return (this->x() >= other && this->y() >= other && this->z() >= other && this->w() >= other);
 				};
 				bool vec4::operator>=(const float &other) const {
-					return (this->pos[0] >= other && this->pos[1] >= other && this->pos[2] >= other && this->pos[3] >= other);
+					return (this->x() >= other && this->y() >= other && this->z() >= other && this->w() >= other);
 				};
 				bool vec4::operator>=(const double &other) const {
-					return (this->pos[0] >= other && this->pos[1] >= other && this->pos[2] >= other && this->pos[3] >= other);
+					return (this->x() >= other && this->y() >= other && this->z() >= other && this->w() >= other);
 				};
 			//equals
 				bool vec1::operator==(const vec1 &other) const {
-					return (this->pos[0] == other.pos[0]);
+					return (this->x() == other.x());
 				};
 				bool vec1::operator==(const int &other) const {
-					return (this->pos[0] == other);
+					return (this->x() == other);
 				};
 				bool vec1::operator==(const float &other) const {
-					return (this->pos[0] == other);
+					return (this->x() == other);
 				};
 				bool vec1::operator==(const double &other) const {
-					return (this->pos[0] == other);
+					return (this->x() == other);
 				};
 				bool vec1::operator!=(const vec1 &other) const {
 					return *this!=other;
@@ -801,16 +817,16 @@ This is used to simplify definition of points
 					return *this!=other;
 				};
 				bool vec2::operator==(const vec2 &other) const {
-					return (this->pos[0] == other.pos[0] && this->pos[1] == other.pos[1]);
+					return (this->x() == other.x() && this->y() == other.y());
 				};
 				bool vec2::operator==(const int &other) const {
-					return (this->pos[0] == other && this->pos[1] == other);
+					return (this->x() == other && this->y() == other);
 				};
 				bool vec2::operator==(const float &other) const {
-					return (this->pos[0] == other && this->pos[1] == other);
+					return (this->x() == other && this->y() == other);
 				};
 				bool vec2::operator==(const double &other) const {
-					return (this->pos[0] == other && this->pos[1] == other);
+					return (this->x() == other && this->y() == other);
 				};
 				bool vec2::operator!=(const vec2 &other) const {
 					return *this!=other;
@@ -825,16 +841,16 @@ This is used to simplify definition of points
 					return *this!=other;
 				};
 				bool vec3::operator==(const vec3 &other) const {
-					return (this->pos[0] == other.pos[0] && this->pos[1] == other.pos[1] && this->pos[2] == other.pos[2]);
+					return (this->x() == other.x() && this->y() == other.y() && this->z() == other.z());
 				};
 				bool vec3::operator==(const int &other) const {
-					return (this->pos[0] == other && this->pos[1] == other && this->pos[2] == other);
+					return (this->x() == other && this->y() == other && this->z() == other);
 				};
 				bool vec3::operator==(const float &other) const {
-					return (this->pos[0] == other && this->pos[1] == other && this->pos[2] == other);
+					return (this->x() == other && this->y() == other && this->z() == other);
 				};
 				bool vec3::operator==(const double &other) const {
-					return (this->pos[0] == other && this->pos[1] == other && this->pos[2] == other);
+					return (this->x() == other && this->y() == other && this->z() == other);
 				};
 				bool vec3::operator!=(const vec3 &other) const {
 					return *this!=other;
@@ -849,16 +865,16 @@ This is used to simplify definition of points
 					return *this!=other;
 				};
 				bool vec4::operator==(const vec4 &other) const {
-					return (this->pos[0] == other.pos[0] && this->pos[1] == other.pos[1] && this->pos[2] == other.pos[2] && this->pos[3] == other.pos[3]);
+					return (this->x() == other.x() && this->y() == other.y() && this->z() == other.z() && this->w() == other.w());
 				};
 				bool vec4::operator==(const int &other) const {
-					return (this->pos[0] == other && this->pos[1] == other && this->pos[2] == other && this->pos[3] == other);
+					return (this->x() == other && this->y() == other && this->z() == other && this->w() == other);
 				};
 				bool vec4::operator==(const float &other) const {
-					return (this->pos[0] == other && this->pos[1] == other && this->pos[2] == other && this->pos[3] == other);
+					return (this->x() == other && this->y() == other && this->z() == other && this->w() == other);
 				};
 				bool vec4::operator==(const double &other) const {
-					return (this->pos[0] == other && this->pos[1] == other && this->pos[2] == other && this->pos[3] == other);
+					return (this->x() == other && this->y() == other && this->z() == other && this->w() == other);
 				};
 				bool vec4::operator!=(const vec4 &other) const {
 					return *this!=other;

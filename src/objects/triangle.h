@@ -9,13 +9,10 @@ class triangle;
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
-	#ifndef GLEW_STATIC
-    #define GLEW_STATIC
-	#include "../../deps/gl/glew.h"
 	#include "../../deps/gl/glut.h"
-	#endif
 	
 	#include "vertex.h"
+	#include "mesh.h"
 	#include "../common/vector.h"
 	#include "../common/plane.h"
 	#include "../common/line.h"
@@ -25,8 +22,8 @@ class triangle{
 		/*--------------------------------------------//
 		Class Variables
 		//--------------------------------------------*/
-			double texpos;
-			vertex** verts;
+			int* indices;//stores the array index to the vertex
+			mesh* obj;//stores the object the triangle belongs to
 		/*--------------------------------------------//
 		Constructors
 		//--------------------------------------------*/
@@ -35,7 +32,7 @@ class triangle{
 		/*--------------------------------------------//
 		Constructors
 		//--------------------------------------------*/
-			triangle(vertex* &a, vertex* &b, vertex* &c);
+			triangle(int a, int b, int c, mesh* o);
 
 		/*--------------------------------------------//
 		Destructor
@@ -45,11 +42,11 @@ class triangle{
 		/*--------------------------------------------//
 		Functions
 		//--------------------------------------------*/
+			int getIndex() const;
 			bool operator==(const triangle &other) const;
 			bool operator!=(const triangle &other) const;
-			vertex* getVertex(int i);
+			vertex* getVertex(int i) const;
 			vec3 getNormal();
-			double getTexPos();
 			vec3 getPosition();
 			bool intersects(vec3 vec);
 			void draw();

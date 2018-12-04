@@ -7,11 +7,9 @@ using namespace std;
 Includes
 
 //--------------------------------------------*/
-	#ifndef GLEW_STATIC
-    #define GLEW_STATIC
-    #include "../deps/gl/glew.h"
+	#include <stdlib.h>
     #include "../deps/gl/glut.h"
-	#endif
+	#include "../deps/stb/stb_image.h"
 
     #include "GLOBALS.h"
 	#include "simulation/game.h"
@@ -23,6 +21,7 @@ Globals
 	GLint currViewportSize[2];//Size of the viewport
 	game* session;
 	unsigned int window;
+	unsigned int index;
 
 /*--------------------------------------------//
 Keyboard Press Event Handler
@@ -57,7 +56,7 @@ state should start here
 	void TimerFunction(int value){
 		glutPostRedisplay();//Update
 		glutTimerFunc(TIMER, TimerFunction, value);//Reschedule ourselves
-		//value = session->update(value);
+		value = session->update(value);
 	}
 
 /*--------------------------------------------//
@@ -98,13 +97,31 @@ lights, shading, depth, etc etc
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, lightIntensity);
 		glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 
-        // render container
-        //ourShader->use();
-        //glBindVertexArray(VAO);
-        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
 		//Post light source draw
 		session->postdraw();
+
+		//Display a square
+		glPushMatrix();
+			glBindTexture(GL_TEXTURE_2D, index);
+			glColor3f(1.0f, 1.0f, 1.0f);
+			glEnable(GL_TEXTURE_2D);
+			glBegin(GL_TRIANGLES);
+				glTexCoord2f(0.0, 0.0);
+				glVertex3d(-0.5f, -0.5f, 0.0f);
+				glTexCoord2f(1.0, 0.0);
+				glVertex3d( 0.5f, -0.5f, 0.0f);
+				glTexCoord2f(1.0, 1.0);
+				glVertex3d( 0.5f,  0.5f, 0.0f);
+			glEnd();
+			glBegin(GL_TRIANGLES);
+				glTexCoord2f(0.0, 0.0);
+				glVertex3d(-0.5f, -0.5f, 0.0f);
+				glTexCoord2f(1.0, 1.0);
+				glVertex3d( 0.5f,  0.5f, 0.0f);
+				glTexCoord2f(0.0, 1.0);
+				glVertex3d(-0.5f,  0.5f, 0.0f);
+			glEnd();
+		glPopMatrix();
 
 		//Do the buffer swap.
 		glutSwapBuffers();
@@ -121,13 +138,11 @@ in resolution and aspect ratio due to resizing
 	void ResizeWindow(GLsizei w, GLsizei h){
 		currWindowSize[0] = w;
 		currWindowSize[1] = h;
-		if (ASPECT_RATIO > w / h)
-		{
+		if (ASPECT_RATIO > (float(w) / float(h))){
 			currViewportSize[0] = w;
 			currViewportSize[1] = int(w / ASPECT_RATIO);
 		}
-		else
-		{
+		else{
 			currViewportSize[1] = h;
 			currViewportSize[0] = int(h * ASPECT_RATIO);
 		}
@@ -136,7 +151,7 @@ in resolution and aspect ratio due to resizing
 
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		gluPerspective(60.0f, (GLfloat)w / (GLfloat)h, 0.1f, 100.0f);
+		//gluPerspective(60.0f, (GLfloat)w / (GLfloat)h, 0.1f, 100.0f);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 	}
@@ -154,17 +169,12 @@ Main program entry point
 
 		//setup window
 		glutInit(&argc, argv);
-		// glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 	    glutInitWindowPosition(INIT_WINDOW_POSITION[0], INIT_WINDOW_POSITION[1]);
 		glutInitWindowSize(INIT_WINDOW_SIZE[0], INIT_WINDOW_SIZE[1]);
         window = glutCreateWindow("Age of Agatha");
         glClearColor(BACKGROUND_COLOR[0], BACKGROUND_COLOR[1], BACKGROUND_COLOR[2], 1.0f);
 		glViewport(0, 0, INIT_WINDOW_SIZE[0], INIT_WINDOW_SIZE[1]);
-
-        GLenum err = glewInit();
-        if (GLEW_OK != err){
-          fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
-        }
 
         //hook in the proper routines to OpenGL
         glutReshapeFunc(ResizeWindow);
@@ -179,6 +189,26 @@ Main program entry point
 		glEnable(GL_NORMALIZE);
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
+
+		char* ImagePath = "textures/test.png";
+		glGenTextures(1, &index);
+	    glBindTexture(GL_TEXTURE_2D, index); 
+	     // set the texture wrapping parameters
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);   // set texture wrapping to GL_REPEAT (default wrapping method)
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	    // set texture filtering parameters
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	    // load image, create texture and generate mipmaps
+	    int width, height, nrChannels;
+	    stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
+	    unsigned char *data = stbi_load((ImagePath), &width, &height, &nrChannels, 0);
+	    if (data){
+	    	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	    }else{
+	        printf("Failed to load texture %s\n", ImagePath);
+	    }
+	    stbi_image_free(data);
 
         //start the game
         glutMainLoop();

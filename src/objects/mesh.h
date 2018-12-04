@@ -9,11 +9,7 @@ class mesh;
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
-	#ifndef GLEW_STATIC
-    #define GLEW_STATIC
-	#include "../../deps/gl/glew.h"
 	#include "../../deps/gl/glut.h"
-	#endif
 	
 	#include "texture.h"
 	#include "triangle.h"
@@ -28,6 +24,7 @@ class mesh{
 		/*--------------------------------------------//
 		Class Variables
 		//--------------------------------------------*/
+			double* vecs;//stores the positions of all vertices
 			int triCnt;//stores how many triangles are in this mesh
 			triangle** tris;//stores the triangles that make up this mesh
 			int vertsCnt;//stores how many vertices are being used by the mesh
@@ -53,7 +50,7 @@ class mesh{
 		/*--------------------------------------------//
 		Functions
 		//--------------------------------------------*/
-			void addVertex(vertex* &v);
+			int addVertex(vec3* &v);
 			void remVertex(vertex* &v);
 	public:
 		/*--------------------------------------------//
@@ -70,9 +67,8 @@ class mesh{
 		Functions
 		//--------------------------------------------*/
 			void addMat(char* path, int flags);
-			double* getMeshArray();
-			void addTri(vertex* &a, vertex* &b, vertex* &c);
-			void remTri(triangle &tri);
+			void addTri(vec3* &a, vec3* &b, vec3* &c);
+			void remTri(triangle* &tri);
 			void addNearby(mesh* &o);
 			void remNearby(mesh* &o);
 			mesh* getNearby(int i);
@@ -81,6 +77,7 @@ class mesh{
 			vec3 getMaxDisplacement(vec3 force);
 			int getVertexCount();
 			vertex* getVertex(int i);
+			double* getVector(int i);
 			int getTriangleCount();
 			triangle* getTriangle(int i);
 			double getRadius();

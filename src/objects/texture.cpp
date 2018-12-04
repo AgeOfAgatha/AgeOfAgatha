@@ -6,13 +6,8 @@ Texture definition
 	/*--------------------------------------------//
 	Includes
 	//--------------------------------------------*/
+		#define STB_IMAGE_IMPLEMENTATION
 		#include "texture.h"
-
-		#ifndef STB_IMAGE
-		#define STB_IMAGE
-		#define STB_IMAGE_IMPLEMENTATION //telling it to use header as definition
-	    #include "../../deps/stb/stb_image.h"
-		#endif
 
 	/*--------------------------------------------//
 	Default constructor
@@ -61,7 +56,6 @@ Texture definition
 	Use and display the texture
 	//--------------------------------------------*/
 		void texture::use(){
-			glActiveTexture(index);
     		glBindTexture(GL_TEXTURE_2D, index);
 		}
 

@@ -11,14 +11,22 @@ class vertex;
 Includes
 //--------------------------------------------*/
 	#include "../common/vector.h"
+	#include "mesh.h"
 
 class vertex:public vec3{
+	private:
+	protected:
+		/*--------------------------------------------//
+		Class Variables
+		//--------------------------------------------*/
+			int indices[3];//stores the array index of the position
+			mesh* obj;//stores the object vertex belongs to
 	public:
 		/*--------------------------------------------//
 		Constructors
 		//--------------------------------------------*/
 			vertex();
-			vertex(double xi, double yi, double zi);
+			vertex(int a, int b, int c, mesh* o);
 
 		/*--------------------------------------------//
 		Destructor
@@ -26,13 +34,28 @@ class vertex:public vec3{
 			~vertex();
 
 		/*--------------------------------------------//
-		Array converter
+		Getters
 		//--------------------------------------------*/
-			double* toArray();
+			double x() const;
+			double y() const;
+			double z() const;
+
+		/*--------------------------------------------//
+		Setters
+		//--------------------------------------------*/
+			void x(double xi);
+			void y(double yi);
+			void z(double zi);
+
+		/*--------------------------------------------//
+		Get Index
+		//--------------------------------------------*/
+			int getIndex() const;
 
 		/*--------------------------------------------//
 		Overriden Functions
 		//--------------------------------------------*/
+			double operator[](const int &index) const;
 			//Arithmetic
 				//Addition
 					vertex operator+(const int &other);

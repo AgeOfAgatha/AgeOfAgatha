@@ -13,16 +13,18 @@ Smallest object that can be drawn
 	Default constructor
 	//--------------------------------------------*/
 		triangle::triangle(){
-			verts = (vertex**)malloc(sizeof(vertex*)*3);
+			indices = (int*)malloc(sizeof(int)*3);
+			obj = NULL;
 		};
 		
 	/*--------------------------------------------//
 	Constructor with the positions specified
 	//--------------------------------------------*/
-		triangle::triangle(vertex* &a, vertex* &b, vertex* &c):triangle(){
-			(verts[0]) = a;
-			(verts[1]) = b;
-			(verts[2]) = c;
+		triangle::triangle(int a, int b, int c, mesh* o):triangle(){
+			indices[0] = a;
+			indices[1] = b;
+			indices[2] = c;
+			obj = o;
 		};
 
 	/*--------------------------------------------//
@@ -30,16 +32,18 @@ Smallest object that can be drawn
 	//--------------------------------------------*/
 		triangle::~triangle(){
 			for (int i = 0; i < 3; i++){
-				free (verts[i]);
+				free (getVertex(i));
 			}
-			free (verts);
+			free (indices);
 		};
 
 	/*--------------------------------------------//
 	Overridden operators
 	//--------------------------------------------*/
 		bool triangle::operator==(const triangle &other) const {
-			return (this->verts[0] == other.verts[0] && this->verts[1] == other.verts[1] && this->verts[2] == other.verts[2]);
+			return (*getVertex(0) == *other.getVertex(0) && 
+				*getVertex(1) == *other.getVertex(1) && 
+				*getVertex(2) == *other.getVertex(2));
 		};
 		bool triangle::operator!=(const triangle &other) const {
 			return *this!=other;
@@ -48,13 +52,13 @@ Smallest object that can be drawn
 	/*--------------------------------------------//
 	Getters - returns private variable information
 	//--------------------------------------------*/
-		vertex* triangle::getVertex(int i){
-			return (verts[i]);
+		vertex* triangle::getVertex(int i) const{
+			return (obj->getVertex(indices[i]));
 		};
 		vec3 triangle::getNormal(){
-			vertex* a = verts[0];
-			vertex* b = verts[1];
-			vertex* c = verts[2];
+			vertex* a = getVertex(0);
+			vertex* b = getVertex(1);
+			vertex* c = getVertex(2);
 
 			vec3* v = new vec3(b->x() - a->x(), b->y() - a->y(), b->z() - a->z());
 			vec3* w = new vec3(c->x() - a->x(), c->y() - a->y(), c->z() - a->z());
@@ -64,17 +68,17 @@ Smallest object that can be drawn
 			normal.normalize();
 			return normal;
 		};
-		double triangle::getTexPos(){
-			return texpos;
-		};
+		int triangle::getIndex() const{
+			return indices[0];
+		}
 
 	/*--------------------------------------------//
 	Get position - returns avg of vertices
 	//--------------------------------------------*/
 		vec3 triangle::getPosition(){
-			vertex* a = verts[0];
-			vertex* b = verts[1];
-			vertex* c = verts[2];
+			vertex* a = getVertex(0);
+			vertex* b = getVertex(1);
+			vertex* c = getVertex(2);
 
 			double x = (a->x() + b->x() + c->x())/3;
 			double y = (a->y() + b->y() + c->y())/3;
@@ -88,9 +92,9 @@ Smallest object that can be drawn
 	within the bounds of the triangle
 	//--------------------------------------------*/
 		bool triangle::intersects(vec3 vec){
-			vertex a = *(verts[0]);
-			vertex b = *(verts[1]);
-			vertex c = *(verts[2]);
+			vertex a = *(getVertex(0));
+			vertex b = *(getVertex(1));
+			vertex c = *(getVertex(2));
 
 			//plane aligned with triangle
 			plane plane1 = plane(getNormal(), getPosition());

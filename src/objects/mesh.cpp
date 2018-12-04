@@ -10,24 +10,31 @@ This is our basic object
 		#include "mesh.h"
 
 	/*--------------------------------------------//
-	Attempts to add a vertex to our vertex list
+	Add / Remove vertices
 	//--------------------------------------------*/
-		void mesh::addVertex(vertex* &v){
-			//check if vertex is already in vertex list
+		int mesh::addVertex(vec3* &v){
+			//look for duplicate
 			for (int i = 0; i < vertsCnt; i++){
-				if (verts[i] == v){
-					return;
+				if (*verts[i] == *v){
+					return i;
 				}
 			}
-			//if not add to list and update Center of mass
+			//add to list and update Center of mass
 			vertex** newverts = (vertex**) realloc(verts, sizeof(vertex*)*(vertsCnt+1));
+			double* newvecs = (double*) realloc(vecs, sizeof(double)*(vertsCnt+1)*3);
 			//check if memory allocated
-			if (newverts!=NULL) {
-				//add vertex
+			if (newverts!=NULL && newvecs!=NULL) {
+				//increase space
 				verts = newverts;
+				vecs = newvecs;
 
-				verts[vertsCnt] = v;
+				//add vertex
+				vecs[vertsCnt*3+0] = v->x();
+				vecs[vertsCnt*3+1] = v->y();
+				vecs[vertsCnt*3+2] = v->z();
+				verts[vertsCnt] = new vertex(vertsCnt*3+0, vertsCnt*3+1, vertsCnt*3+2, this);
 				vertsCnt++;
+
 				//update center of mass
 				COM.x(COM.x() + v->x()/vertsCnt);
 				COM.y(COM.y() + v->y()/vertsCnt);
@@ -47,11 +54,8 @@ This is our basic object
 				puts ("Error (re)allocating memory");
 				exit (1);
 			}
-		};
-
-	/*--------------------------------------------//
-	Attempts to remove a vertex from our vertex list
-	//--------------------------------------------*/
+			return vertsCnt-1;
+		}
 		void mesh::remVertex(vertex* &v){
 			for (int i = 0; i < vertsCnt; i++){
 				if (*v == *(verts[i])){
@@ -70,11 +74,14 @@ This is our basic object
 					}
 					//move last object to here
 					verts[i] = verts[vertsCnt-1];
+
 					//trim last object
 					vertex** newverts = (vertex**) realloc(verts, sizeof(vertex*)*(vertsCnt-1));
+					double* newvecs = (double*) realloc(vecs, sizeof(double)*(vertsCnt+1)*3);
 					//check if memory was allocated
-					if (newverts!=NULL) {
+					if (newverts!=NULL && newvecs!=NULL) {
 						verts = newverts;
+						vecs = newvecs;
 						//update center of mass
 						COM.x(COM.x() - v->x()/vertsCnt);
 						COM.y(COM.y() - v->y()/vertsCnt);
@@ -87,12 +94,13 @@ This is our basic object
 					return;
 				}
 			}
-		};
+		}
 
 	/*--------------------------------------------//
 	Default constructor
 	//--------------------------------------------*/
 		mesh::mesh(){
+			vecs = NULL;
 			triCnt = 0;
 			tris = NULL;
 			vertsCnt = 0;
@@ -100,12 +108,12 @@ This is our basic object
 			nearbyCnt = 0;
 			nearby = NULL;
 
-			COM = vertex(0,0,0);
+			COM = vec3(0,0,0);
 			
-			position = vertex(0,0,0);
-			velocity = vertex(0,0,0);
-			acceleration = vertex(0,0,0);
-			force = vertex(0,0,0);
+			position = vec3(0,0,0);
+			velocity = vec3(0,0,0);
+			acceleration = vec3(0,0,0);
+			force = vec3(0,0,0);
 
 			euler = angles(0.0, 0.0, 0.0);
 			angVel = angles(0.0, 0.0, 0.0);
@@ -139,16 +147,13 @@ This is our basic object
 	/*--------------------------------------------//
 	Add a triangle to the mesh by specifying points
 	//--------------------------------------------*/
-		void mesh::addTri(vertex* &a, vertex* &b, vertex* &c){
+		void mesh::addTri(vec3* &a, vec3* &b, vec3* &c){
 			triangle** newtris = (triangle**) realloc(tris, sizeof(triangle*)*(triCnt+1));
 
 			if (newtris!=NULL) {
 				tris = newtris;
 
-				addVertex(a);
-				addVertex(b);
-				addVertex(c);
-				tris[triCnt] = new triangle(a, b, c);
+				tris[triCnt] = new triangle(addVertex(a), addVertex(b), addVertex(c), this);
 				triCnt++;
 			}else{
 				puts ("Error (re)allocating memory");
@@ -159,18 +164,18 @@ This is our basic object
 	/*--------------------------------------------//
 	Removes the passed triangle object if found
 	//--------------------------------------------*/
-		void mesh::remTri(triangle &tri){
+		void mesh::remTri(triangle* &tri){
 			for (int i = 0; i < triCnt; i++){
-				if (tri == *(tris[i])){
+				if (*tri == *(tris[i])){
 					//move last object to here
 					tris[i] = tris[triCnt-1];
 					//trim last object
 					triangle** newtris = (triangle**) realloc(tris, sizeof(triangle*)*(triCnt-1));
 					//check if memory was allocated
 					if (newtris!=NULL) {
-						vertex* a = tri.getVertex(0);
-						vertex* b = tri.getVertex(1);
-						vertex* c = tri.getVertex(2);
+						vertex* a = tri->getVertex(0);
+						vertex* b = tri->getVertex(1);
+						vertex* c = tri->getVertex(2);
 						remVertex(a);
 						remVertex(b);
 						remVertex(c);
@@ -275,6 +280,15 @@ This is our basic object
 		vertex* mesh::getVertex(int i){
 			return verts[i];
 		};
+
+	/*--------------------------------------------//
+	Returns the vector in our array of vectors
+	at the specified index
+	//--------------------------------------------*/
+		double* mesh::getVector(int i){
+			return &vecs[i];
+		};
+
 
 	/*--------------------------------------------//
 	Returns the number of triangles in the mesh
@@ -514,34 +528,12 @@ This is our basic object
 				//apply translation
 				glTranslated(this->position.x(), this->position.y(), this->position.z());
 				//draw geometry
-				unsigned int VBO, VAO, EBO;
-				glGenVertexArrays(1, &VAO);
-				glGenBuffers(1, &VBO);
-				glGenBuffers(1, &EBO);
-
-				glBindVertexArray(VAO);
-				glBindBuffer(GL_ARRAY_BUFFER, VBO);
-				//glBufferData(GL_ARRAY_BUFFER, )
 				for (int i = 0; i < this->getTriangleCount(); i++){
 					triangle* k = this->getTriangle(i);
 					k->draw();
 				}
 			glPopMatrix();
 		};
-
-	/*--------------------------------------------//
-	Convert the mesh into an array and return it
-	//--------------------------------------------*/
-		double* mesh::getMeshArray(){
-			double* vertices = (double*)malloc(sizeof(double)*3*vertsCnt);
-
-			for(int i = 0; i < vertsCnt; i++){
-				vertices[i*3+0] = verts[i]->x();
-				vertices[i*3+1] = verts[i]->y();
-				vertices[i*3+2] = verts[i]->z();
-			}
-			return vertices;
-		}
 
 	/*--------------------------------------------//
 	Update functions

@@ -10,10 +10,12 @@ class interface;
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
+	#include "../../deps/gl/glut.h"
+
+	#include "element.h"
+
 	#include <stdlib.h>
 	#include <stdio.h>
-	#include "element.h"
-	#include "../../deps/gl/glut.h"
 
 class interface{
 	private:

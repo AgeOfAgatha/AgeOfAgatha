@@ -10,6 +10,8 @@ class boneVertex;
 /*--------------------------------------------//
 Pre Includes
 //--------------------------------------------*/
+	#include "../../../deps/gl/glut.h"
+
 	#include "../../common/vector.h"
 	#include "../vertex.h"
 	#include "bone.h"
@@ -29,13 +31,13 @@ class boneVertex:public vertex{
 		Constructors
 		//--------------------------------------------*/
 			boneVertex();
-			boneVertex(double xi, double yi, double zi);
+			boneVertex(int a, int b, int c, mesh* o);
 
 	public:	
 		/*--------------------------------------------//
 		Constructors
 		//--------------------------------------------*/
-			boneVertex(bone* p, double xi, double yi, double zi);
+			boneVertex(bone* p, int a, int b, int c, mesh* o);
 
 		/*--------------------------------------------//
 		Functions
@@ -46,9 +48,9 @@ class boneVertex:public vertex{
 			double x();
 			double y();
 			double z();
-			void x(double xi);
-			void y(double yi);
-			void z(double zi);
+			void x(double a);
+			void y(double b);
+			void z(double c);
 			void draw(bool parity);
 };
 #endif

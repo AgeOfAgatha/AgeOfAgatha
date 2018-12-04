@@ -9,11 +9,7 @@ and the ui interface.
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
-	#ifndef GLEW_STATIC
-    #define GLEW_STATIC
-	#include "../../deps/gl/glew.h"
 	#include "../../deps/gl/glut.h"
-	#endif
 
 	#include "../globals.h"
 	#include "../objects/world.h"
