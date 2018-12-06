@@ -31,13 +31,13 @@ class boneVertex:public vertex{
 		Constructors
 		//--------------------------------------------*/
 			boneVertex();
-			boneVertex(int a, int b, int c, mesh* o);
+			boneVertex(double a, double b, double c);
 
 	public:	
 		/*--------------------------------------------//
 		Constructors
 		//--------------------------------------------*/
-			boneVertex(bone* p, int a, int b, int c, mesh* o);
+			boneVertex(bone* p, double a, double b, double c);
 
 		/*--------------------------------------------//
 		Functions

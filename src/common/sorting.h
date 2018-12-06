@@ -56,4 +56,18 @@ class HeapSort:public Sort{
 			HeapSort();
 			HeapSort(void** arr1, double** arr2, int s);
 };
+
+class BinarySearch{
+	private:
+		/*--------------------------------------------//
+		Constructors
+		//--------------------------------------------*/
+			BinarySearch();
+	protected:
+	public:
+		/*--------------------------------------------//
+		Functions
+		//--------------------------------------------*/
+			static void* Search(void** arr, int size, void* tar);
+};
 #endif

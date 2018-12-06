@@ -13,28 +13,23 @@ Smallest object that can be drawn
 	Default constructor
 	//--------------------------------------------*/
 		triangle::triangle(){
-			indices = (int*)malloc(sizeof(int)*3);
-			obj = NULL;
+			points = (vertex**)malloc(sizeof(vertex*)*3);
 		};
 		
 	/*--------------------------------------------//
 	Constructor with the positions specified
 	//--------------------------------------------*/
-		triangle::triangle(int a, int b, int c, mesh* o):triangle(){
-			indices[0] = a;
-			indices[1] = b;
-			indices[2] = c;
-			obj = o;
+		triangle::triangle(vertex* a, vertex* b, vertex* c):triangle(){
+			points[0] = a;
+			points[1] = b;
+			points[2] = c;
 		};
 
 	/*--------------------------------------------//
 	Destructor
 	//--------------------------------------------*/
 		triangle::~triangle(){
-			for (int i = 0; i < 3; i++){
-				free (getVertex(i));
-			}
-			free (indices);
+			free (points);
 		};
 
 	/*--------------------------------------------//
@@ -53,7 +48,7 @@ Smallest object that can be drawn
 	Getters - returns private variable information
 	//--------------------------------------------*/
 		vertex* triangle::getVertex(int i) const{
-			return (obj->getVertex(indices[i]));
+			return (points[i]);
 		};
 		vec3 triangle::getNormal(){
 			vertex* a = getVertex(0);
@@ -68,9 +63,6 @@ Smallest object that can be drawn
 			normal.normalize();
 			return normal;
 		};
-		int triangle::getIndex() const{
-			return indices[0];
-		}
 
 	/*--------------------------------------------//
 	Get position - returns avg of vertices

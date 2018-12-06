@@ -28,10 +28,10 @@ and the ui interface.
 
 			//add model to world
 			mesh* obj = new mesh();
-			vec3* a = new vec3(0,0,0);
-			vec3* b = new vec3(0,0,1);
-			vec3* c = new vec3(0,1,0);
-			vec3* d = new vec3(0,1,1);
+			vertex* a = new vertex(0,0,0);
+			vertex* b = new vertex(0,0,1);
+			vertex* c = new vertex(0,1,0);
+			vertex* d = new vertex(0,1,1);
 			obj->addTri(a,b,c);
 			obj->addTri(d,b,c);
 			obj->addMat("textures/test.png",0);

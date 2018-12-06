@@ -13,17 +13,9 @@ on a triangular surface of a mesh
 	/*--------------------------------------------//
 	Constructors
 	//--------------------------------------------*/
-		vertex::vertex(){
-			indices[0] = 0;
-			indices[1] = 0;
-			indices[2] = 0;
-			obj = NULL;
+		vertex::vertex():vec3(){
 		}
-		vertex::vertex(int a, int b, int c, mesh* o){
-			indices[0] = a;
-			indices[1] = b;
-			indices[2] = c;
-			obj = o;
+		vertex::vertex(double a, double b, double c):vec3(a,b,c){
 		}
 
 	/*--------------------------------------------//
@@ -31,42 +23,10 @@ on a triangular surface of a mesh
 	//--------------------------------------------*/
 		vertex::~vertex(){};
 
-	/*--------------------------------------------//
-	Getters
-	//--------------------------------------------*/
-		double vertex::x() const{
-			return *obj->getVector(indices[0]);
-		}
-		double vertex::y() const{
-			return *obj->getVector(indices[1]);
-		}
-		double vertex::z() const{
-			return *obj->getVector(indices[2]);
-		}
-		int vertex::getIndex() const{
-			return indices[0];
-		}
-
-	/*--------------------------------------------//
-	Setters
-	//--------------------------------------------*/
-		void vertex::x(double a){
-			*obj->getVector(indices[0]) = a;
-		}
-		void vertex::y(double b){
-			*obj->getVector(indices[1]) = b;
-		}
-		void vertex::z(double c){
-			*obj->getVector(indices[2]) = c;
-		}
 
 	/*--------------------------------------------//
 	Overridden operators
 	//--------------------------------------------*/
-		double vertex::operator[](const int &index) const{
-			assert(index >= 0 && index < 3);
-			return *obj->getVector(indices[index]);
-		}
 		//Arithmetic
 			//Addition
 				vertex vertex::operator+(const int &other) {

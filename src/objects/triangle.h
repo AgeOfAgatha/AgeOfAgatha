@@ -22,8 +22,7 @@ class triangle{
 		/*--------------------------------------------//
 		Class Variables
 		//--------------------------------------------*/
-			int* indices;//stores the array index to the vertex
-			mesh* obj;//stores the object the triangle belongs to
+			vertex** points;//stores the vertices that make up this object
 		/*--------------------------------------------//
 		Constructors
 		//--------------------------------------------*/
@@ -32,7 +31,7 @@ class triangle{
 		/*--------------------------------------------//
 		Constructors
 		//--------------------------------------------*/
-			triangle(int a, int b, int c, mesh* o);
+			triangle(vertex* a, vertex* b, vertex* c);
 
 		/*--------------------------------------------//
 		Destructor
@@ -42,7 +41,6 @@ class triangle{
 		/*--------------------------------------------//
 		Functions
 		//--------------------------------------------*/
-			int getIndex() const;
 			bool operator==(const triangle &other) const;
 			bool operator!=(const triangle &other) const;
 			vertex* getVertex(int i) const;

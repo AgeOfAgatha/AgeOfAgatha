@@ -13,21 +13,15 @@ vertex to a bone.
 	/*--------------------------------------------//
 	Constructors
 	//--------------------------------------------*/
-		boneVertex::boneVertex(){
+		boneVertex::boneVertex():vertex(){
 			parent = NULL;
 			offset = vec3();
-			indices[0] = 0;
-			indices[1] = 0;
-			indices[2] = 0;
-			obj = NULL;
 		}
-		boneVertex::boneVertex(int a, int b, int c, mesh* o):boneVertex(){
-			indices[0] = a;
-			indices[1] = b;
-			indices[2] = c;
-			obj = o;
+		boneVertex::boneVertex(double a, double b, double c):vertex(a,b,c){
+			parent = NULL;
+			offset = vec3();
 		}
-		boneVertex::boneVertex(bone* p, int a, int b, int c, mesh* o):boneVertex(a, b, c, o){
+		boneVertex::boneVertex(bone* p, double a, double b, double c):boneVertex(a, b, c){
 			setParent(p);	
 		}
 
@@ -113,15 +107,15 @@ vertex to a bone.
 	Set World Position
 	//--------------------------------------------*/
 		void boneVertex::x(double a){
-			*obj->getVector(indices[0]) = a;
+			pos[0] = a;
 			setParent(parent);//will recalculate offset for us
 		}
 		void boneVertex::y(double b){
-			*obj->getVector(indices[1]) = b;
+			pos[1] = b;
 			setParent(parent);//will recalculate offset for us
 		}
 		void boneVertex::z(double c){
-			*obj->getVector(indices[2]) = c;
+			pos[2] = c;
 			setParent(parent);//will recalculate offset for us
 		}
 

@@ -306,16 +306,20 @@ This is where the simulation is controlled
 				//we are going to adjust vertex positions now (apply deformation)
 				//tad inefficent... loops over the vertices on both objects, hopefully narrows down quicker by implicit tests
 				//loop over all vertices on object 1
-				int vert1cnt = obj->getVertexCount();
+				int vert1cnt;
+				vertex** verts1;
+				obj->getVertices(&verts1, &vert1cnt);
 				for (int j = 0; j < vert1cnt; j++){
-					vertex* vert1 = obj->getVertex(j);
+					vertex* vert1 = verts1[j];
 					vec3 vert1pos = vec3(vert1->x(), vert1->y(), vert1->z()) + pos1;
 					//implicit function test on vert1 to obj2
 					if(implicitTest(vert1pos, pos2, vertexrad, rad2, vel1, vel2)){
-						int vert2cnt = obj2->getVertexCount();
+						int vert2cnt;
+						vertex** verts2;
+						obj2->getVertices(&verts2, &vert2cnt);
 						//loop over all vertices on object 2
 						for (int k = 0; k < vert2cnt; k++){
-							vertex* vert2 = obj2->getVertex(k);
+							vertex* vert2 = verts2[k];
 							vec3 vert2pos = vec3(vert2->x(), vert2->y(), vert2->z()) + pos2;
 							//implicit function on vert2 to obj1
 							if(implicitTest(pos1, vert2pos, rad1, vertexrad, vel1, vel2)){

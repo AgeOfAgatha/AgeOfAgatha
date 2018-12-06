@@ -15,6 +15,7 @@ Includes
 	#include "triangle.h"
 	#include "../common/vector.h"
 	#include "../common/quaternion.h"
+	#include "../common/sorting.h"
 
 	#include <stdio.h>
 
@@ -24,11 +25,8 @@ class mesh{
 		/*--------------------------------------------//
 		Class Variables
 		//--------------------------------------------*/
-			double* vecs;//stores the positions of all vertices
 			int triCnt;//stores how many triangles are in this mesh
 			triangle** tris;//stores the triangles that make up this mesh
-			int vertsCnt;//stores how many vertices are being used by the mesh
-			vertex** verts;//stores a list of vertices being used by this mesh
 			int nearbyCnt;//how many nearby objects do we have in the array
 			mesh** nearby;//nearby objects from last collision test
 			angles euler;//stores the meshes euler angles in relation to the world
@@ -46,12 +44,6 @@ class mesh{
 			double mass;//amount of mass this object has
 			int timer;//time since last movement, used for deciding if awake
 			texture* material;//stores the class object for our texture
-
-		/*--------------------------------------------//
-		Functions
-		//--------------------------------------------*/
-			int addVertex(vec3* &v);
-			void remVertex(vertex* &v);
 	public:
 		/*--------------------------------------------//
 		Constructors
@@ -66,52 +58,52 @@ class mesh{
 		/*--------------------------------------------//
 		Functions
 		//--------------------------------------------*/
-			void addMat(char* path, int flags);
-			void addTri(vec3* &a, vec3* &b, vec3* &c);
-			void remTri(triangle* &tri);
-			void addNearby(mesh* &o);
-			void remNearby(mesh* &o);
-			mesh* getNearby(int i);
-			int getNearbyCnt();
-			int getTimer();
-			vec3 getMaxDisplacement(vec3 force);
-			int getVertexCount();
-			vertex* getVertex(int i);
-			double* getVector(int i);
-			int getTriangleCount();
-			triangle* getTriangle(int i);
-			double getRadius();
-			angles getAngles();
-			void setAngles(angles ang);
-			void setAngles(double pitch, double yaw, double roll);
-			angles getAngVel();
-			void setAngVel(angles ang);
-			void setAngVel(double pitch, double yaw, double roll);
-			angles getAngAcc();
-			void setAngAcc(angles ang);
-			void setAngAcc(double pitch, double yaw, double roll);
-			angles getAngFrc();
-			void setAngfrc(angles ang);
-			void setAngfrc(double pitch, double yaw, double roll);
-			vec3 getPosition();
-			void setPosition(vec3 pos);
-			void setPosition(double xpos, double ypos, double zpos);
-			vec3 getVelocity();
-			void setVelocity(vec3 vel);
-			void setVelocity(double xvel, double yvel, double zvel);
-			vec3 getAcceleration();
-			void setAcceleration(vec3 acc);
-			void setAcceleration(double xacc, double yacc, double zacc);
-			vec3 getForce();
-			void setForce(vec3 frc);
-			void setForce(double xfrc, double yfrc, double zfrc);
-			void applyForce(vec3 frc);
-			void applyForce(double xfrc, double yfrc, double zfrc);
-			double getMass();
-			void setMass(double ma);
 			void draw();
 			void updateAcc();
 			void updateVel();
 			void updatePos();
+			void getVertices(vertex*** mesh, int* count);
+			//Adders
+				void addMat(char* path, int flags);
+				void addTri(vertex* &a, vertex* &b, vertex* &c);
+				void remTri(triangle* &tri);
+				void addNearby(mesh* &o);
+				void remNearby(mesh* &o);
+				void applyForce(vec3 frc);
+				void applyForce(double xfrc, double yfrc, double zfrc);
+			//Getters and Setters
+				mesh* getNearby(int i);
+				int getNearbyCnt();
+				int getTimer();
+				vec3 getMaxDisplacement(vec3 force);
+				int getTriangleCount();
+				triangle* getTriangle(int i);
+				double getRadius();
+				angles getAngles();
+				void setAngles(angles ang);
+				void setAngles(double pitch, double yaw, double roll);
+				angles getAngVel();
+				void setAngVel(angles ang);
+				void setAngVel(double pitch, double yaw, double roll);
+				angles getAngAcc();
+				void setAngAcc(angles ang);
+				void setAngAcc(double pitch, double yaw, double roll);
+				angles getAngFrc();
+				void setAngfrc(angles ang);
+				void setAngfrc(double pitch, double yaw, double roll);
+				vec3 getPosition();
+				void setPosition(vec3 pos);
+				void setPosition(double xpos, double ypos, double zpos);
+				vec3 getVelocity();
+				void setVelocity(vec3 vel);
+				void setVelocity(double xvel, double yvel, double zvel);
+				vec3 getAcceleration();
+				void setAcceleration(vec3 acc);
+				void setAcceleration(double xacc, double yacc, double zacc);
+				vec3 getForce();
+				void setForce(vec3 frc);
+				void setForce(double xfrc, double yfrc, double zfrc);
+				double getMass();
+				void setMass(double ma);
 };
 #endif

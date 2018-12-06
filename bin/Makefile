@@ -16,7 +16,7 @@ all:
 #########################
 #Build groups
 #########################
-dependencies: glew.o
+dependencies:
 common: angles.o line.o plane.o quaternion.o sorting.o vector.o
 objects: common dependencies texture.o vertex.o triangle.o mesh.o world.o
 actors: common dependencies bone.o joint.o boneVertex.o skeleton.o
@@ -28,8 +28,6 @@ main: simulation dependencies main.o
 #########################
 #Dependencies Section
 #########################
-glew.o: ../deps/gl/*.c
-	$(CC) $(CFLAGS) ../deps/gl/glew.c
 
 #########################
 #Common Section

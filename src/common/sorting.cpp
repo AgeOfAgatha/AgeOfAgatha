@@ -142,4 +142,28 @@ structures.
 			size = s;
 			SortObjs();
 		}
+
+	/*--------------------------------------------//
+	Default constructor
+	//--------------------------------------------*/
+		BinarySearch::BinarySearch(){}
+
+	/*--------------------------------------------//
+	Binary Search for tar
+	Uses recursion
+	//--------------------------------------------*/
+		void* BinarySearch::Search(void** arr, int size, void* tar){
+			if (size < 1)
+				return NULL;
+
+			void* ptr = arr[size/2];
+			if (ptr == tar)
+				return arr[size/2];
+
+			if (ptr < tar){
+				return Search(arr, size/2, tar);
+			}else{
+				return Search(&arr[size/2], size/2, tar);
+			}
+		}
 #endif

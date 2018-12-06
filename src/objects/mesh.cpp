@@ -10,101 +10,11 @@ This is our basic object
 		#include "mesh.h"
 
 	/*--------------------------------------------//
-	Add / Remove vertices
-	//--------------------------------------------*/
-		int mesh::addVertex(vec3* &v){
-			//look for duplicate
-			for (int i = 0; i < vertsCnt; i++){
-				if (*verts[i] == *v){
-					return i;
-				}
-			}
-			//add to list and update Center of mass
-			vertex** newverts = (vertex**) realloc(verts, sizeof(vertex*)*(vertsCnt+1));
-			double* newvecs = (double*) realloc(vecs, sizeof(double)*(vertsCnt+1)*3);
-			//check if memory allocated
-			if (newverts!=NULL && newvecs!=NULL) {
-				//increase space
-				verts = newverts;
-				vecs = newvecs;
-
-				//add vertex
-				vecs[vertsCnt*3+0] = v->x();
-				vecs[vertsCnt*3+1] = v->y();
-				vecs[vertsCnt*3+2] = v->z();
-				verts[vertsCnt] = new vertex(vertsCnt*3+0, vertsCnt*3+1, vertsCnt*3+2, this);
-				vertsCnt++;
-
-				//update center of mass
-				COM.x(COM.x() + v->x()/vertsCnt);
-				COM.y(COM.y() + v->y()/vertsCnt);
-				COM.z(COM.z() + v->z()/vertsCnt);
-
-				//find largest radius
-				for (int i = 0; i < vertsCnt; ++i){
-					double dx = COM.x() - verts[i]->x();
-					double dy = COM.y() - verts[i]->y();
-					double dz = COM.z() - verts[i]->z();
-					double dr = sqrt(dx*dx + dy*dy + dz*dz);
-					if (dr > radius){
-						radius = dr;
-					}
-				}
-			}else{
-				puts ("Error (re)allocating memory");
-				exit (1);
-			}
-			return vertsCnt-1;
-		}
-		void mesh::remVertex(vertex* &v){
-			for (int i = 0; i < vertsCnt; i++){
-				if (*v == *(verts[i])){
-					//found vertex... verify if vertex is used by other triangles in current mesh
-					int matches = 0;
-					for (int j = 0; j < triCnt; j++){
-						for (int k = 0; k < 3; k++){
-							//check if vertex matches
-							if (*v == *(tris[j]->getVertex(k))){
-								matches++;
-								if (matches > 1){
-									return;//too many matches to remove vertex from list
-								}
-							}
-						}
-					}
-					//move last object to here
-					verts[i] = verts[vertsCnt-1];
-
-					//trim last object
-					vertex** newverts = (vertex**) realloc(verts, sizeof(vertex*)*(vertsCnt-1));
-					double* newvecs = (double*) realloc(vecs, sizeof(double)*(vertsCnt+1)*3);
-					//check if memory was allocated
-					if (newverts!=NULL && newvecs!=NULL) {
-						verts = newverts;
-						vecs = newvecs;
-						//update center of mass
-						COM.x(COM.x() - v->x()/vertsCnt);
-						COM.y(COM.y() - v->y()/vertsCnt);
-						COM.z(COM.z() - v->z()/vertsCnt);
-						vertsCnt--;
-					}else{
-						puts ("Error (re)allocating memory");
-						exit (1);
-					}
-					return;
-				}
-			}
-		}
-
-	/*--------------------------------------------//
 	Default constructor
 	//--------------------------------------------*/
 		mesh::mesh(){
-			vecs = NULL;
 			triCnt = 0;
 			tris = NULL;
-			vertsCnt = 0;
-			verts = NULL;
 			nearbyCnt = 0;
 			nearby = NULL;
 
@@ -147,13 +57,13 @@ This is our basic object
 	/*--------------------------------------------//
 	Add a triangle to the mesh by specifying points
 	//--------------------------------------------*/
-		void mesh::addTri(vec3* &a, vec3* &b, vec3* &c){
+		void mesh::addTri(vertex* &a, vertex* &b, vertex* &c){
 			triangle** newtris = (triangle**) realloc(tris, sizeof(triangle*)*(triCnt+1));
 
 			if (newtris!=NULL) {
 				tris = newtris;
 
-				tris[triCnt] = new triangle(addVertex(a), addVertex(b), addVertex(c), this);
+				tris[triCnt] = new triangle(a, b, c);
 				triCnt++;
 			}else{
 				puts ("Error (re)allocating memory");
@@ -173,12 +83,6 @@ This is our basic object
 					triangle** newtris = (triangle**) realloc(tris, sizeof(triangle*)*(triCnt-1));
 					//check if memory was allocated
 					if (newtris!=NULL) {
-						vertex* a = tri->getVertex(0);
-						vertex* b = tri->getVertex(1);
-						vertex* c = tri->getVertex(2);
-						remVertex(a);
-						remVertex(b);
-						remVertex(c);
 						tris = newtris;
 						triCnt--;
 					}else{
@@ -265,30 +169,6 @@ This is our basic object
 		vec3 mesh::getMaxDisplacement(vec3 force){
 			return (force * 0.1);
 		};
-
-	/*--------------------------------------------//
-	Returns the number of vertices in the mesh
-	//--------------------------------------------*/
-		int mesh::getVertexCount(){
-			return vertsCnt;
-		};
-
-	/*--------------------------------------------//
-	Returns the vertex in our array of vertices
-	at the specified index
-	//--------------------------------------------*/
-		vertex* mesh::getVertex(int i){
-			return verts[i];
-		};
-
-	/*--------------------------------------------//
-	Returns the vector in our array of vectors
-	at the specified index
-	//--------------------------------------------*/
-		double* mesh::getVector(int i){
-			return &vecs[i];
-		};
-
 
 	/*--------------------------------------------//
 	Returns the number of triangles in the mesh
@@ -534,6 +414,29 @@ This is our basic object
 				}
 			glPopMatrix();
 		};
+
+	/*--------------------------------------------//
+	Get Vertices
+	Retrieves all vertices in mesh and a count
+	//--------------------------------------------*/
+		void mesh::getVertices(vertex*** mesh, int* count){
+			//maximum possible amount of vertices
+			HeapSort heap;
+			*mesh = (vertex**)malloc(sizeof(vertex*)*triCnt*3);
+			*count = 0;
+			for (int i = 0; i < triCnt; i++){
+				triangle* t = getTriangle(i);
+				for (int j = 0; j < 3; j++){
+					vertex* v = t->getVertex(j);
+
+					if (BinarySearch::Search((void**)mesh, *count, (void*)v) == v){
+						heap = HeapSort((void**)mesh, (double**)&mesh, *count);
+						(*mesh)[*count] = v;
+						(*count)++;
+					}
+				}
+			}
+		}
 
 	/*--------------------------------------------//
 	Update functions

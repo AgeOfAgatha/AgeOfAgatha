@@ -16,17 +16,12 @@ Includes
 class vertex:public vec3{
 	private:
 	protected:
-		/*--------------------------------------------//
-		Class Variables
-		//--------------------------------------------*/
-			int indices[3];//stores the array index of the position
-			mesh* obj;//stores the object vertex belongs to
 	public:
 		/*--------------------------------------------//
 		Constructors
 		//--------------------------------------------*/
 			vertex();
-			vertex(int a, int b, int c, mesh* o);
+			vertex(double a, double b, double c);
 
 		/*--------------------------------------------//
 		Destructor
@@ -34,28 +29,8 @@ class vertex:public vec3{
 			~vertex();
 
 		/*--------------------------------------------//
-		Getters
-		//--------------------------------------------*/
-			double x() const;
-			double y() const;
-			double z() const;
-
-		/*--------------------------------------------//
-		Setters
-		//--------------------------------------------*/
-			void x(double xi);
-			void y(double yi);
-			void z(double zi);
-
-		/*--------------------------------------------//
-		Get Index
-		//--------------------------------------------*/
-			int getIndex() const;
-
-		/*--------------------------------------------//
 		Overriden Functions
 		//--------------------------------------------*/
-			double operator[](const int &index) const;
 			//Arithmetic
 				//Addition
 					vertex operator+(const int &other);
