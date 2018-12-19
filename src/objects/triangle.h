@@ -9,10 +9,15 @@ class triangle;
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
-	#include "../../deps/gl/glut.h"
+	#include "../../deps/glm/glm.hpp"
+	#include "../../deps/gl/glew.h"
+	#include "../../deps/gl/freeglut.h"
 	
+	#include "texture.h"
 	#include "vertex.h"
 	#include "mesh.h"
+	#include "../globals.h"
+	#include "../shader/shader.h"
 	#include "../common/vector.h"
 	#include "../common/plane.h"
 	#include "../common/line.h"
@@ -23,6 +28,8 @@ class triangle{
 		Class Variables
 		//--------------------------------------------*/
 			vertex** points;//stores the vertices that make up this object
+			unsigned int VAO;//stores the objects opengl vertex array object
+			texture* materials[MAX_TRIANGLE_MATERIALS];//stores the class object for our texture
 		/*--------------------------------------------//
 		Constructors
 		//--------------------------------------------*/
@@ -41,12 +48,13 @@ class triangle{
 		/*--------------------------------------------//
 		Functions
 		//--------------------------------------------*/
+			void setMat(char* path, int flags, int n);
 			bool operator==(const triangle &other) const;
 			bool operator!=(const triangle &other) const;
 			vertex* getVertex(int i) const;
 			vec3 getNormal();
 			vec3 getPosition();
 			bool intersects(vec3 vec);
-			void draw();
+			void draw(Shader* shader);
 };
 #endif

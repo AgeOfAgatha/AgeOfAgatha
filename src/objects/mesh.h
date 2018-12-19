@@ -9,10 +9,12 @@ class mesh;
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
-	#include "../../deps/gl/glut.h"
+	#include "../../deps/gl/glew.h"
+	#include "../../deps/gl/freeglut.h"
+	#include "../../deps/glm/glm.hpp"
 	
-	#include "texture.h"
 	#include "triangle.h"
+	#include "../shader/shader.h"
 	#include "../common/vector.h"
 	#include "../common/quaternion.h"
 	#include "../common/sorting.h"
@@ -43,7 +45,6 @@ class mesh{
 			double radius;//maximum distance away from COM for the purposes of faster collision detection
 			double mass;//amount of mass this object has
 			int timer;//time since last movement, used for deciding if awake
-			texture* material;//stores the class object for our texture
 	public:
 		/*--------------------------------------------//
 		Constructors
@@ -58,13 +59,12 @@ class mesh{
 		/*--------------------------------------------//
 		Functions
 		//--------------------------------------------*/
-			void draw();
+			void draw(float* position, float* camera, float aspect, Shader* shader);
 			void updateAcc();
 			void updateVel();
 			void updatePos();
 			void getVertices(vertex*** mesh, int* count);
 			//Adders
-				void addMat(char* path, int flags);
 				void addTri(vertex* &a, vertex* &b, vertex* &c);
 				void remTri(triangle* &tri);
 				void addNearby(mesh* &o);

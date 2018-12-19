@@ -34,8 +34,6 @@ This is our basic object
 			timer = 0;
 
 			mass = 1;
-
-			material = NULL;
 		};
 
 	/*--------------------------------------------//
@@ -46,13 +44,6 @@ This is our basic object
 				free ((triangle*)(this->getTriangle(i)));
 			}
 		};
-
-	/*--------------------------------------------//
-	Add a material/texture
-	//--------------------------------------------*/
-		void mesh::addMat(char* path, int flags){
-			material = new texture(path,flags);
-		}
 
 	/*--------------------------------------------//
 	Add a triangle to the mesh by specifying points
@@ -398,19 +389,43 @@ This is our basic object
 	Drawing functions
 	this gets deferred to each triangles to draw
 	//--------------------------------------------*/
-		void mesh::draw(){
+		void mesh::draw(float* position, float* camera, float aspect, Shader* shader){
 			glPushMatrix();
-				//apply texture
-				if (material != NULL)
-					material->use();
+				//Apply Transformations
+				float i[16] = {
+				   1, 0, 0, 0,
+				   0, 1, 0, 0,
+				   0, 0, 1, 0,
+				   0, 0, 0, 1
+				};
+				glm::mat4 view;
+		        glm::mat4 model;
+		        glm::mat4 projection;
+		        //fill with identity
+		        memcpy(glm::value_ptr(view), i, sizeof(i));
+		        memcpy(glm::value_ptr(model), i, sizeof(i));
+		        memcpy(glm::value_ptr(projection), i, sizeof(i));
+
+
+		        projection 	= glm::perspective(glm::radians(FRUSTUM_FIELD_OF_VIEW), aspect, FRUSTUM_NEAR_PLANE, FRUSTUM_FAR_PLANE);
+		        view       	= glm::lookAt(
+				    glm::vec3(camera[0], camera[1], camera[2]), // Camera position
+				    glm::vec3(position[0], position[1], position[2]), // Looking at position
+				    glm::vec3(0,1,0)  // Orientation
+			    );
 				//apply rotation
-				glMultMatrixd(this->quat.toMatrix());
+			    memcpy(glm::value_ptr(model), this->quat.toMatrix(), sizeof(i));
 				//apply translation
-				glTranslated(this->position.x(), this->position.y(), this->position.z());
+				model = glm::translate(model, glm::vec3(this->position.x(), this->position.y(), this->position.z()));
+			    //pass to shader
+		        shader->setMat4("gl_ModelViewProjectionMatrix", projection);
+		        shader->setMat4("gl_ModelViewMatrix", model);
+		        shader->setMat4("ViewMatrix", view);
+		        shader->setVec3("light_position", vec3(2.0f, 5.0f, 2.0f));
 				//draw geometry
 				for (int i = 0; i < this->getTriangleCount(); i++){
 					triangle* k = this->getTriangle(i);
-					k->draw();
+					k->draw(shader);
 				}
 			glPopMatrix();
 		};

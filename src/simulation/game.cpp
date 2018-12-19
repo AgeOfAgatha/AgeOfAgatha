@@ -34,87 +34,8 @@ and the ui interface.
 			vertex* d = new vertex(0,1,1);
 			obj->addTri(a,b,c);
 			obj->addTri(d,b,c);
-			obj->addMat("textures/test.png",0);
+			//obj->setGlobalMat("textures/test.png",0);
 			worldspace->addMesh(obj);
-
-
-			ourShader = new Shader("Shader.vs", "Shader.fs", NULL);
-
-			unsigned int VBO[4];
-			//vertex array
-			float vert[3][4] = {
-				{-0.5, 0.5, -1.0, 1.0},
-				{-1.0, -0.5, -1.0, 1.0},
-				{0.5, -0.5, -1.0, 1.0}
-			};
-			//normal array
-			float norm[3][3] = {
-				{1.0, 1.0, 1.0},
-				{1.0, 1.0, 1.0},
-				{1.0, 1.0, 1.0}
-			};
-			//color array
-			float col[3][4]  = {
-				{1.0, 0.0, 0.0, 1.0},
-				{0.0, 1.0, 0.0, 1.0},
-				{0.0, 0.0, 1.0, 1.0}
-			};
-			//texture coordinate array
-			float st[3][2]  = {
-				{1.0, 0.0},
-				{0.0, 1.0},
-				{0.0, 0.0}
-			};
-
-		    glGenVertexArrays(1, &VAO);
-		    glBindVertexArray(VAO);
-		    glGenBuffers(4, VBO);
-
-		    //position
-		    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-			glBufferData(GL_ARRAY_BUFFER, 3*4*sizeof(GLfloat), vert, GL_STATIC_DRAW);
-			glVertexAttribPointer((GLuint)0, (GLuint)4, GL_FLOAT, GL_FALSE, 0, (void*)0); 
-		    glEnableVertexAttribArray((GLuint)0);
-
-		    //normal
-		    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-			glBufferData(GL_ARRAY_BUFFER, 3*3*sizeof(GLfloat), norm, GL_STATIC_DRAW);
-			glVertexAttribPointer((GLuint)1, (GLuint)3, GL_FLOAT, GL_FALSE, 0, (void*)0); 
-		    glEnableVertexAttribArray((GLuint)1);
-
-		    //color
-		    glBindBuffer(GL_ARRAY_BUFFER, VBO[2]);
-			glBufferData(GL_ARRAY_BUFFER, 3*4*sizeof(GLfloat), col, GL_STATIC_DRAW);
-			glVertexAttribPointer((GLuint)3, (GLuint)4, GL_FLOAT, GL_FALSE, 0, (void*)0); 
-		    glEnableVertexAttribArray((GLuint)3);
-
-		    //texture coordinate
-		    glBindBuffer(GL_ARRAY_BUFFER, VBO[3]);
-			glBufferData(GL_ARRAY_BUFFER, 3*2*sizeof(GLfloat), st, GL_STATIC_DRAW);
-			glVertexAttribPointer((GLuint)4, (GLuint)2, GL_FLOAT, GL_FALSE, 0, (void*)0); 
-		    glEnableVertexAttribArray((GLuint)4);
-
-		    glBindVertexArray(0);
-
-		    char* ImagePath = "textures/test.png";
-			glGenTextures(1, &index);
-		    glBindTexture(GL_TEXTURE_2D, index); 
-		    //set the texture wrapping parameters
-		    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);   // set texture wrapping to GL_REPEAT (default wrapping method)
-		    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		    //set texture filtering parameters
-		    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		    //load image, create texture and generate mipmaps
-		    int width, height, nrChannels;
-		    stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
-		    unsigned char *data = stbi_load((ImagePath), &width, &height, &nrChannels, 0);
-		    if (data){
-		    	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-		    }else{
-		        printf("Failed to load texture %s\n", ImagePath);
-		    }
-		    stbi_image_free(data);
 		}
 
 	/*--------------------------------------------//
@@ -155,81 +76,8 @@ and the ui interface.
 			};
 			gluLookAt(camera[0], camera[1], camera[2], position[0], position[1], position[2], 0.0, 1.0, 0.0);
 
-			//Draw the objects
-			glActiveTexture(GL_TEXTURE0);
-			worldspace->draw();
-
-			//Display a square
-			glPushMatrix();
-				glActiveTexture(GL_TEXTURE1);
-				glBindTexture(GL_TEXTURE_2D, index);
-				glEnable(GL_TEXTURE_2D);
-				glBegin(GL_TRIANGLES);
-					glTexCoord2f(0.0, 0.0);
-					glVertex3d(-0.5f, -0.5f, 0.0f);
-					glTexCoord2f(1.0, 0.0);
-					glVertex3d( 0.5f, -0.5f, 0.0f);
-					glTexCoord2f(1.0, 1.0);
-					glVertex3d( 0.5f,  0.5f, 0.0f);
-				glEnd();
-				glBegin(GL_TRIANGLES);
-					glTexCoord2f(0.0, 0.0);
-					glVertex3d(-0.5f, -0.5f, 0.0f);
-					glTexCoord2f(1.0, 1.0);
-					glVertex3d( 0.5f,  0.5f, 0.0f);
-					glTexCoord2f(0.0, 1.0);
-					glVertex3d(-0.5f,  0.5f, 0.0f);
-				glEnd();
-				glBindTexture(GL_TEXTURE_2D, 0);
-			glPopMatrix();
-
-			glLoadIdentity();
-
-			//Bind the shader that we want to use
-			ourShader->use();
-
-			//Apply Transformations
-			float i[16] = {
-			   1, 0, 0, 0,
-			   0, 1, 0, 0,
-			   0, 0, 1, 0,
-			   0, 0, 0, 1
-			};
-			glm::mat4 view;
-	        glm::mat4 model;
-	        glm::mat4 projection;
-	        memcpy(glm::value_ptr(view), i, sizeof(i));
-	        memcpy(glm::value_ptr(model), i, sizeof(i));
-	        memcpy(glm::value_ptr(projection), i, sizeof(i));
-	        float angle = 00.0f;
-	        projection 	= glm::perspective(glm::radians(FRUSTUM_FIELD_OF_VIEW), aspect, FRUSTUM_NEAR_PLANE, FRUSTUM_FAR_PLANE);
-	        view       	= glm::lookAt(
-			    glm::vec3(camera[0], camera[1], camera[2]), // Camera position
-			    glm::vec3(position[0], position[1], position[2]), // Looking at position
-			    glm::vec3(0,1,0)  // Orientation
-		    );
-	        model 		= glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.0f, 0.0f));
-	        // pass transformation matrices to the shader
-	        ourShader->setMat4("gl_ModelViewProjectionMatrix", projection);
-	        ourShader->setMat4("gl_ModelViewMatrix", model);
-	        ourShader->setMat4("ViewMatrix", view);
-	        ourShader->setVec3("light_position", vec3(2.0f, 5.0f, 2.0f));
-	        ourShader->setInt("texture1set", 1);
-	        ourShader->setInt("texture1", index);
-	        ourShader->setInt("texture2set", 1);
-	        ourShader->setInt("texture2", index);
-
-			//Display a square
-			glActiveTexture(GL_TEXTURE2);
-			glBindTexture(GL_TEXTURE_2D, index);
-			glEnable(GL_TEXTURE_2D);
-       		glBindVertexArray(VAO);
-			glDrawArrays(GL_TRIANGLES, 0, 3);
-	        glBindVertexArray(0);
-			glBindTexture(GL_TEXTURE_2D, 0);
-
-			//Disable Shader
-	        glUseProgram(0);
+			//Draw the world
+			worldspace->draw(position, camera, aspect);
 		}
 
 	/*--------------------------------------------//

@@ -10,6 +10,7 @@ class world;
 Includes
 //--------------------------------------------*/
 	#include "mesh.h"
+	#include "../shader/shader.h"
 	#include "../common/vector.h"
 	#include "../common/sorting.h"
 
@@ -33,6 +34,7 @@ class world{
 			mesh** objects;
 			int gravObjCnt;
 			mesh** gravObj;
+			Shader* ourShader;//Our graphical shader
 
 		/*--------------------------------------------//
 		Functions
@@ -62,7 +64,7 @@ class world{
 			int getTimeStep();
 			int getObjectCount();
 			mesh* getObject(int i);
-			void draw();
+			void draw(float* position, float* camera, float aspect);
 			void applyGravity(mesh* &obj);
 			void applyFriction(mesh* &obj);
 			void update();

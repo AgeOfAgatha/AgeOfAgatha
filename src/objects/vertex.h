@@ -16,6 +16,13 @@ Includes
 class vertex:public vec3{
 	private:
 	protected:
+		/*--------------------------------------------//
+		Class variables
+		//--------------------------------------------*/
+			vec3* normal;//normal for the vertex
+			vec3* color;//vertex color
+			vec2* textcoord;//texture coordinates
+			double* textblend;//blend between textures
 	public:
 		/*--------------------------------------------//
 		Constructors
@@ -27,6 +34,38 @@ class vertex:public vec3{
 		Destructor
 		//--------------------------------------------*/
 			~vertex();
+
+		/*--------------------------------------------//
+		Getters
+		//--------------------------------------------*/
+			//normals
+				double nx();
+				double ny();
+				double nz();
+			//colors
+				double r();
+				double g();
+				double b();
+			//texture
+				double s();
+				double t();
+				double blend();
+
+		/*--------------------------------------------//
+		Setters
+		//--------------------------------------------*/
+			//normals
+				void nx(double);
+				void ny(double);
+				void nz(double);
+			//colors
+				void r(double);
+				void g(double);
+				void b(double);
+			//texture
+				void s(double);
+				void t(double);
+				void blend(double);
 
 		/*--------------------------------------------//
 		Overriden Functions

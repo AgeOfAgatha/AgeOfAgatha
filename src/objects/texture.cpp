@@ -58,5 +58,11 @@ Texture definition
 		void texture::use(){
     		glBindTexture(GL_TEXTURE_2D, index);
 		}
+	/*--------------------------------------------//
+	Getters
+	//--------------------------------------------*/
+		unsigned int texture::getIndex(){
+			return index;
+		}
 
 #endif

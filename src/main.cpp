@@ -15,6 +15,7 @@ Includes
 	#include "simulation/game.h"
 
 	#include <stdlib.h>
+	#include <string.h>
 
 /*--------------------------------------------//
 Globals
@@ -28,8 +29,102 @@ Globals
 Error Message Callback for opengl
 //--------------------------------------------*/
 	void GLAPIENTRY MessageCallback( GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam ){
-		fprintf( stderr, "GL CALLBACK: %s source = 0x%x, type = 0x%x, id = 0x%x severity = 0x%x, message = %s\n",( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ), source, type, id, severity, message );
-		
+		//convert enums to strings
+		char *csource, *ctype, *cseverity;
+		switch(source){
+			case 0x8246:{
+				csource = "API";
+				break;
+			}
+			case 0x8247:{
+				csource = "WINDOW_SYSTEM";
+				break;
+			}
+			case 0x8248:{
+				csource = "SHADER_COMPILER";
+				break;
+			}
+			case 0x8249:{
+				csource = "THIRD_PARTY";
+				break;
+			}
+			case 0x824A:{
+				csource = "APPLICATION";
+				break;
+			}
+			case 0x824B:{
+				csource = "OTHER";
+				break;
+			}
+			default:{
+				csource = "UNKNOWN";
+			}
+		}
+		switch(type){
+			case 0x824C:{
+				ctype = "ERROR";
+				break;
+			}
+			case 0x824D:{
+				ctype = "DEPRECATED_BEHAVIOR";
+				break;
+			}
+			case 0x824E:{
+				ctype = "UNDEFINED_BEHAVIOR";
+				break;
+			}
+			case 0x824F:{
+				ctype = "PORTABILITY";
+				break;
+			}
+			case 0x8250:{
+				ctype = "PERFORMANCE";
+				break;
+			}
+			case 0x8251:{
+				ctype = "OTHER";
+				break;
+			}
+			case 0x8268:{
+				ctype = "MARKER";
+				break;
+			}
+			case 0x8269:{
+				ctype = "PUSH_GROUP";
+				break;
+			}
+			case 0x826A:{
+				ctype = "POP_GROUP";
+				break;
+			}
+			default:{
+				ctype = "UNKNOWN";
+			}
+		}
+		switch(severity){
+			case 0x9146:{
+				cseverity = "HIGH";
+				break;
+			}
+			case 0x9147:{
+				cseverity = "MEDIUM";
+				break;
+			}
+			case 0x9148:{
+				cseverity = "LOW";
+				break;
+			}
+			case 0x826B :{
+				cseverity = "NOTIFICATION";
+				break;
+			}
+			default:{
+				cseverity = "UNKNOWN";
+			}
+		}
+		//print error message if high enough priority
+		if (strcmp(cseverity, "NOTIFICATION") != 0)
+			fprintf(stderr, "GL Error Callback:\tsource = %s,\ttype = %s,\tid = 0x%x\tseverity = %s,\n\tmessage:\t%s\n\n", csource, ctype, id, cseverity, message );
 	}
 
 /*--------------------------------------------//

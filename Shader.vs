@@ -5,11 +5,13 @@ layout(location = 1) in vec3 gl_Normal;
 layout(location = 2) in vec4 gl_Color;
 layout(location = 3) in vec4 col;
 layout(location = 4) in vec2 TexCoord;
+layout(location = 5) in float Blend;
 
 out VERTEXOUT{
 	vec4 color;
 	float light;
 	vec2 texcoord;
+	float blend;
 }vertexout;
 
 uniform mat4 gl_ModelViewMatrix;
@@ -34,4 +36,5 @@ void main(){
 	vertexout.color = col;
 	vertexout.light = max(min(diffuse,1.0), ambient);
 	vertexout.texcoord = TexCoord;
+	vertexout.blend = Blend;
 }

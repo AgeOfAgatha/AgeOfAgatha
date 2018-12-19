@@ -10,7 +10,8 @@ class skeleton;
 /*--------------------------------------------//
 Pre Includes
 //--------------------------------------------*/
-	#include "../../../deps/gl/glut.h"
+	#include "../../../deps/gl/glew.h"
+	#include "../../../deps/gl/freeglut.h"
 
 	#include "../mesh.h"
 	#include "bone.h"

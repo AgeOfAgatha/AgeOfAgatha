@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -Wno-psabi -Wno-write-strings -g -c
+CFLAGS = -Wall -Wno-psabi -Wno-write-strings -Wno-narrowing -g -c
 
 .PHONY: all dependencies common objects actors interface interface_text simulation main clean
 

@@ -26,6 +26,7 @@ This is where the simulation is controlled
 			frictionDist = 100;
 			frictionConst = 100;
 			deformConst = 0.1;
+			ourShader = new Shader("Shader.vs", "Shader.fs", NULL);
 		};
 
 	/*--------------------------------------------//
@@ -45,6 +46,7 @@ This is where the simulation is controlled
 			frictionDist = fd;
 			frictionConst = fc;
 			deformConst = dc;
+			ourShader = new Shader("Shader.vs", "Shader.fs", NULL);
 		};
 
 	/*--------------------------------------------//
@@ -118,10 +120,16 @@ This is where the simulation is controlled
 	defers drawing to individual object
 	implementation
 	//--------------------------------------------*/
-		void world::draw(){
+		void world::draw(float* position, float* camera, float aspect){
+			//Bind the shader that we want to use
+			glLoadIdentity();
+			ourShader->use();
+			//draw each object in world
 			for (int i = 0; i < this->getObjectCount(); i++){
-				this->getObject(i)->draw();
+				this->getObject(i)->draw(position, camera, aspect, ourShader);
 			}
+			//Disable Shader
+	        glUseProgram(0);
 		};
 
 	/*--------------------------------------------//

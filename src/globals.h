@@ -37,6 +37,7 @@ const float 	INITIAL_VIEWER_ALTITUDE = PI / 2.5f;
 const float 	VIEWER_ANGLE_INCREMENT  = PI / 60.0f;
 
 // Material Properties Constants
+const int 		MAX_TRIANGLE_MATERIALS  = 2;// Maximum supported textures per triangle
 const float 	AMBIENT_COEFF  = -1.0f;    // Minimal ambient reflectance.
 const float 	DIFFUSE_COEFF  =  1.0f;    // Maximal diffuse reflectance.
 const float 	SPECULAR_COEFF =  1.0f;    // Maximal specular reflectance.

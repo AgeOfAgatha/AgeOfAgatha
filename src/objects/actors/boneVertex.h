@@ -10,7 +10,8 @@ class boneVertex;
 /*--------------------------------------------//
 Pre Includes
 //--------------------------------------------*/
-	#include "../../../deps/gl/glut.h"
+	#include "../../../deps/gl/glew.h"
+	#include "../../../deps/gl/freeglut.h"
 
 	#include "../../common/vector.h"
 	#include "../vertex.h"

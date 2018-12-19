@@ -14,6 +14,9 @@ Smallest object that can be drawn
 	//--------------------------------------------*/
 		triangle::triangle(){
 			points = (vertex**)malloc(sizeof(vertex*)*3);
+			VAO = 0;
+			materials[0] = NULL;
+			materials[1] = NULL;
 		};
 		
 	/*--------------------------------------------//
@@ -114,12 +117,106 @@ Smallest object that can be drawn
 	/*--------------------------------------------//
 	Draws the triangle
 	//--------------------------------------------*/
-		void triangle::draw(){
-			glBegin(GL_TRIANGLES);
-				for (int i = 0; i < 3; i++){
-					vertex* j = this->getVertex(i);
-		            glVertex3d(j->x(), j->y(), j->z());
-				}
-		    glEnd();
+		void triangle::draw(Shader* shader){
+			unsigned int VBO[5];
+					
+			vertex* u = this->getVertex(0);
+			vertex* v = this->getVertex(1);
+			vertex* w = this->getVertex(2);
+			float vert[3][4] = {
+				{u->x(), u->y(), u->z(), 1.0},
+				{v->x(), v->y(), v->z(), 1.0},
+				{w->x(), w->y(), w->z(), 1.0}
+			};
+			//normal array
+			float norm[3][3] = {
+				{u->nx(), u->ny(), u->nx()},
+				{v->nx(), v->ny(), v->nz()},
+				{w->nx(), w->ny(), w->nz()}
+			};
+			//color array
+			float col[3][4]  = {
+				{u->r(), u->g(), u->b(), 1.0},
+				{v->r(), v->g(), v->b(), 1.0},
+				{w->r(), w->g(), w->b(), 1.0}
+			};
+			//texture coordinate array
+			float st[3][2]  = {
+				{u->s(), u->t()},
+				{v->s(), v->t()},
+				{w->s(), w->t()}
+			};
+			//texture blending array
+			float blend[3][1]  = {
+				{u->blend()},
+				{v->blend()},
+				{w->blend()}
+			};
+
+		    glGenVertexArrays(1, &VAO);
+		    glBindVertexArray(VAO);
+		    glGenBuffers(5, VBO);
+
+		    //position
+		    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+			glBufferData(GL_ARRAY_BUFFER, 3*4*sizeof(GLfloat), vert, GL_STATIC_DRAW);
+			glVertexAttribPointer((GLuint)0, (GLuint)4, GL_FLOAT, GL_FALSE, 0, (void*)0); 
+		    glEnableVertexAttribArray((GLuint)0);
+
+		    //normal
+		    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
+			glBufferData(GL_ARRAY_BUFFER, 3*3*sizeof(GLfloat), norm, GL_STATIC_DRAW);
+			glVertexAttribPointer((GLuint)1, (GLuint)3, GL_FLOAT, GL_FALSE, 0, (void*)0); 
+		    glEnableVertexAttribArray((GLuint)1);
+
+		    //color
+		    glBindBuffer(GL_ARRAY_BUFFER, VBO[2]);
+			glBufferData(GL_ARRAY_BUFFER, 3*4*sizeof(GLfloat), col, GL_STATIC_DRAW);
+			glVertexAttribPointer((GLuint)3, (GLuint)4, GL_FLOAT, GL_FALSE, 0, (void*)0); 
+		    glEnableVertexAttribArray((GLuint)3);
+
+		    //texture coordinate
+		    glBindBuffer(GL_ARRAY_BUFFER, VBO[3]);
+			glBufferData(GL_ARRAY_BUFFER, 3*2*sizeof(GLfloat), st, GL_STATIC_DRAW);
+			glVertexAttribPointer((GLuint)4, (GLuint)2, GL_FLOAT, GL_FALSE, 0, (void*)0); 
+		    glEnableVertexAttribArray((GLuint)4);
+
+		    //texture blend
+		    glBindBuffer(GL_ARRAY_BUFFER, VBO[4]);
+			glBufferData(GL_ARRAY_BUFFER, 3*1*sizeof(GLfloat), blend, GL_STATIC_DRAW);
+			glVertexAttribPointer((GLuint)5, (GLuint)1, GL_FLOAT, GL_FALSE, 0, (void*)0); 
+		    glEnableVertexAttribArray((GLuint)5);
+
+		    glBindVertexArray(0);
+
+			//Bind Textures
+			glEnable(GL_TEXTURE_2D);
+			if (materials[0] != NULL){
+				shader->setInt("texture1set", 1);
+	        	shader->setInt("texture1", materials[0]->getIndex());
+				glActiveTexture(GL_TEXTURE2);
+				materials[0]->use();
+			}
+			if (materials[1] != NULL){
+				shader->setInt("texture2set", 1);
+	        	shader->setInt("texture2", materials[1]->getIndex());
+				glActiveTexture(GL_TEXTURE3);
+				materials[1]->use();
+			}
+
+			//Draw geometry
+       		glBindVertexArray(VAO);
+			glDrawArrays(GL_TRIANGLES, 0, 3);
+	        glBindVertexArray(0);
+
+			//Unbind Textures
+			if (materials[0] != NULL){
+				glActiveTexture(GL_TEXTURE2);
+				glBindTexture(GL_TEXTURE_2D, 0);
+			}
+	        if (materials[1] != NULL){
+				glActiveTexture(GL_TEXTURE3);
+				glBindTexture(GL_TEXTURE_2D, 0);
+	        }
 		};
 #endif
