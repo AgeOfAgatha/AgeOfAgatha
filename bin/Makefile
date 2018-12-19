@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -Wno-attributes -Wno-unknown-pragmas -Wno-unused-function -Wno-write-strings -g -c
+CFLAGS = -Wall -Wno-psabi -Wno-write-strings -g -c
 
 .PHONY: all dependencies common objects actors interface interface_text simulation main clean
 
@@ -22,7 +22,7 @@ objects: common dependencies texture.o vertex.o triangle.o mesh.o world.o
 actors: common dependencies bone.o joint.o boneVertex.o skeleton.o
 interface: common dependencies element.o interface.o
 interface_text: common dependencies frameDelay.o
-simulation: interface_text interface actors objects dependencies game.o
+simulation: common interface_text interface actors objects dependencies game.o shader.o
 main: simulation dependencies main.o
 
 #########################
@@ -100,6 +100,9 @@ frameDelay.o: ../src/interface/text/frameDelay.cpp ../src/interface/text/frameDe
 #########################
 game.o: ../src/simulation/game.cpp ../src/simulation/game.h
 	$(CC) $(CFLAGS) ../src/simulation/game.cpp
+
+shader.o: ../src/shader/shader.cpp ../src/shader/shader.h
+	$(CC) $(CFLAGS) ../src/shader/shader.cpp
 
 #########################
 #Main section

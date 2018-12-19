@@ -5,23 +5,32 @@ using namespace std;
 
 /*--------------------------------------------//
 Includes
-
 //--------------------------------------------*/
-	#include <stdlib.h>
-    #include "../deps/gl/glut.h"
 	#include "../deps/stb/stb_image.h"
+	#include "../deps/gl/glew.h"
+	#include "../deps/gl/freeglut.h"
+	#include "common/vector.h"
 
     #include "GLOBALS.h"
 	#include "simulation/game.h"
+
+	#include <stdlib.h>
 
 /*--------------------------------------------//
 Globals
 //--------------------------------------------*/
 	GLint currWindowSize[2];//Size of the window
 	GLint currViewportSize[2];//Size of the viewport
-	game* session;
-	unsigned int window;
-	unsigned int index;
+	game* session;//The game object
+	unsigned int window;//The window object
+
+/*--------------------------------------------//
+Error Message Callback for opengl
+//--------------------------------------------*/
+	void GLAPIENTRY MessageCallback( GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam ){
+		fprintf( stderr, "GL CALLBACK: %s source = 0x%x, type = 0x%x, id = 0x%x severity = 0x%x, message = %s\n",( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ), source, type, id, severity, message );
+		
+	}
 
 /*--------------------------------------------//
 Keyboard Press Event Handler
@@ -68,13 +77,13 @@ lights, shading, depth, etc etc
 //--------------------------------------------*/
 	void Display(){
 		glClearColor(BACKGROUND_COLOR[0], BACKGROUND_COLOR[1], BACKGROUND_COLOR[2], 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 		//Set up the properties of the surface material.
 		GLfloat matAmbient[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		GLfloat matDiffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		GLfloat matSpecular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-		GLfloat matShininess[] = { 200.0f };
+		GLfloat matShininess[] = { 1.0f };
 		glMaterialfv(GL_FRONT, GL_AMBIENT, matAmbient);
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, matDiffuse);
 		glMaterialfv(GL_FRONT, GL_SPECULAR, matSpecular);
@@ -98,30 +107,7 @@ lights, shading, depth, etc etc
 		glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 
 		//Post light source draw
-		session->postdraw();
-
-		//Display a square
-		glPushMatrix();
-			glBindTexture(GL_TEXTURE_2D, index);
-			glColor3f(1.0f, 1.0f, 1.0f);
-			glEnable(GL_TEXTURE_2D);
-			glBegin(GL_TRIANGLES);
-				glTexCoord2f(0.0, 0.0);
-				glVertex3d(-0.5f, -0.5f, 0.0f);
-				glTexCoord2f(1.0, 0.0);
-				glVertex3d( 0.5f, -0.5f, 0.0f);
-				glTexCoord2f(1.0, 1.0);
-				glVertex3d( 0.5f,  0.5f, 0.0f);
-			glEnd();
-			glBegin(GL_TRIANGLES);
-				glTexCoord2f(0.0, 0.0);
-				glVertex3d(-0.5f, -0.5f, 0.0f);
-				glTexCoord2f(1.0, 1.0);
-				glVertex3d( 0.5f,  0.5f, 0.0f);
-				glTexCoord2f(0.0, 1.0);
-				glVertex3d(-0.5f,  0.5f, 0.0f);
-			glEnd();
-		glPopMatrix();
+		session->postdraw(currWindowSize[0]/currWindowSize[1]);
 
 		//Do the buffer swap.
 		glutSwapBuffers();
@@ -157,6 +143,13 @@ in resolution and aspect ratio due to resizing
 	}
 
 /*--------------------------------------------//
+Exit program hook
+called when the window is being closed
+//--------------------------------------------*/
+	void ExitFunction(int value){
+	}
+
+/*--------------------------------------------//
 Main program entry point
 //--------------------------------------------*/
 	int main(int argc, char* argv[]){
@@ -164,19 +157,30 @@ Main program entry point
 		currWindowSize[0] = INIT_WINDOW_SIZE[0];
 		currWindowSize[1] = INIT_WINDOW_SIZE[1];
 
-		//setup session
-		session = new game();
-
 		//setup window
 		glutInit(&argc, argv);
 		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 	    glutInitWindowPosition(INIT_WINDOW_POSITION[0], INIT_WINDOW_POSITION[1]);
 		glutInitWindowSize(INIT_WINDOW_SIZE[0], INIT_WINDOW_SIZE[1]);
-        window = glutCreateWindow("Age of Agatha");
+        window = __glutCreateWindowWithExit("Age of Agatha", ExitFunction);
         glClearColor(BACKGROUND_COLOR[0], BACKGROUND_COLOR[1], BACKGROUND_COLOR[2], 1.0f);
 		glViewport(0, 0, INIT_WINDOW_SIZE[0], INIT_WINDOW_SIZE[1]);
 
-        //hook in the proper routines to OpenGL
+		glewExperimental=TRUE;
+		GLenum err=glewInit();
+		if(err!=GLEW_OK){
+			//Problem: glewInit failed, something is seriously wrong.
+			cout<<"glewInit failed, aborting."<<endl;
+			exit(1);
+		}
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(MessageCallback, 0);
+
+		//setup session
+		session = new game();
+
+		//hook in the proper routines to OpenGL
         glutReshapeFunc(ResizeWindow);
         glutKeyboardFunc(KeyboardPress);
         glutSpecialFunc(NonASCIIKeyboardPress);
@@ -189,26 +193,28 @@ Main program entry point
 		glEnable(GL_NORMALIZE);
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
+		//glEnable(GL_CULL_FACE);
 
-		char* ImagePath = "textures/test.png";
-		glGenTextures(1, &index);
-	    glBindTexture(GL_TEXTURE_2D, index); 
-	     // set the texture wrapping parameters
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);   // set texture wrapping to GL_REPEAT (default wrapping method)
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	    // set texture filtering parameters
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	    // load image, create texture and generate mipmaps
-	    int width, height, nrChannels;
-	    stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
-	    unsigned char *data = stbi_load((ImagePath), &width, &height, &nrChannels, 0);
-	    if (data){
-	    	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-	    }else{
-	        printf("Failed to load texture %s\n", ImagePath);
-	    }
-	    stbi_image_free(data);
+		glDisable(GL_BLEND);
+		glDisable(GL_ALPHA_TEST);
+		glDisable(GL_DITHER);
+		glDisable(GL_STENCIL_TEST);
+
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glReadBuffer(GL_BACK);
+		glDrawBuffer(GL_BACK);
+		glDepthFunc(GL_LEQUAL);
+		glDepthMask(TRUE);
+		glFrontFace(GL_CCW);
+
+		glClearStencil(0);
+		glStencilMask(0xFFFFFFFF);
+		glStencilFunc(GL_EQUAL, 0x00000000, 0x00000001);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+		
+		glCullFace(GL_BACK);
+		glClearColor(1.0, 0.0, 0.0, 0.0);
+		glClearDepth(1.0);
 
         //start the game
         glutMainLoop();

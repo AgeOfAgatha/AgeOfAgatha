@@ -13,18 +13,22 @@ This is used to simplify definition of points
 	Default constructor
 	//--------------------------------------------*/
 		vec1::vec1(){
+			pos = (double*)malloc(sizeof(double)*1);
 			pos[0] = 0;
 		};
 		vec2::vec2(){
+			pos = (double*)malloc(sizeof(double)*2);
 			pos[0] = 0;
 			pos[1] = 0;
 		};
 		vec3::vec3(){
+			pos = (double*)malloc(sizeof(double)*3);
 			pos[0] = 0;
 			pos[1] = 0;
 			pos[2] = 0;
 		};
 		vec4::vec4(){
+			pos = (double*)malloc(sizeof(double)*4);
 			pos[0] = 0;
 			pos[1] = 0;
 			pos[2] = 0;
@@ -56,10 +60,18 @@ This is used to simplify definition of points
 	/*--------------------------------------------//
 	Destructor
 	//--------------------------------------------*/
-		vec1::~vec1(){};
-		vec2::~vec2(){};
-		vec3::~vec3(){};
-		vec4::~vec4(){};
+		vec1::~vec1(){
+			free(pos);
+		};
+		vec2::~vec2(){
+			free(pos);
+		};
+		vec3::~vec3(){
+			free(pos);
+		};
+		vec4::~vec4(){
+			free(pos);
+		};
 
 	/*--------------------------------------------//
 	Getters
@@ -207,16 +219,16 @@ This is used to simplify definition of points
 	/*--------------------------------------------//
 	get pointer to data
 	//--------------------------------------------*/
-		double* vec1::at(){
+		double* vec1::at() const{
 			return pos;
 		}
-		double* vec2::at(){
+		double* vec2::at() const{
 			return pos;
 		}
-		double* vec3::at(){
+		double* vec3::at() const{
 			return pos;
 		}
-		double* vec4::at(){
+		double* vec4::at() const{
 			return pos;
 		}
 

@@ -9,9 +9,12 @@ and the ui interface.
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
-	#include "../../deps/gl/glut.h"
+	#include "../../deps/glm/glm.hpp"
+	#include "../../deps/gl/glew.h"
+	#include "../../deps/gl/freeglut.h"
 
 	#include "../globals.h"
+	#include "../shader/shader.h"
 	#include "../objects/world.h"
 	#include "../interface/interface.h"
 	#include "../interface/text/frameDelay.h"
@@ -30,6 +33,9 @@ class game{
 			interface* display;//Interacts directly with the player through 2D elements
 			float viewerAzimuth;//Player view azimuth
 			float viewerAltitude;//Player view altitude
+			Shader* ourShader;//Our graphical shader
+			unsigned int VAO;
+			unsigned int index;
 
 		/*--------------------------------------------//
 		Constructors
@@ -45,7 +51,7 @@ class game{
 		Functions
 		//--------------------------------------------*/
 			void predraw();
-			void postdraw();
+			void postdraw(float aspect);
 			
 			int update(int value);
 			void keypressASCII(unsigned char pressedKey, int mouseXPosition, int mouseYPosition);
