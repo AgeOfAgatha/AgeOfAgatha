@@ -26,6 +26,73 @@ Smallest object that can be drawn
 			points[0] = a;
 			points[1] = b;
 			points[2] = c;
+
+			vertex* u = this->getVertex(0);
+			vertex* v = this->getVertex(1);
+			vertex* w = this->getVertex(2);
+			double vert[3][4] = {
+				{u->x(), u->y(), u->z(), 1.0},
+				{v->x(), v->y(), v->z(), 1.0},
+				{w->x(), w->y(), w->z(), 1.0}
+			};
+			//normal array
+			double norm[3][3] = {
+				{u->nx(), u->ny(), u->nx()},
+				{v->nx(), v->ny(), v->nz()},
+				{w->nx(), w->ny(), w->nz()}
+			};
+			//color array
+			double col[3][4]  = {
+				{u->r(), u->g(), u->b(), 1.0},
+				{v->r(), v->g(), v->b(), 1.0},
+				{w->r(), w->g(), w->b(), 1.0}
+			};
+			//texture coordinate array
+			double st[3][2]  = {
+				{u->s(), u->t()},
+				{v->s(), v->t()},
+				{w->s(), w->t()}
+			};
+			//texture blending array
+			double blend[3][1]  = {
+				{u->blend()},
+				{v->blend()},
+				{w->blend()}
+			};
+
+		    glGenVertexArrays(1, &VAO);
+		    glBindVertexArray(VAO);
+		    glGenBuffers(5, VBO);
+
+		    //position
+		    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+			glBufferData(GL_ARRAY_BUFFER, 3*4*sizeof(double), vert, GL_STATIC_DRAW);
+			glVertexAttribPointer((GLuint)0, (GLuint)4, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
+		    glEnableVertexAttribArray((GLuint)0);
+
+		    //normal
+		    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
+			glBufferData(GL_ARRAY_BUFFER, 3*3*sizeof(double), norm, GL_STATIC_DRAW);
+			glVertexAttribPointer((GLuint)1, (GLuint)3, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
+		    glEnableVertexAttribArray((GLuint)1);
+
+		    //color
+		    glBindBuffer(GL_ARRAY_BUFFER, VBO[2]);
+			glBufferData(GL_ARRAY_BUFFER, 3*4*sizeof(double), col, GL_STATIC_DRAW);
+			glVertexAttribPointer((GLuint)3, (GLuint)4, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
+		    glEnableVertexAttribArray((GLuint)3);
+
+		    //texture coordinate
+		    glBindBuffer(GL_ARRAY_BUFFER, VBO[3]);
+			glBufferData(GL_ARRAY_BUFFER, 3*2*sizeof(double), st, GL_STATIC_DRAW);
+			glVertexAttribPointer((GLuint)4, (GLuint)2, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
+		    glEnableVertexAttribArray((GLuint)4);
+
+		    //texture blend
+		    glBindBuffer(GL_ARRAY_BUFFER, VBO[4]);
+			glBufferData(GL_ARRAY_BUFFER, 3*1*sizeof(double), blend, GL_STATIC_DRAW);
+			glVertexAttribPointer((GLuint)5, (GLuint)1, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
+		    glEnableVertexAttribArray((GLuint)5);
 		};
 
 	/*--------------------------------------------//
@@ -49,9 +116,9 @@ Smallest object that can be drawn
 	Overridden operators
 	//--------------------------------------------*/
 		bool triangle::operator==(const triangle &other) const {
-			return (*getVertex(0) == *other.getVertex(0) && 
-				*getVertex(1) == *other.getVertex(1) && 
-				*getVertex(2) == *other.getVertex(2));
+			return (getVertex(0) == other.getVertex(0) && 
+				getVertex(1) == other.getVertex(1) && 
+				getVertex(2) == other.getVertex(2));
 		};
 		bool triangle::operator!=(const triangle &other) const {
 			return *this!=other;
@@ -97,9 +164,9 @@ Smallest object that can be drawn
 	within the bounds of the triangle
 	//--------------------------------------------*/
 		bool triangle::intersects(vec3 vec){
-			vertex a = *(getVertex(0));
-			vertex b = *(getVertex(1));
-			vertex c = *(getVertex(2));
+			vec3 a = vec3(getVertex(0)->x(), getVertex(0)->y(), getVertex(0)->z());
+			vec3 b = vec3(getVertex(1)->x(), getVertex(1)->y(), getVertex(1)->z());
+			vec3 c = vec3(getVertex(2)->x(), getVertex(2)->y(), getVertex(2)->z());
 
 			//plane aligned with triangle
 			plane plane1 = plane(getNormal(), getPosition());
@@ -128,76 +195,52 @@ Smallest object that can be drawn
 	Draws the triangle
 	//--------------------------------------------*/
 		void triangle::draw(Shader* shader){
-			unsigned int VBO[5];
-					
-			vertex* u = this->getVertex(0);
-			vertex* v = this->getVertex(1);
-			vertex* w = this->getVertex(2);
-			float vert[3][4] = {
-				{u->x(), u->y(), u->z(), 1.0},
-				{v->x(), v->y(), v->z(), 1.0},
-				{w->x(), w->y(), w->z(), 1.0}
-			};
-			//normal array
-			float norm[3][3] = {
-				{u->nx(), u->ny(), u->nx()},
-				{v->nx(), v->ny(), v->nz()},
-				{w->nx(), w->ny(), w->nz()}
-			};
-			//color array
-			float col[3][4]  = {
-				{u->r(), u->g(), u->b(), 1.0},
-				{v->r(), v->g(), v->b(), 1.0},
-				{w->r(), w->g(), w->b(), 1.0}
-			};
-			//texture coordinate array
-			float st[3][2]  = {
-				{u->s(), u->t()},
-				{v->s(), v->t()},
-				{w->s(), w->t()}
-			};
-			//texture blending array
-			float blend[3][1]  = {
-				{u->blend()},
-				{v->blend()},
-				{w->blend()}
-			};
-
-		    glGenVertexArrays(1, &VAO);
+			//bind buffer object
 		    glBindVertexArray(VAO);
-		    glGenBuffers(5, VBO);
 
-		    //position
+			//Update buffer objects
+			vertex* verts[3] = {
+				this->getVertex(0),
+				this->getVertex(1),
+				this->getVertex(2)
+			};
+
+			//position
 		    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-			glBufferData(GL_ARRAY_BUFFER, 3*4*sizeof(GLfloat), vert, GL_STATIC_DRAW);
-			glVertexAttribPointer((GLuint)0, (GLuint)4, GL_FLOAT, GL_FALSE, 0, (void*)0); 
-		    glEnableVertexAttribArray((GLuint)0);
+		    for (int i = 0; i < 3; i++){
+		    	double* pos = verts[i]->at();
+				glBufferSubData(GL_ARRAY_BUFFER, 4*i*sizeof(double), 4*sizeof(double), (void*)pos);
+		    }
 
 		    //normal
 		    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-			glBufferData(GL_ARRAY_BUFFER, 3*3*sizeof(GLfloat), norm, GL_STATIC_DRAW);
-			glVertexAttribPointer((GLuint)1, (GLuint)3, GL_FLOAT, GL_FALSE, 0, (void*)0); 
-		    glEnableVertexAttribArray((GLuint)1);
+		     for (int i = 0; i < 3; i++){
+		    	double* norm = verts[i]->atn()->at();
+				glBufferSubData(GL_ARRAY_BUFFER, 3*i*sizeof(double), 3*sizeof(double), (void*)norm);
+		    }
 
 		    //color
 		    glBindBuffer(GL_ARRAY_BUFFER, VBO[2]);
-			glBufferData(GL_ARRAY_BUFFER, 3*4*sizeof(GLfloat), col, GL_STATIC_DRAW);
-			glVertexAttribPointer((GLuint)3, (GLuint)4, GL_FLOAT, GL_FALSE, 0, (void*)0); 
-		    glEnableVertexAttribArray((GLuint)3);
+		     for (int i = 0; i < 3; i++){
+		     	double* col = verts[i]->atcol()->at();
+				glBufferSubData(GL_ARRAY_BUFFER, 4*i*sizeof(double), 4*sizeof(double), (void*)col);
+		    }
 
 		    //texture coordinate
 		    glBindBuffer(GL_ARRAY_BUFFER, VBO[3]);
-			glBufferData(GL_ARRAY_BUFFER, 3*2*sizeof(GLfloat), st, GL_STATIC_DRAW);
-			glVertexAttribPointer((GLuint)4, (GLuint)2, GL_FLOAT, GL_FALSE, 0, (void*)0); 
-		    glEnableVertexAttribArray((GLuint)4);
+		     for (int i = 0; i < 3; i++){
+		     	double* st = verts[i]->atst()->at();
+				glBufferSubData(GL_ARRAY_BUFFER, 2*i*sizeof(double), 2*sizeof(double), (void*)st);
+		    }
 
 		    //texture blend
 		    glBindBuffer(GL_ARRAY_BUFFER, VBO[4]);
-			glBufferData(GL_ARRAY_BUFFER, 3*1*sizeof(GLfloat), blend, GL_STATIC_DRAW);
-			glVertexAttribPointer((GLuint)5, (GLuint)1, GL_FLOAT, GL_FALSE, 0, (void*)0); 
-		    glEnableVertexAttribArray((GLuint)5);
+		     for (int i = 0; i < 3; i++){
+		     	double* bl = verts[i]->atbl();
+				glBufferSubData(GL_ARRAY_BUFFER, i*sizeof(double), sizeof(double), (void*)bl);
+		    }
 
-			//Bind Textures
+		  	//Bind Textures
 			if (materials[0] != NULL){
 				shader->setInt("texture1set", 1);
 	        	shader->setInt("texture1", materials[0]->index);

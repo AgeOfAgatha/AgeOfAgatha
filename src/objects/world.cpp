@@ -335,11 +335,11 @@ This is where the simulation is controlled
 								//now we check if vert1 and vert2 collide with each other
 								//define a line from vert1 extending along the net velocity
 								vec3 velNet = vel1 - vel2;
-								line projection = line(*vert1, velNet);
+								line projection = line(vert1->xyz(), velNet);
 								vec3 intercept = vec3(0,0,0);
 								double u = 0.0;
 								//find distance, time, and intercept point
-								double distance = projection.distance(*vert2, intercept, u);
+								double distance = projection.distance(vert2->xyz(), intercept, u);
 
 								if(distance > vertexrad){
 									//vert1 and vert2 come within vertexrad distance at intercept point

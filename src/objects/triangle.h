@@ -29,6 +29,7 @@ class triangle{
 		//--------------------------------------------*/
 			vertex** points;//stores the vertices that make up this object
 			unsigned int VAO;//stores the objects opengl vertex array object
+			unsigned int VBO[5];//stores the vertex buffer objects for vertex properties
 			texture* materials[MAX_TRIANGLE_MATERIALS];//stores the class object for our texture
 		/*--------------------------------------------//
 		Constructors

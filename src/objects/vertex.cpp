@@ -13,26 +13,25 @@ on a triangular surface of a mesh
 	/*--------------------------------------------//
 	Constructors
 	//--------------------------------------------*/
-		vertex::vertex():vec3(){
+		vertex::vertex():vec4(0.0,0.0,0.0,1.0){
 			normal = new vec3(1.0, 1.0, 1.0);
-			color = new vec3(1.0, 1.0, 1.0);
+			color = new vec4(1.0, 1.0, 1.0, 1.0);
 			textcoord = new vec2(1.0, 1.0);
 			textblend = new double(0.5);
 		}
 		vertex::vertex(vec3 p):vertex(){
-			pos = (double*)malloc(sizeof(double)*3);
 			pos[0] = p[0];
 			pos[1] = p[1];
 			pos[2] = p[2];
 		}
 		vertex::vertex(double a, double b, double c):vertex(vec3(a, b, c)){}
-		vertex::vertex(vec3 p, vec3 n, vec3 c, vec2 t, double bl):vertex(p){
+		vertex::vertex(vec3 p, vec3 n, vec4 c, vec2 t, double bl):vertex(p){
 			normal = new vec3(n[0], n[1], n[2]);
-			color = new vec3(c[0], c[1], c[2]);
+			color = new vec4(c[0], c[1], c[2], c[3]);
 			textcoord = new vec2(t[0], t[1]);
 			textblend = new double(bl);
 		}
-		vertex::vertex(vec3 p, vec3* n, vec3* c, vec2* t, double* bl):vertex(p){
+		vertex::vertex(vec3 p, vec3* n, vec4* c, vec2* t, double* bl):vertex(p){
 			normal = n;
 			color = c;
 			textcoord = t;
@@ -47,15 +46,22 @@ on a triangular surface of a mesh
 	/*--------------------------------------------//
 	Getters
 	//--------------------------------------------*/
+		vec3 vertex::xyz(){
+			return vec3(x(), y(), z());
+		}
 		//normals
+			vec3* vertex::atn(){return normal;}
 			double vertex::nx(){return normal->x();}
 			double vertex::ny(){return normal->y();}
 			double vertex::nz(){return normal->z();}
 		//colors
+			vec4* vertex::atcol(){return color;}
 			double vertex::r(){return color->x();}
 			double vertex::g(){return color->y();}
 			double vertex::b(){return color->z();}
 		//texture
+			vec2* vertex::atst(){return textcoord;}
+			double* vertex::atbl(){return textblend;}
 			double vertex::s(){return textcoord->x();}
 			double vertex::t(){return textcoord->y();}
 			double vertex::blend(){return *textblend;}

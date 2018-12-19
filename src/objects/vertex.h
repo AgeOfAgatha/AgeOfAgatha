@@ -13,14 +13,14 @@ Includes
 	#include "../common/vector.h"
 	#include "mesh.h"
 
-class vertex:public vec3{
+class vertex:public vec4{
 	private:
 	protected:
 		/*--------------------------------------------//
 		Class variables
 		//--------------------------------------------*/
 			vec3* normal;//normal for the vertex
-			vec3* color;//vertex color
+			vec4* color;//vertex color
 			vec2* textcoord;//texture coordinates
 			double* textblend;//blend between textures
 	public:
@@ -30,8 +30,8 @@ class vertex:public vec3{
 			vertex();
 			vertex(double a, double b, double c);
 			vertex(vec3 p);
-			vertex(vec3 p, vec3 n, vec3 c, vec2 t, double bl);
-			vertex(vec3 p, vec3* n, vec3* c, vec2* t, double* bl);
+			vertex(vec3 p, vec3 n, vec4 c, vec2 t, double bl);
+			vertex(vec3 p, vec3* n, vec4* c, vec2* t, double* bl);
 
 		/*--------------------------------------------//
 		Destructor
@@ -41,15 +41,20 @@ class vertex:public vec3{
 		/*--------------------------------------------//
 		Getters
 		//--------------------------------------------*/
+			vec3 xyz();
 			//normals
+				vec3* atn();
 				double nx();
 				double ny();
 				double nz();
 			//colors
+				vec4* atcol();
 				double r();
 				double g();
 				double b();
 			//texture
+				vec2* atst();
+				double* atbl();
 				double s();
 				double t();
 				double blend();

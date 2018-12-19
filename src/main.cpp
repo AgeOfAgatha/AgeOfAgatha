@@ -288,7 +288,7 @@ Main program entry point
 		glEnable(GL_NORMALIZE);
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
-		//glEnable(GL_CULL_FACE);
+		glEnable(GL_CULL_FACE);
 
 		glDisable(GL_BLEND);
 		glDisable(GL_ALPHA_TEST);
