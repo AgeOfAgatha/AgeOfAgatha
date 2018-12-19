@@ -28,13 +28,14 @@ and the ui interface.
 
 			//add model to world
 			mesh* obj = new mesh();
-			vertex* a = new vertex(0,0,0);
-			vertex* b = new vertex(0,0,1);
-			vertex* c = new vertex(0,1,0);
-			vertex* d = new vertex(0,1,1);
+			vertex* a = new vertex(vec3(0,-1,-1), new vec3(1,0,0), new vec3(1,1,1), new vec2(0.0, 0.0), new double(1));
+			vertex* b = new vertex(vec3(0,-1,1), new vec3(1,0,0), new vec3(1,1,1), new vec2(1.0, 0.0), new double(0.5));
+			vertex* c = new vertex(vec3(0,1,-1), new vec3(1,0,0), new vec3(1,1,1), new vec2(0.0, 1.0), new double(0.5));
+			vertex* d = new vertex(vec3(0,1,1), new vec3(1,0,0), new vec3(1,1,1), new vec2(1.0, 1.0), new double(0));
 			obj->addTri(a,b,c);
 			obj->addTri(d,b,c);
-			//obj->setGlobalMat("textures/test.png",0);
+			obj->setGlobalMat("textures/test.png", 1, 0);
+			obj->setGlobalMat("textures/test2.png", 1, 1);
 			worldspace->addMesh(obj);
 		}
 

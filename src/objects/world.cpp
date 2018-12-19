@@ -122,10 +122,10 @@ This is where the simulation is controlled
 	//--------------------------------------------*/
 		void world::draw(float* position, float* camera, float aspect){
 			//Bind the shader that we want to use
-			glLoadIdentity();
 			ourShader->use();
 			//draw each object in world
 			for (int i = 0; i < this->getObjectCount(); i++){
+				glLoadIdentity();
 				this->getObject(i)->draw(position, camera, aspect, ourShader);
 			}
 			//Disable Shader

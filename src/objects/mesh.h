@@ -19,6 +19,7 @@ Includes
 	#include "../common/quaternion.h"
 	#include "../common/sorting.h"
 
+	#include <assert.h>
 	#include <stdio.h>
 
 class mesh{
@@ -63,6 +64,7 @@ class mesh{
 			void updateAcc();
 			void updateVel();
 			void updatePos();
+			void setGlobalMat(char* path, int flags, int n);
 			void getVertices(vertex*** mesh, int* count);
 			//Adders
 				void addTri(vertex* &a, vertex* &b, vertex* &c);

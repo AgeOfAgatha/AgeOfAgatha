@@ -46,6 +46,30 @@ This is our basic object
 		};
 
 	/*--------------------------------------------//
+	Set Global Material
+	Sets the specified material to all triangles on
+	the mesh
+	//--------------------------------------------*/
+		void mesh::setGlobalMat(char* path, int flags, int n){
+			assert(n >= 0 && n <= MAX_TRIANGLE_MATERIALS);
+			switch(n){
+				case 0:{
+					glActiveTexture(GL_TEXTURE1);
+					break;
+				}
+				case 1:{
+					glActiveTexture(GL_TEXTURE2);
+					break;
+				}
+			}
+			for (int i = 0; i < this->getTriangleCount(); i++){
+				triangle* k = this->getTriangle(i);
+				k->setMat(path, flags, n);
+			}
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
+
+	/*--------------------------------------------//
 	Add a triangle to the mesh by specifying points
 	//--------------------------------------------*/
 		void mesh::addTri(vertex* &a, vertex* &b, vertex* &c){

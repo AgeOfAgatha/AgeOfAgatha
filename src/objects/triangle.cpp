@@ -36,6 +36,16 @@ Smallest object that can be drawn
 		};
 
 	/*--------------------------------------------//
+	Set Material
+	sets the material for the specified index
+	will load in a texture at the path with given 
+	flags into the new material
+	//--------------------------------------------*/
+		void triangle::setMat(char* path, int flags, int n){
+			materials[n] = new texture(path, flags);
+		}
+
+	/*--------------------------------------------//
 	Overridden operators
 	//--------------------------------------------*/
 		bool triangle::operator==(const triangle &other) const {
@@ -187,36 +197,40 @@ Smallest object that can be drawn
 			glVertexAttribPointer((GLuint)5, (GLuint)1, GL_FLOAT, GL_FALSE, 0, (void*)0); 
 		    glEnableVertexAttribArray((GLuint)5);
 
-		    glBindVertexArray(0);
-
 			//Bind Textures
-			glEnable(GL_TEXTURE_2D);
 			if (materials[0] != NULL){
 				shader->setInt("texture1set", 1);
-	        	shader->setInt("texture1", materials[0]->getIndex());
-				glActiveTexture(GL_TEXTURE2);
+	        	shader->setInt("texture1", materials[0]->index);
+				glActiveTexture(GL_TEXTURE1);
 				materials[0]->use();
+			}else{
+				shader->setInt("texture1set", 0);
 			}
 			if (materials[1] != NULL){
 				shader->setInt("texture2set", 1);
-	        	shader->setInt("texture2", materials[1]->getIndex());
-				glActiveTexture(GL_TEXTURE3);
+	        	shader->setInt("texture2", materials[1]->index);
+				glActiveTexture(GL_TEXTURE2);
 				materials[1]->use();
+			}else{
+				shader->setInt("texture2set", 0);
 			}
+			glEnable(GL_TEXTURE_2D);
 
 			//Draw geometry
-       		glBindVertexArray(VAO);
+       		glColor3f(1.0f, 1.0f, 1.0f);
 			glDrawArrays(GL_TRIANGLES, 0, 3);
-	        glBindVertexArray(0);
 
 			//Unbind Textures
+			if (materials[0] != NULL){
+				glActiveTexture(GL_TEXTURE1);
+				glBindTexture(GL_TEXTURE_2D, 0);
+			}
 			if (materials[0] != NULL){
 				glActiveTexture(GL_TEXTURE2);
 				glBindTexture(GL_TEXTURE_2D, 0);
 			}
-	        if (materials[1] != NULL){
-				glActiveTexture(GL_TEXTURE3);
-				glBindTexture(GL_TEXTURE_2D, 0);
-	        }
+
+			//Unbind ourself
+	        glBindVertexArray(0);
 		};
 #endif

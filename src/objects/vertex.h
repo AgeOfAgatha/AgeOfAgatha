@@ -29,6 +29,9 @@ class vertex:public vec3{
 		//--------------------------------------------*/
 			vertex();
 			vertex(double a, double b, double c);
+			vertex(vec3 p);
+			vertex(vec3 p, vec3 n, vec3 c, vec2 t, double bl);
+			vertex(vec3 p, vec3* n, vec3* c, vec2* t, double* bl);
 
 		/*--------------------------------------------//
 		Destructor

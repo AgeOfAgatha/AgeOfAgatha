@@ -19,11 +19,24 @@ on a triangular surface of a mesh
 			textcoord = new vec2(1.0, 1.0);
 			textblend = new double(0.5);
 		}
-		vertex::vertex(double a, double b, double c):vec3(a,b,c){
-			normal = new vec3(1.0, 1.0, 1.0);
-			color = new vec3(1.0, 1.0, 1.0);
-			textcoord = new vec2(1.0, 1.0);
-			textblend = new double(0.5);
+		vertex::vertex(vec3 p):vertex(){
+			pos = (double*)malloc(sizeof(double)*3);
+			pos[0] = p[0];
+			pos[1] = p[1];
+			pos[2] = p[2];
+		}
+		vertex::vertex(double a, double b, double c):vertex(vec3(a, b, c)){}
+		vertex::vertex(vec3 p, vec3 n, vec3 c, vec2 t, double bl):vertex(p){
+			normal = new vec3(n[0], n[1], n[2]);
+			color = new vec3(c[0], c[1], c[2]);
+			textcoord = new vec2(t[0], t[1]);
+			textblend = new double(bl);
+		}
+		vertex::vertex(vec3 p, vec3* n, vec3* c, vec2* t, double* bl):vertex(p){
+			normal = n;
+			color = c;
+			textcoord = t;
+			textblend = bl;
 		}
 
 	/*--------------------------------------------//
