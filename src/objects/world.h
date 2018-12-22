@@ -9,10 +9,19 @@ class world;
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
-	#include "mesh.h"
-	#include "../shader/shader.h"
+	#include "../../deps/glm/glm.hpp"
+	#include "../../deps/gl/glew.h"
+	#include "../../deps/gl/freeglut.h"
+
 	#include "../common/vector.h"
 	#include "../common/sorting.h"
+	#include "../shader/shader.h"
+	#include "texture.h"
+	#include "mesh.h"
+
+	#include <stdlib.h>
+	#include <string.h>
+	#include <vector>
 
 class world{
 	private:
@@ -59,12 +68,13 @@ class world{
 		/*--------------------------------------------//
 		Functions
 		//--------------------------------------------*/
+			bool loadObj(char* objPath, char* mtlPath, mesh** parent);
 			void addMesh(mesh* &obj);
 			void remMesh(mesh* &obj);
 			int getTimeStep();
 			int getObjectCount();
 			mesh* getObject(int i);
-			void draw(float* position, float* camera, float aspect);
+			void draw(glm::mat4 projection, glm::mat4 view);
 			void applyGravity(mesh* &obj);
 			void applyFriction(mesh* &obj);
 			void update();

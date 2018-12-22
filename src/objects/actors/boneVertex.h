@@ -10,9 +10,11 @@ class boneVertex;
 /*--------------------------------------------//
 Pre Includes
 //--------------------------------------------*/
+	#include "../../../deps/glm/glm.hpp"
 	#include "../../../deps/gl/glew.h"
 	#include "../../../deps/gl/freeglut.h"
 
+	#include "../../common/quaternion.h"
 	#include "../../common/vector.h"
 	#include "../vertex.h"
 	#include "bone.h"
@@ -24,7 +26,7 @@ class boneVertex:public vertex{
 		Class Variables
 		//--------------------------------------------*/
 			bone* parent;//the bone we are parented to
-			vertex offset;//our offset from bones position at parenting
+			vec3 offset;//our offset from bones position at parenting
 			vec3 wPos;//our stored world position
 			bool wPosParity;//parity flag for world position used in get position function
 

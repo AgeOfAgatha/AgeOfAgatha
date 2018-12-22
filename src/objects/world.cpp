@@ -26,18 +26,13 @@ This is where the simulation is controlled
 			frictionDist = 100;
 			frictionConst = 100;
 			deformConst = 0.1;
-			ourShader = new Shader("Shader.vs", "Shader.fs", NULL);
+			ourShader = new Shader("shader/Shader.vertex", "shader/Shader.fragment", NULL);
 		};
 
 	/*--------------------------------------------//
 	Overloaded constructor
 	//--------------------------------------------*/
-		world::world(int ts, int to, double vr, double gom, double gc, double fd, double fc, double dc){
-			objCnt = 0;
-			objects = NULL;
-			gravObjCnt = 0;
-			gravObj = NULL;
-
+		world::world(int ts, int to, double vr, double gom, double gc, double fd, double fc, double dc):world(){
 			timestep = ts;
 			timeout = to;
 			vertexrad = vr;
@@ -46,7 +41,6 @@ This is where the simulation is controlled
 			frictionDist = fd;
 			frictionConst = fc;
 			deformConst = dc;
-			ourShader = new Shader("Shader.vs", "Shader.fs", NULL);
 		};
 
 	/*--------------------------------------------//
@@ -57,6 +51,164 @@ This is where the simulation is controlled
 				free ((mesh*)(this->getObject(i)));
 			}
 		};
+
+	/*--------------------------------------------//
+	Load object(s) from a file
+	Returns the parent object created
+	//--------------------------------------------*/
+		bool world::loadObj(char* objPath, char* mtlPath, mesh** parent){
+			//temp variables
+			std::vector<mesh*>			temp_meshes (0);
+			std::vector<texture*>   	temp_textures (0);			//textures of each material
+			std::vector<char*>			temp_mat_names (0);			//names of materials index corresponds to texture index
+			std::vector<vec4*> 			temp_vertices (0);			//vertices
+			std::vector<vec2*> 			temp_uvs (0);				//texture coordinates
+			std::vector<vec3*> 			temp_normals (0);			//normals
+			mesh* 				   		curr_obj = NULL;		//current object
+			texture* 			   		curr_texture = NULL;	//current texture
+
+			//open mateial file
+			FILE* mtlfile = fopen(mtlPath, "r");
+			if (mtlfile == NULL){
+			    printf("Failed to open file %s!\n", mtlPath);
+			    return false;
+			}
+			//process material file
+			while (1){
+				//find how long current line is
+				int length = 1;
+				for (char c = getc(mtlfile); c != EOF; c = getc(mtlfile)){
+					if (c == '\n')
+						break;
+					length++;
+				}
+				//go back what we just read
+				fseek(mtlfile, -length-1, SEEK_CUR);
+				//create a buffer of appropriate size
+				char mtlHeader[length];
+				//Read the first world of the line and ensure we are not at end of file
+			    if (fscanf(mtlfile, "%s", mtlHeader) == EOF)
+			        break;
+
+			    if (strcmp(mtlHeader, "newmtl") == 0){
+			    	char* name = (char*)malloc(sizeof(char)*(length-8));
+			    	fscanf(mtlfile, "%s\n", name);
+				    temp_mat_names.push_back(name);
+				    continue;
+			    }
+			    if (strcmp(mtlHeader, "map_Kd") == 0){
+			    	char* file = (char*)malloc(sizeof(char)*(length-8));
+			    	fscanf(mtlfile, "%s\n", file);
+			    	texture* material = new texture(file, 1);
+			    	temp_textures.push_back(material);
+			    	continue;
+			    }
+			    //read until next line
+				for (char c = getc(mtlfile); c != EOF; c = getc(mtlfile)){
+					if (c == '\n')
+						break;
+				}
+			}
+
+			//open object file
+			FILE* objfile = fopen(objPath, "r");
+			if (objfile == NULL){
+			    printf("Failed to open file %s!\n", objPath);
+			    return false;
+			}
+
+			//process object file
+			while (1){
+				//find how long current line is
+				int length = 1;
+				for (char c = getc(objfile); c != EOF; c = getc(objfile)){
+					if (c == '\n')
+						break;
+					length++;
+				}
+				//go back what we just read
+				fseek(objfile, -length-1, SEEK_CUR);
+				//create a buffer of appropriate size
+				char lineHeader[length];
+				 //Read the first world of the line and check if at end of file
+			    if (fscanf(objfile, "%s\n", lineHeader) == EOF)
+			        break;
+
+			    //check what kind of line we are
+				if (strcmp(lineHeader, "usemtl") == 0){
+					//use material
+					char mat_name[length-8];
+					fscanf(objfile, "%s", mat_name);
+					for(unsigned int i = 0; i < temp_mat_names.size(); i++){
+						if (strcmp(mat_name, temp_mat_names[i]) == 0){
+							//found the material we are looking for
+							curr_texture = temp_textures[i];
+							break;
+						}
+					}
+					continue;
+				}
+			    if (strcmp(lineHeader, "v") == 0){
+			    	//position vector
+			    	vec4* vertex = new vec4(0,0,0,1);
+				    fscanf(objfile, "%lf %lf %lf\n", &vertex->x, &vertex->y, &vertex->z);
+				    temp_vertices.push_back(vertex);
+				    continue;
+			    }
+			    if (strcmp(lineHeader, "vt") == 0){
+			    	//texture vector
+				    vec2* uv = new vec2(0,0);
+				    fscanf(objfile, "%lf %lf\n", &uv->x, &uv->y );
+				    temp_uvs.push_back(uv);
+				    continue;
+				}
+				if (strcmp(lineHeader, "vn") == 0){
+					//normal vector
+				    vec3* normal = new vec3(0,0,0);
+				    fscanf(objfile, "%lf %lf %lf\n", &normal->x, &normal->y, &normal->z);
+				    temp_normals.push_back(normal);
+				    continue;
+				}
+				if (strcmp(lineHeader, "f") == 0){
+					//triangle
+				    unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
+				    int matches = fscanf(objfile, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
+				    if (matches != 9){
+				        printf("File can't be read by our simple parser. Try exporting with other options\n");
+				        fclose(objfile);
+				        return false;
+				    }
+				    vertex* a = new vertex(temp_vertices[vertexIndex[0] - 1], temp_normals[normalIndex[0] - 1], new vec4(1,1,1,1));
+					vertex* b = new vertex(temp_vertices[vertexIndex[1] - 1], temp_normals[normalIndex[0] - 1], new vec4(1,1,1,1));
+					vertex* c = new vertex(temp_vertices[vertexIndex[2] - 1], temp_normals[normalIndex[0] - 1], new vec4(1,1,1,1));
+					triangle* t = new triangle(a,b,c, temp_uvs[uvIndex[0] - 1], double(0), temp_uvs[uvIndex[1] - 1], double(0), temp_uvs[uvIndex[2] - 1], double(0));
+					t->setMat(curr_texture, 0);
+					curr_obj->addTri(t);
+					continue;
+				}
+				if (strcmp(lineHeader, "o") == 0){
+					//object
+					if (curr_obj == NULL){
+						//first object
+						curr_obj = new mesh();
+						*parent = curr_obj;
+					}else{
+						curr_obj = new mesh();
+					}
+				    temp_meshes.push_back(curr_obj);
+				}
+				//read until next line
+				for (char c = getc(objfile); c != EOF; c = getc(objfile)){
+					if (c == '\n')
+						break;
+				}
+			}
+			for(unsigned int i = 0; i < temp_meshes.size(); i++){
+				this->addMesh(temp_meshes[i]);
+			}
+			fclose(objfile);
+			return true;
+		}
 
 	/*--------------------------------------------//
 	Adds a object to the world space
@@ -120,13 +272,15 @@ This is where the simulation is controlled
 	defers drawing to individual object
 	implementation
 	//--------------------------------------------*/
-		void world::draw(float* position, float* camera, float aspect){
+		void world::draw(glm::mat4 projection, glm::mat4 view){
 			//Bind the shader that we want to use
 			ourShader->use();
+			ourShader->setMat4("ProjectionMatrix", projection);
+		    ourShader->setMat4("ViewMatrix", view);
 			//draw each object in world
 			for (int i = 0; i < this->getObjectCount(); i++){
 				glLoadIdentity();
-				this->getObject(i)->draw(position, camera, aspect, ourShader);
+				this->getObject(i)->draw(ourShader);
 			}
 			//Disable Shader
 	        glUseProgram(0);
@@ -319,7 +473,7 @@ This is where the simulation is controlled
 				obj->getVertices(&verts1, &vert1cnt);
 				for (int j = 0; j < vert1cnt; j++){
 					vertex* vert1 = verts1[j];
-					vec3 vert1pos = vec3(vert1->x(), vert1->y(), vert1->z()) + pos1;
+					vec3 vert1pos = vec3(vert1->pos->x, vert1->pos->y, vert1->pos->z) + pos1;
 					//implicit function test on vert1 to obj2
 					if(implicitTest(vert1pos, pos2, vertexrad, rad2, vel1, vel2)){
 						int vert2cnt;
@@ -328,18 +482,18 @@ This is where the simulation is controlled
 						//loop over all vertices on object 2
 						for (int k = 0; k < vert2cnt; k++){
 							vertex* vert2 = verts2[k];
-							vec3 vert2pos = vec3(vert2->x(), vert2->y(), vert2->z()) + pos2;
+							vec3 vert2pos = vec3(vert2->pos->x, vert2->pos->y, vert2->pos->z) + pos2;
 							//implicit function on vert2 to obj1
 							if(implicitTest(pos1, vert2pos, rad1, vertexrad, vel1, vel2)){
 								//both vert1 and vert2 might collide with something on the other object
 								//now we check if vert1 and vert2 collide with each other
 								//define a line from vert1 extending along the net velocity
 								vec3 velNet = vel1 - vel2;
-								line projection = line(vert1->xyz(), velNet);
+								line projection = line(vec3(*vert1->pos), velNet);
 								vec3 intercept = vec3(0,0,0);
 								double u = 0.0;
 								//find distance, time, and intercept point
-								double distance = projection.distance(vert2->xyz(), intercept, u);
+								double distance = projection.distance(vec3(*vert2->pos), intercept, u);
 
 								if(distance > vertexrad){
 									//vert1 and vert2 come within vertexrad distance at intercept point
@@ -477,21 +631,21 @@ This is where the simulation is controlled
 	//--------------------------------------------*/
 		bool world::implicitTest(vec3 pos1, vec3 pos2, double rad1, double rad2, vec3 vel1, vec3 vel2){
 			//calculate x portion
-			(pos2.x() > pos1.x()) ? /*Decide which direction to go*/
-				(pos1.x() + rad1 + vel1.x() > pos2.x() - vel2.x()) ? pos1.x(pos2.x()) : pos1.x(pos1.x() + rad1 + vel1.x() - vel2.x()):
-				(pos1.x() - rad1 - vel1.x() > pos2.x() + vel2.x()) ? pos1.x(pos2.x()) : pos1.x(pos1.x() - rad1 + vel1.x() - vel2.x());
+			(pos2.x > pos1.x) ? /*Decide which direction to go*/
+				(pos1.x + rad1 + vel1.x > pos2.x - vel2.x) ? pos1.x = pos2.x : pos1.x = pos1.x + rad1 + vel1.x - vel2.x:
+				(pos1.x - rad1 - vel1.x > pos2.x + vel2.x) ? pos1.x = pos2.x : pos1.x = pos1.x - rad1 + vel1.x - vel2.x;
 
 			//calculate y portion
-			(pos2.y() > pos1.y()) ? /*Decide which direction to go*/
-				(pos1.y() + rad1 + vel1.y() > pos2.y() - vel2.y()) ? pos1.y(pos2.y()) : pos1.y(pos1.y() + rad1 + vel1.y() - vel2.y()):
-				(pos1.y() - rad1 - vel1.y() > pos2.y() + vel2.y()) ? pos1.y(pos2.y()) : pos1.y(pos1.y() - rad1 + vel1.y() - vel2.y());
+			(pos2.y > pos1.y) ? /*Decide which direction to go*/
+				(pos1.y + rad1 + vel1.y > pos2.y - vel2.y) ? pos1.y = pos2.y : pos1.y = pos1.y + rad1 + vel1.y - vel2.y:
+				(pos1.y - rad1 - vel1.y > pos2.y + vel2.y) ? pos1.y = pos2.y : pos1.y = pos1.y - rad1 + vel1.y - vel2.y;
 
 			//calculate z portion
-			(pos2.z() > pos1.z()) ? /*Decide which direction to go*/
-				(pos1.z() + rad1 + vel1.z() > pos2.z() - vel2.z()) ? pos1.z(pos2.z()) : pos1.z(pos1.z() + rad1 + vel1.z() - vel2.z()):
-				(pos1.z() - rad1 - vel1.z() > pos2.z() + vel2.z()) ? pos1.z(pos2.z()) : pos1.z(pos1.z() - rad1 + vel1.z() - vel2.z());
+			(pos2.z > pos1.z) ? /*Decide which direction to go*/
+				(pos1.z + rad1 + vel1.z > pos2.z - vel2.z) ? pos1.z = pos2.z : pos1.z = pos1.z + rad1 + vel1.z - vel2.z:
+				(pos1.z - rad1 - vel1.z > pos2.z + vel2.z) ? pos1.z = pos2.z : pos1.z = pos1.z - rad1 + vel1.z - vel2.z;
 
-			return (pos2.x()*pos2.x() + pos2.y()*pos2.y() + pos2.z()*pos2.z() - rad1*rad1 <= 0);
+			return (pos2.x*pos2.x + pos2.y*pos2.y + pos2.z*pos2.z - rad1*rad1 <= 0);
 		};
 
 	/*--------------------------------------------//

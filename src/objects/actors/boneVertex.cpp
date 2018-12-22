@@ -41,12 +41,12 @@ vertex to a bone.
 			angles ang1 = parent->getAng() * -1;//use negative angle to get offset from bones position as if it had no rotation
 
 			//create quaternions
-			quaternion p = quaternion(0, x(), y(), z());
-			quaternion r = quaternion(ang1);//rotation quaternion
-			quaternion t = quaternion(-r.x, -r.y, -r.z, r.w);//basically r'
+			quat p = quat(0, x(), y(), z());
+			quat r = quat(ang1);//rotation quaternion
+			quat t = quat(-r.x, -r.y, -r.z, r.w);//basically r'
 
 			//now we have enough to get a new quaternion q which will be p rotated using hamilton product
-			quaternion q = t.Hamilton(r.Hamilton(p));
+			quat q = t.Hamilton(r.Hamilton(p));
 
 			//at this point q is our vertex's position rotated by the negative angle of the bone
 			//therefore our offset would be the difference between our position and the bones position
@@ -68,12 +68,12 @@ vertex to a bone.
 
 				//now rotate our position to align with bone without accounting for how close to base of bone we are
 				//create quaternions
-				quaternion p = quaternion(0, offset.x(), offset.y(), offset.z());
-				quaternion r = quaternion(ang1);//rotation quaternion
-				quaternion t = quaternion(-r.x, -r.y, -r.z, r.w);//basically r'
+				quat p = quat(0, offset.x, offset.y, offset.z);
+				quat r = quat(ang1);//rotation quaternion
+				quat t = quat(-r.x, -r.y, -r.z, r.w);//basically r'
 
 				//now we have enough to get a new quaternion q which will be p rotated using hamilton product
-				quaternion q = t.Hamilton(r.Hamilton(p));
+				quat q = t.Hamilton(r.Hamilton(p));
 
 				//now find the world position by adding the world position of the bone
 				vec3 pos2 = vec3(q.x, q.y, q.z) + pos1;
@@ -84,8 +84,8 @@ vertex to a bone.
 				angles ang2 = ang1 * mul;
 
 				//recalculate position adjusted by quaternions
-				r = quaternion(ang2);
-				t = quaternion(-r.x, -r.y, -r.z, r.w);
+				r = quat(ang2);
+				t = quat(-r.x, -r.y, -r.z, r.w);
 				q = t.Hamilton(r.Hamilton(p));
 
 				wPos = vec3(q.x, q.y, q.z) + pos1;
@@ -94,28 +94,28 @@ vertex to a bone.
 			return wPos;
 		}
 		double boneVertex::x(){
-			return getPos(!wPosParity).x();
+			return getPos(!wPosParity).x;
 		}
 		double boneVertex::y(){
-			return getPos(!wPosParity).y();
+			return getPos(!wPosParity).y;
 		}
 		double boneVertex::z(){
-			return getPos(!wPosParity).z();
+			return getPos(!wPosParity).z;
 		}
 
 	/*--------------------------------------------//
 	Set World Position
 	//--------------------------------------------*/
 		void boneVertex::x(double a){
-			pos[0] = a;
+			pos->x = a;
 			setParent(parent);//will recalculate offset for us
 		}
 		void boneVertex::y(double b){
-			pos[1] = b;
+			pos->y = b;
 			setParent(parent);//will recalculate offset for us
 		}
 		void boneVertex::z(double c){
-			pos[2] = c;
+			pos->z = c;
 			setParent(parent);//will recalculate offset for us
 		}
 
@@ -124,6 +124,6 @@ vertex to a bone.
 	//--------------------------------------------*/
 		void boneVertex::draw(bool parity){
 			getPos(parity);//update stored wPos if parity changed
-		    glVertex3d(wPos.x(), wPos.y(), wPos.z());
+		    glVertex3d(wPos.x, wPos.y, wPos.z);
 		}
 #endif

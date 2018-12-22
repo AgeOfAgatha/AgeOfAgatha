@@ -47,7 +47,8 @@ class game{
 		Functions
 		//--------------------------------------------*/
 			void predraw();
-			void postdraw(float aspect);
+			void draw(float aspect);
+			void postdraw();
 			
 			int update(int value);
 			void keypressASCII(unsigned char pressedKey, int mouseXPosition, int mouseYPosition);

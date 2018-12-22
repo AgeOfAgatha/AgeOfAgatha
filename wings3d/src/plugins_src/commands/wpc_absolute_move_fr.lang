@@ -1,0 +1,35 @@
+%% -*- mode:erlang; erlang-indent-level: 2 -*-
+{wpc_absolute_move,
+ [
+  {draw,
+   [
+    {1,"Commandes absolues"},
+    {2,"Déplacer"},
+    {3,"Déplacer vers une position exacte en coordonnées absolues."},
+    {4,"Épingler"},
+    {5,"Déplacer vers une selection secondaire."},
+    {6,"Déplacer en utilisant le centre comme référence."},
+    {7,"Déplacer et afficher l'entrée numérique."}
+   ]},
+  {draw_window1,
+   [
+    {1,"Options du déplacement absolu"},
+    {2,"Établir la position"},
+    {3,"Déplacer l'objet"},
+    {4,"Déplacer les objets"},
+    {5,"Dupliquer"},
+    {6,"Aligner"},
+    {7,"Aplanir"},
+    {8,"Le point de référence est"},
+    {9,"Verrouiller"}
+   ]},
+  {mirror_error,
+   [
+    {1,"Vous ne pouvez pas déplacer les sommets du plan mirroir"}
+   ]},
+  {selection_ask,
+   [
+    {1,"Sélectionner le point de référence pour l'épinglage"},
+    {2,"Sélectionner le point cible pour l'épinglage"}
+   ]}
+ ]}.

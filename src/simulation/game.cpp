@@ -26,17 +26,13 @@ and the ui interface.
 			frame = new FrameDelay();
 			display->add(frame);
 
-			//add model to world
-			mesh* obj = new mesh();
-			vertex* a = new vertex(vec3(0,1,0), new vec3(1,0,0), new vec4(1,1,1,1), new vec2(0.0, 0.0), new double(0));
-			vertex* b = new vertex(vec3(0,0,1), new vec3(1,0,0), new vec4(1,1,1,1), new vec2(1.0, 0.0), new double(0.5));
-			vertex* c = new vertex(vec3(0,-1,0), new vec3(1,0,0), new vec4(1,1,1,1), new vec2(0.0, 1.0), new double(1));
-			vertex* d = new vertex(vec3(0,0,-1), new vec3(1,0,0), new vec4(1,1,1,1), new vec2(1.0, 1.0), new double(0.5));
-			obj->addTri(a,b,c);
-			obj->addTri(a,c,d);
-			obj->setGlobalMat("textures/test.png", 1, 0);
-			obj->setGlobalMat("textures/test2.png", 1, 1);
-			worldspace->addMesh(obj);
+			//load object
+			mesh* parent;
+			worldspace->loadObj("models/cube.obj", "models/cube.mtl", &parent);
+			parent->setPosition(vec3(0,0,1));
+
+			//mesh* parent2;
+			//worldspace->loadObj("models/cube.obj", "models/cube.mtl", &parent2);
 		}
 
 	/*--------------------------------------------//
@@ -54,31 +50,52 @@ and the ui interface.
 	added.
 	//--------------------------------------------*/
 		void game::predraw(){
-			//Draw frame delay text
+		}
+
+	/*--------------------------------------------//
+	Draw
+	Performs player camera related operations and 
+	passes down the stack for drawing objects after
+	lighting has been done.
+	//--------------------------------------------*/
+		void game::draw(float aspect){
+			//Position and orient camera.
+			glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f );
+			glm::quat quat = glm::quat(glm::vec3(viewerAltitude, viewerAzimuth, 0));
+			glm::mat4 looking = glm::toMat4(quat);
+			glm::vec4 camera = looking * glm::vec4(position.x + 0.0f, position.y + 0.0f, position.z + 1.0f*VIEWER_DISTANCE, 1.0f);;
+
+			//Create project matrix
+	        glm::mat4 projection;
+		    projection = glm::perspective(glm::radians(FRUSTUM_FIELD_OF_VIEW), aspect, FRUSTUM_NEAR_PLANE, FRUSTUM_FAR_PLANE);
+		    
+		    //Find up vector
+		    glm::vec4 up = looking * glm::vec4(0,1,0,1);
+		    //Create view matrix
+	        glm::mat4 view;
+		    view = glm::lookAt(
+			    glm::vec3(camera[0], camera[1], camera[2]), 		// Camera is at (4,3,3), in World Space
+			    position, 											// and looks at the origin
+			   	glm::vec3(up[0], up[1], up[2]) 						// Head is up
+		    );
+		 
+			//Draw the world
+			worldspace->draw(projection, view);
+		}
+
+	/*--------------------------------------------//
+	Postdraw
+	Passes the function call down the stack for 
+	drawing elements after all 3D elements have been
+	drawn
+	//--------------------------------------------*/
+		void game::postdraw(){
+			//Draw interface overlay
 			glPushMatrix();
 				glDisable( GL_DEPTH_TEST );
 				display->draw();
 				glEnable( GL_DEPTH_TEST );
 			glPopMatrix();
-		}
-
-	/*--------------------------------------------//
-	Postdraw
-	Performs player camera related operations and 
-	passes down the stack for drawing objects after
-	lighting has been done.
-	//--------------------------------------------*/
-		void game::postdraw(float aspect){
-			//Position and orient camera.
-			float position[] = { 0.0f, 0.0f, 0.0f };
-			float camera[] = { position[0] + VIEWER_DISTANCE * sin(viewerAltitude) * sin(viewerAzimuth), 
-				position[1] + VIEWER_DISTANCE * cos(viewerAltitude), 
-				position[2] + VIEWER_DISTANCE * sin(viewerAltitude) * cos(viewerAzimuth) 
-			};
-			gluLookAt(camera[0], camera[1], camera[2], position[0], position[1], position[2], 0.0, 1.0, 0.0);
-
-			//Draw the world
-			worldspace->draw(position, camera, aspect);
 		}
 
 	/*--------------------------------------------//
@@ -126,16 +143,16 @@ and the ui interface.
 						viewerAzimuth += 2 * PI;
 					break;
 				}
-				case GLUT_KEY_UP:{
+				case GLUT_KEY_DOWN:{
 					viewerAltitude += VIEWER_ANGLE_INCREMENT;
-					if (viewerAltitude > PI - VIEWER_ANGLE_INCREMENT)
-						viewerAltitude = PI - VIEWER_ANGLE_INCREMENT;
+					if (viewerAltitude > 2 * PI)
+						viewerAltitude -= 2 * PI;
 					break;
 				}
-				case GLUT_KEY_DOWN:{
+				case GLUT_KEY_UP:{
 					viewerAltitude -= VIEWER_ANGLE_INCREMENT;
-					if (viewerAltitude < VIEWER_ANGLE_INCREMENT)
-						viewerAltitude = VIEWER_ANGLE_INCREMENT;
+					if (viewerAltitude < 0.0)
+						viewerAltitude += 2 * PI;
 					break;
 				}
 			}

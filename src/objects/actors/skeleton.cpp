@@ -25,16 +25,21 @@ actor.  Uses bones and joints.
 	each triangle then will apply translations
 	according to its parent bone.
 	//--------------------------------------------*/
-		void skeleton::draw(){
+		void skeleton::draw(Shader* shader){
 			glPushMatrix();
-				glMultMatrixd(this->quat.toMatrix());
-				glTranslated(this->position.x(), this->position.y(), this->position.z());
+				//Apply Transformations
+				if(deuler == true){
+					quat = glm::quat(glm::vec3(euler.p, euler.y, euler.r));
+					deuler = false;
+				}
+				glm::mat4 model = glm::toMat4(quat);
+				model = glm::translate(model, glm::vec3(this->position.x, this->position.y, this->position.z));
+		    	shader->setMat4("ModelMatrix", model);
+		        shader->setVec3("light_position", vec3(2.0f, 5.0f, 2.0f));
+				//draw geometry
 				for (int i = 0; i < this->getTriangleCount(); i++){
-					glBegin(GL_TRIANGLES);
-						for (int j = 0; j < 3; j++){
-							((boneVertex*)(this->getTriangle(i)->getVertex(j)))->draw(parity);
-						}
-		   			glEnd();
+					triangle* k = this->getTriangle(i);
+					k->draw(shader);
 				}
 			glPopMatrix();
 			parity = !parity;//flip our parity flag
@@ -60,7 +65,7 @@ actor.  Uses bones and joints.
 			root->updatePos();//Only difference from mesh
 
 			if(deuler == true){
-				quat.setAngles(euler.p, euler.y, euler.r);
+				quat = glm::quat(glm::vec3(euler.p, euler.y, euler.r));
 				deuler = false;
 			}
 

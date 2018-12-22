@@ -33,7 +33,7 @@ This is our basic object
 			angVel = angles(0.0, 0.0, 0.0);
 			angAcc = angles(0.0, 0.0, 0.0);
 			angFrc = angles(0.0, 0.0, 0.0);
-			quat = quaternion(euler);
+			quat = glm::quat(glm::vec3(euler.p, euler.y, euler.r));
 
 			timer = 0;
 
@@ -53,38 +53,16 @@ This is our basic object
 	Drawing functions
 	this gets deferred to each triangle to draw
 	//--------------------------------------------*/
-		void mesh::draw(float* position, float* camera, float aspect, Shader* shader){
+		void mesh::draw(Shader* shader){
 			glPushMatrix();
 				//Apply Transformations
-				float i[16] = {
-				   1, 0, 0, 0,
-				   0, 1, 0, 0,
-				   0, 0, 1, 0,
-				   0, 0, 0, 1
-				};
-				glm::mat4 view;
-		        glm::mat4 model;
-		        glm::mat4 projection;
-		        //fill with identity
-		        memcpy(glm::value_ptr(view), i, sizeof(i));
-		        memcpy(glm::value_ptr(model), i, sizeof(i));
-		        memcpy(glm::value_ptr(projection), i, sizeof(i));
-
-
-		        projection 	= glm::perspective(glm::radians(FRUSTUM_FIELD_OF_VIEW), aspect, FRUSTUM_NEAR_PLANE, FRUSTUM_FAR_PLANE);
-		        view       	= glm::lookAt(
-				    glm::vec3(camera[0], camera[1], camera[2]), // Camera position
-				    glm::vec3(position[0], position[1], position[2]), // Looking at position
-				    glm::vec3(0,1,0)  // Orientation
-			    );
-				//apply rotation
-			    memcpy(glm::value_ptr(model), this->quat.toMatrix(), sizeof(i));
-				//apply translation
-				model = glm::translate(model, glm::vec3(this->position.x(), this->position.y(), this->position.z()));
-			    //pass to shader
-		        shader->setMat4("gl_ModelViewProjectionMatrix", projection);
-		        shader->setMat4("gl_ModelViewMatrix", model);
-		        shader->setMat4("ViewMatrix", view);
+				if(deuler == true){
+					quat = glm::quat(glm::vec3(euler.p, euler.y, euler.r));
+					deuler = false;
+				}
+				glm::mat4 model = glm::toMat4(quat);
+				model = glm::translate(model, glm::vec3(this->position.x, this->position.y, this->position.z));
+		    	shader->setMat4("ModelMatrix", model);
 		        shader->setVec3("light_position", vec3(2.0f, 5.0f, 2.0f));
 				//draw geometry
 				for (int i = 0; i < this->getTriangleCount(); i++){
@@ -145,30 +123,61 @@ This is our basic object
 			mesh* mesh::getParent(){
 				return parent;
 			}
+
 		/*--------------------------------------------//
 		Set Parent
 		//--------------------------------------------*/
 			void mesh::setParent(mesh* p){
 				parent = p;
 			}
+
 		/*--------------------------------------------//
 		Add Child
 		//--------------------------------------------*/
 			void mesh::addChild(mesh* c){
+				mesh** newchilds = (mesh**) realloc(childs, sizeof(mesh*)*(childCnt+1));
 
+				if (newchilds!=NULL) {
+					childs = newchilds;
+
+					childs[childCnt] = c;
+					childCnt++;
+				}else{
+					puts ("Error (re)allocating memory");
+					exit (1);
+				}
 			}
+
 		/*--------------------------------------------//
 		Remove Child
 		//--------------------------------------------*/
 			void mesh::removeChild(mesh* c){
-				
+				for (int i = 0; i < childCnt; i++){
+					if (c == childs[i]){
+						//move last object to here
+						childs[i] = childs[childCnt-1];
+						//trim last object
+						mesh** newchilds = (mesh**) realloc(childs, sizeof(mesh*)*(childCnt-1));
+						//check if memory was allocated
+						if (newchilds!=NULL) {
+							childs = newchilds;
+							childCnt--;
+						}else{
+							puts ("Error (re)allocating memory");
+							exit (1);
+						}
+						return;
+					}
+				}
 			}
+
 		/*--------------------------------------------//
 		Get Child
 		//--------------------------------------------*/
 			mesh* mesh::getChild(int i){
 				return childs[i];
 			}
+
 		/*--------------------------------------------//
 		Get number of children
 		//--------------------------------------------*/
@@ -223,15 +232,31 @@ This is our basic object
 	Triangles
 	//--------------------------------------------*/
 		/*--------------------------------------------//
-		Add a triangle to the mesh by specifying points
+		Add a triangle to the mesh by refrence
 		//--------------------------------------------*/
-			void mesh::addTri(vertex* &a, vertex* &b, vertex* &c){
+			void mesh::addTri(triangle* t){
 				triangle** newtris = (triangle**) realloc(tris, sizeof(triangle*)*(triCnt+1));
 
 				if (newtris!=NULL) {
 					tris = newtris;
 
-					tris[triCnt] = new triangle(a, b, c);
+					tris[triCnt] = t;
+					triCnt++;
+				}else{
+					puts ("Error (re)allocating memory");
+					exit (1);
+				}
+			}
+		/*--------------------------------------------//
+		Add a triangle to the mesh by specifying points
+		//--------------------------------------------*/
+			void mesh::addTri(vertex* &a, vertex* &b, vertex* &c, vec2 st1, double b1, vec2 st2, double b2, vec2 st3, double b3){
+				triangle** newtris = (triangle**) realloc(tris, sizeof(triangle*)*(triCnt+1));
+
+				if (newtris!=NULL) {
+					tris = newtris;
+
+					tris[triCnt] = new triangle(a, b, c, st1, b1, st2, b2, st3, b3);
 					triCnt++;
 				}else{
 					puts ("Error (re)allocating memory");
@@ -568,7 +593,7 @@ This is our basic object
 			this->setAngles(euler + angVel);
 
 			if(deuler == true){
-				quat.setAngles(euler.p, euler.y, euler.r);
+				quat = glm::quat(glm::vec3(euler.p, euler.y, euler.r));
 				deuler = false;
 			}
 

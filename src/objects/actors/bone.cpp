@@ -173,15 +173,15 @@ create a skeleton for actors
 					vec3 pos1 = parent->getPos(parity);
 
 					//create quaternions
-					quaternion p = quaternion(0, offset.x(), offset.y(), offset.z());
-					quaternion r = quaternion(ang);//rotation quaternion
-					quaternion t = quaternion(-r.x, -r.y, -r.z, r.w);//basically r'
+					quat p = quat(0, offset.x, offset.y, offset.z);
+					quat r = quat(ang);//rotation quaternion
+					quat t = quat(-r.x, -r.y, -r.z, r.w);//basically r'
 
 					//now we have enough to get a new quaternion q which will be p rotated using hamilton product
-					quaternion q = t.Hamilton(r.Hamilton(p));
+					quat q = t.Hamilton(r.Hamilton(p));
 
 					//finally we can extract a position from q and add our attaching world position
-					vec3 wPos = vec3(q.x, q.y, q.z) + pos1;
+					wPos = vec3(q.x, q.y, q.z) + pos1;
 					wPosParity = parity;
 				}else{
 					//no parents, our position is all that matters
@@ -206,12 +206,12 @@ create a skeleton for actors
 				vec3 forward = pos1 - pos2;
 
 				//create quaternions
-				quaternion p = quaternion(0, forward.x(), forward.y(), forward.z());
-				quaternion r = quaternion(ang);//rotation quaternion
-				quaternion t = quaternion(-r.x, -r.y, -r.z, r.w);//basically r'
+				quat p = quat(0, forward.x, forward.y, forward.z);
+				quat r = quat(ang);//rotation quaternion
+				quat t = quat(-r.x, -r.y, -r.z, r.w);//basically r'
 
 				//now we have enough to get a new quaternion q which will be p rotated using hamilton product
-				quaternion q = t.Hamilton(r.Hamilton(p));
+				quat q = t.Hamilton(r.Hamilton(p));
 
 				//finally we can extract a vec3 from q and normalize it into a directional vec3
 				dir = vec3(q.x, q.y, q.z);

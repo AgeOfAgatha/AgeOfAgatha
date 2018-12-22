@@ -21,7 +21,7 @@ follows plane definition as: ax + by + cz + d = 0
 	//--------------------------------------------*/
 		plane::plane(vec3 a, vec3 b){
 			n = a;
-			d = -(a.x()*b.x() + a.y()*b.y() + a.z()*b.z());
+			d = -(a.x*b.x + a.y*b.y + a.z*b.z);
 		}
 		plane::plane(vec3 a, double b){
 			n = a;
@@ -31,6 +31,6 @@ follows plane definition as: ax + by + cz + d = 0
 	Check if point is behind us
 	//--------------------------------------------*/
 		bool plane::facing(vec3 a){
-			return ((n.x()*a.x() + n.y()*a.y() + n.z()*a.y() - d) / a.length()) > 0;
+			return ((n.x*a.x + n.y*a.y + n.z*a.y - d) / a.length()) > 0;
 		}
 #endif

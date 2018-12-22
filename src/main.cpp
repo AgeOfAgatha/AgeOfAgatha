@@ -202,7 +202,10 @@ lights, shading, depth, etc etc
 		glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 
 		//Post light source draw
-		session->postdraw(currWindowSize[0]/currWindowSize[1]);
+		session->draw(currWindowSize[0]/currWindowSize[1]);
+
+		//Post 3D objects draw
+		session->postdraw();
 
 		//Do the buffer swap.
 		glutSwapBuffers();

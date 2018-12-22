@@ -42,6 +42,7 @@ $ make
 * Opengl - the graphics library
 * FreeGlut, Glad - the modernized opengl library specifically used
 * GLM - for mathematical matrix operations
+* Wings3D - for 3D models
 
 ### Contributing
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
@@ -53,12 +54,13 @@ Github is our version control, the master should have our latest working version
 * ***Phillip Lorentz*** - Primary Contributor - [Github Account](https://github.com/Kyrasuum)
 
 ### License
-This project is licensed under the GNU General Public License v3.0 - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details
 
 ### Acknowledgments
 * Hat tip to anyone under built with section
 * Stackoverflow for general troubleshooting
 * Kronos wiki websites for opengl queries
+* Wings3D for providing an open source free for use 3d modelling software
 
 ### Final Word
 We appreciate your support.

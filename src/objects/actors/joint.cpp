@@ -83,7 +83,7 @@ create a skeleton for actors
 	//--------------------------------------------*/
 		vec3 joint::getPos(bool parity){
 			if (wPosParity != parity){
-				vec3 wPos = offset + parent->getPos(parity);
+				wPos = offset + parent->getPos(parity);
 				wPosParity = parity;
 			}
 			return  wPos;

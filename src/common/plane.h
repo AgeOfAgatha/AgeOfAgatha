@@ -9,6 +9,8 @@ class plane;
 /*--------------------------------------------//
 Include
 //--------------------------------------------*/
+	#include "../../deps/glm/glm.hpp"
+
 	#include "vector.h"
 
 class plane{

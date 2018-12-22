@@ -1,0 +1,68 @@
+%% -*- mode:erlang; erlang-indent-level: 2 -*-{wpc_tt, [  {findtab,   [    {1,"Hiç "},    {2," tablosu"}   ]},  {font_file,   [    {1,"Yazıtipleri"}   ]},  {gen,   [    {1,"Metin başarısız: "},    {2,"hata yakalandı: "},    {3,"Metin başarısız: dahili hata"}   ]},  {getdirs,   [    {1,"Kötü klasör biçimi"}   ]},  {gettabs,   [    {1,"Kötü tablo sapmaları/boyutları"}   ]},  {make_text,   [    {1,"Metin Yarat"},    {2,"Metin"},    {3,"TrueType yazıtipi"},    {4,"Yazıtipi klasörü"},    {5,"Kenar ikiye bölümlerinin sayısı"}   ]},  {menu_entry,   [    {1,"Metin"},    {2,"Metni 3B bir nesneye çevir"}   ]},  {parsecmaptab,   [    {1,"Uygun karakter eşlem yok"}   ]},  {parsett,   [    {1,"Kötü sapma tablosu"}   ]},  {trygen,   [    {1,"TrueType kesimi bulunamıyor: "}   ]} ]}.
+%%
+%% The following strings have no translation.
+%%
+
+{wpc_tt,
+ [
+  {findtab,
+   [
+    {1,"No "},
+    {2," table"}
+   ]},
+  {font_file,
+   [
+    {1,"Fonts"}
+   ]},
+  {gen,
+   [
+    {1,"Text failed: "},
+    {2,"caught error: "},
+    {3,"Text failed: internal error"},
+    {4,"Text failed: failed to locate the TTF file for the selected font"}
+   ]},
+  {getdirs,
+   [
+    {1,"Bad dir format"}
+   ]},
+  {gettabs,
+   [
+    {1,"Bad table offsets/sizes"}
+   ]},
+  {help,
+   [
+    {1,"Only TrueType fonts can be used and they must beinstalled in standard operating system directory for fonts."}
+   ]},
+  {help_button,
+   [
+    {1,"Browsing for Fonts on Windows"}
+   ]},
+  {make_text,
+   [
+    {1,"Create Text"},
+    {2,"Text"},
+    {3,"TrueType font"},
+    {5,"Number of edge bisections"}
+   ]},
+  {menu_entry,
+   [
+    {1,"Text"},
+    {2,"Convert text to a 3D object"}
+   ]},
+  {parsecmaptab,
+   [
+    {1,"No suitable character map"}
+   ]},
+  {parsett,
+   [
+    {1,"Bad offset table"}
+   ]},
+  {trygen,
+   [
+    {1,"Can't find TrueType section in "}
+   ]},
+  {win_font_substitutes,
+   [
+    {1,"FontSubstitutes"}
+   ]}
+ ]}.

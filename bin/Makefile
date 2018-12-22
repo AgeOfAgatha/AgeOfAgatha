@@ -17,7 +17,7 @@ all:
 #Build groups
 #########################
 dependencies:
-common: angles.o line.o plane.o quaternion.o sorting.o vector.o
+common: angles.o vector.o line.o plane.o sorting.o quaternion.o
 objects: common dependencies texture.o vertex.o triangle.o mesh.o world.o
 actors: common dependencies bone.o joint.o boneVertex.o skeleton.o
 interface: common dependencies element.o interface.o
@@ -41,14 +41,14 @@ line.o: ../src/common/line.cpp ../src/common/line.h
 plane.o: ../src/common/plane.cpp ../src/common/plane.h
 	$(CC) $(CFLAGS) ../src/common/plane.cpp
 
-quaternion.o: ../src/common/quaternion.cpp ../src/common/quaternion.h
-	$(CC) $(CFLAGS) ../src/common/quaternion.cpp
-
 sorting.o: ../src/common/sorting.cpp ../src/common/sorting.h
 	$(CC) $(CFLAGS) ../src/common/sorting.cpp
 
 vector.o: ../src/common/vector.cpp ../src/common/vector.h
 	$(CC) $(CFLAGS) ../src/common/vector.cpp
+
+quaternion.o: ../src/common/quaternion.cpp ../src/common/quaternion.h
+	$(CC) $(CFLAGS) ../src/common/quaternion.cpp
 
 #########################
 #Actor Section

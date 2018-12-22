@@ -10,7 +10,10 @@ class line;
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
+	#include "../../deps/glm/glm.hpp"
+
 	#include <math.h>
+
 	#include "vector.h"
 
 class line{

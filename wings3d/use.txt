@@ -1,0 +1,9 @@
+Wings3D is bundled with AgeOfAgatha as the recomended modeling software for development.
+The 'src' folder contains the source files at the time this portable version was made.
+This version was made for windows 10 and could have unexpected behavior on other devices.
+Models in AgeOfAgatha should be stored in wavefront .obj and .mtl files
+
+Link to Wings3D website: http://www.wings3d.com/
+Link to Wings3D github: https://github.com/dgud/wings
+
+At the time of inclusion to AgeOfAgatha: "Wings 3D is open source and completely free for use in both personal and commercial projects." -source: http://www.wings3d.com/

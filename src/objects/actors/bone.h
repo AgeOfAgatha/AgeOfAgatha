@@ -12,6 +12,9 @@ class boneChild;
 /*--------------------------------------------//
 Pre Includes
 //--------------------------------------------*/
+	#include "../../../deps/glm/glm.hpp"
+
+	#include "../../common/quaternion.h"
 	#include "../../common/vector.h"
 	#include "skeleton.h"
 	#include "joint.h"

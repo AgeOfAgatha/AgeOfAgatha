@@ -13,6 +13,8 @@ Pre Includes
 	#include "../../../deps/gl/glew.h"
 	#include "../../../deps/gl/freeglut.h"
 
+	#include "../../shader/shader.h"
+	#include "../../common/vector.h"
 	#include "../mesh.h"
 	#include "bone.h"
 	#include "joint.h"
@@ -36,7 +38,7 @@ class skeleton:public mesh{
 		/*--------------------------------------------//
 		Functions.
 		//--------------------------------------------*/
-			void draw();
+			void draw(Shader* shader);
 			void updateAcc();
 			void updateVel();
 			void updatePos();

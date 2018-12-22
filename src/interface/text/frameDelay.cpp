@@ -30,9 +30,9 @@ left hand corner of the window
 	Set Position
 	//--------------------------------------------*/
 		void FrameDelay::setPos(vec3 p){
-			pos[0] = p.x();
-			pos[1] = p.y();
-			pos[2] = p.z();
+			pos[0] = p.x;
+			pos[1] = p.y;
+			pos[2] = p.z;
 		}
 		void FrameDelay::setPos(float p[]){
 			pos[0] = p[0];
@@ -56,9 +56,9 @@ left hand corner of the window
 	Set Color
 	//--------------------------------------------*/
 		void FrameDelay::setColor(vec3 p){
-			color[0] = p.x();
-			color[1] = p.y();
-			color[2] = p.z();
+			color[0] = p.x;
+			color[1] = p.y;
+			color[2] = p.z;
 		}
 		void FrameDelay::setColor(float p[]){
 			color[0] = p[0];

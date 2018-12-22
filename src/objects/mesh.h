@@ -12,12 +12,13 @@ Includes
 	#include "../../deps/gl/glew.h"
 	#include "../../deps/gl/freeglut.h"
 	#include "../../deps/glm/glm.hpp"
-	
+
 	#include "triangle.h"
 	#include "../shader/shader.h"
+	#include "../common/angles.h"
+	#include "../common/sorting.h"
 	#include "../common/vector.h"
 	#include "../common/quaternion.h"
-	#include "../common/sorting.h"
 
 	#include <assert.h>
 	#include <stdio.h>
@@ -37,7 +38,7 @@ class mesh{
 			mesh** nearby;//nearby objects from last collision test
 			angles euler;//stores the meshes euler angles in relation to the world
 			bool deuler = true;//stores a true or false for if the angles have been changed since last update
-			quaternion quat;//stores our euler angles in a quaternion to avoid gimbal lock.  This is what is actually used for calculations
+			glm::quat quat;//stores our euler angles in a quaternion to avoid gimbal lock.  This is what is actually used for calculations
 			angles angVel;//stores the angular velocity
 			angles angAcc;//stores the angular acceleration
 			angles angFrc;//stores the angular force (scale it by distance when you change this)
@@ -63,7 +64,7 @@ class mesh{
 		/*--------------------------------------------//
 		Functions
 		//--------------------------------------------*/
-			void draw(float* position, float* camera, float aspect, Shader* shader);
+			void draw(Shader* shader);
 			//Misc Attributes
 				int getTimer();
 				double getRadius();
@@ -81,7 +82,8 @@ class mesh{
 			//Vertices
 				void getVertices(vertex*** mesh, int* count);
 			//Triangles
-				void addTri(vertex* &a, vertex* &b, vertex* &c);
+				void addTri(triangle* t);
+				void addTri(vertex* &a, vertex* &b, vertex* &c, vec2 st1, double b1, vec2 st2, double b2, vec2 st3, double b3);
 				void remTri(triangle* &tri);
 				int getTriangleCount();
 				triangle* getTriangle(int i);

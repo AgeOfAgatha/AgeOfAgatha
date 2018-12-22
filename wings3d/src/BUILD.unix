@@ -1,0 +1,236 @@
+BUILDING WINGS 3D ON UNIX-LIKE SYSTEMS (including MacOS X)
+==========================================================
+
+This guide describes how you can build Wings on unix-like
+systems, such as GNU Linux, FreeBSD, Solaris, and MacOS X.
+
+After the general build instructions, there are separate
+instructions for building a complete, standalone installation
+package for MacOS X and for other Unix systems.
+
+Required software
+=================
+
+The following software is needed to get Wings running
+at all. Additional software is required if you want to
+run all plug-ins and to build an installation package.
+
+- The Wings source files. http://www.wings3d.com
+
+- Erlang/OTP 20.2 or later. http://www.erlang.org
+-- Preferably compiled against wxWidgets-3.0.2 or later.
+
+- git or CL library at http://github.com/tonyrog/cl
+
+- rebar3 (needed for building CL).
+
+- A GNU compatible "make" program. Included with most unix-like
+  systems; otherwise get it from http://www.gnu.org.
+
+- bunzip2 for unpacking the Wings source tar file.
+  Included with most unix-like systems; otherwise get it
+  from http://sources.redhat.com/bzip2.
+
+- OpenGL header files and libraries.
+
+- OpenCL header files (optional)
+
+Summary of build process
+========================
+
+The following is a quick summary of the build process.
+
+* Download and install Erlang/OTP.
+* Install OpenGL (and OpenCL) header files (if needed).
+* Optionally install rebar.
+* Download and unpack the Wings source file.
+* Run "make".
+
+Installing Erlang/OTP
+=====================
+
+Fetch a prebuilt package of Erlang or build it.
+
+Build Erlang/OTP according to the instructions in the README file.
+
+I recommend running "configure" with the following options:
+
+	./configure --enable-threads --disable-hipe
+
+Threads must be enabled to make sure that Erlang emulator is linked with
+reentrant libraries. (--enable-threads is default on *most* platforms nowadays,
+but better safe than sorry.)
+
+HiPE is not used by Wings; but the reason I recommend disabling it is
+that disabling HiPE also disables the use of floating point exceptions.
+Floating point exceptions have caused Wings to crash occasionally.
+
+When you have built Erlang/OTP, modify the PATH environment variable
+so that the "erl" and "erlc" programs can be started from a shell prompt.
+
+Installing rebar (optional, needed by CL)
+=========================================
+
+Download and build rebar like this:
+
+   git clone https://github.com/erlang/rebar3
+   cd rebar
+   make
+
+Read and follow the instructions that are printed.
+
+Installing CL  (optional)
+=========================
+
+CL is fetched (via git) and built automagically if it is not available in
+$ERL_LIBS (example export ERL_LIBS=/Users/bjorng/src)
+
+A built CL is not required to use wings, but recommended,
+some functionality will not be available without CL,
+but the build will not fail if building cl fails.
+
+Read cl/README for information of requirements, mainly
+OpenCL headers in the rigth place.
+
+You can build it separatly outside of wings by:
+
+Download and build like this:
+
+   cd $ERL_LIBS
+   git clone https://github.com/tonyrog/cl.git
+   cd cl
+   rebar3 compile
+
+
+Fetching/Unpacking the Wings source code
+===============================
+
+$ git clone https://github.com/dgud/wings.git
+$ cd wings
+
+Or unpack it with
+
+$ tar jxf wings-1.0.tar.bz2
+$ cd wings-1.0
+
+Building Wings
+==============
+
+Build Wings from the directory where the sources where unpacked.
+
+Example:
+
+$ pwd
+/home/bjorng/wings-1.0
+$ make
+.
+
+<A lot of output follows>
+.
+$
+
+To run the Wings you have just build, you'll need to write a command line
+similar to this:
+
+	erl -pa <MY_WINGS_PATH>/ebin -run wings_start start_halt
+
+where you should substitute <MY_WINGS_PATH> with the path to the Wings
+source directory.
+
+Example:
+
+$ erl -pa /home/bjorng/wings-1.0/ebin -run wings_start start_halt
+$
+
+Instead of writing the command line every time you want to start Wings,
+you can package it in a script like this:
+
+#!/bin/sh
+exec erl -pa /home/bjorng/wings-1.0/ebin -run wings_start start_halt ${1+"$@"}
+
+Notes:
+
+[1] "exec" kills the shell process running the script, saving a
+    tiny amount of system memory.
+
+[2] The "${1+"$@"}" thing passes along any arguments (or none) to Wings,
+    allowing Wings to open up a wings file when it starts.
+
+
+Building an installation package for MacOS X
+============================================
+
+To build everything and pack it into a DMG file, you'll need:
+
+- Xcode 4.6.3 or later on Mountain Lion.
+
+Make sure that your current directory is the directory in which the
+sources were unpacked.
+
+Example:
+
+$ pwd
+/Users/bjorng/wings_releases/wings-1.0
+$
+
+To build all (including the installer), run the following command:
+
+$ make macosx
+.
+<A lot of output follows>
+.
+$
+
+When everything is done, there should be a file named like
+
+	wings-1.0-macosx.dmg
+
+in the current directory.
+
+
+Code-signing the Wings3D application on Mac OS X
+================================================
+
+If you are a member of Apple's Mac developer program and have
+obtained a Developer ID certificate, you can sign the code for
+Wings3D so that Gatekeeper will accept it. Do like this:
+
+$ export WINGS_CODE_SIGN=yes
+$ make macosx
+
+You will be prompted for your login keychain password if the login
+keychain is locked.
+
+
+Building an installation package for Linux (and other Unix systems)
+===================================================================
+
+To build everything and put it into an installation package,
+you'll need the following additional software:
+
+- makeself.sh for building the installation package
+  (a self-extractable bzip2 archive). http://megastep.org/makeself
+
+Make sure that your current directory is the directory in which the
+sources were unpacked.
+
+Example:
+
+$ pwd
+/Users/bjorng/wings_releases/wings-1.0
+$
+
+To build all (including the installation package),
+run the following command:
+
+$ make unix
+.
+<A lot of output follows>
+.
+$
+
+When everything is done, there should be a file named like
+
+	wings-1.0-linux.bzip2.run
+
+in the current directory.

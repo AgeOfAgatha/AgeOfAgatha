@@ -10,8 +10,10 @@ class joint;
 /*--------------------------------------------//
 Pre Includes
 //--------------------------------------------*/
-	#include "bone.h"
+	#include "../../../deps/glm/glm.hpp"
+
 	#include "../../common/vector.h"
+	#include "bone.h"
 
 class joint{
 	private:
