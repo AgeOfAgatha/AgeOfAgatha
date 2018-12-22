@@ -23,8 +23,7 @@ const float 	FRUSTUM_FAR_PLANE       = 100.0f;
 const float 	BACKGROUND_COLOR[3]     = {0.0f, 0.0f, 0.0f};
 
 // Lighting Constants
-const float 	LIGHT_0_POSITION[]    = { 0.0f, 3.0f, 0.0f, 0.0f};
-const float 	LIGHT_1_POSITION[]    = { 0.0f, -50.0f, 50.0f, 0.0f};
+const float 	LIGHT_0_POSITION[]    = { 30.0f, 30.0f, 30.0f, 0.0f};
 const float 	LIGHT_AMBIENT[]       = { 0.8f, 0.8f, 0.8f, 1.0f};
 const float 	LIGHT_DIFFUSE[]       = { 0.9f, 0.9f, 0.9f, 1.0f};
 const float 	LIGHT_SPECULAR[]      = { 1.0f, 1.0f, 1.0f, 1.0f};
@@ -32,8 +31,8 @@ const float 	LIGHT_MODEL_AMBIENT[] = { 0.7f, 0.7f, 0.7f, 1.0f};
 
 // Viewer Positioning Constants
 const float 	VIEWER_DISTANCE         = 6.0f;
-const float 	INITIAL_VIEWER_AZIMUTH = PI / 2.0f;
-const float 	INITIAL_VIEWER_ALTITUDE = PI;
+const float 	INITIAL_VIEWER_AZIMUTH = 0;
+const float 	INITIAL_VIEWER_ALTITUDE = 0;
 const float 	VIEWER_ANGLE_INCREMENT  = PI / 60.0f;
 
 // Material Properties Constants

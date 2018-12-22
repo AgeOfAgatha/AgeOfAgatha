@@ -174,34 +174,10 @@ lights, shading, depth, etc etc
 		glClearColor(BACKGROUND_COLOR[0], BACKGROUND_COLOR[1], BACKGROUND_COLOR[2], 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-		//Set up the properties of the surface material.
-		GLfloat matAmbient[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-		GLfloat matDiffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-		GLfloat matSpecular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-		GLfloat matShininess[] = { 1.0f };
-		glMaterialfv(GL_FRONT, GL_AMBIENT, matAmbient);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, matDiffuse);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, matSpecular);
-		glMaterialfv(GL_FRONT, GL_SHININESS, matShininess);
-
-		//Set up the properties of the viewing camera.
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		gluPerspective(60.0, ASPECT_RATIO, 0.2, 100.0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-
 		//Pre light source draw
 		session->predraw();
 
-		//Set up the properties of the light source.
-		GLfloat lightIntensity[] = { 0.7f, 0.7f, 0.7f, 1.0f };
-		GLfloat lightPosition[] = { 2.0f, 5.0f, 2.0f, 0.0f };
-		glLightfv(GL_LIGHT0, GL_DIFFUSE, lightIntensity);
-		glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
-
-		//Post light source draw
+		//Render 3D objects
 		session->draw(currWindowSize[0]/currWindowSize[1]);
 
 		//Post 3D objects draw
@@ -232,12 +208,6 @@ in resolution and aspect ratio due to resizing
 		}
 
 		glViewport(int(0.5f*(w - currViewportSize[0])), int(0.5f*(h - currViewportSize[1])), currViewportSize[0], currViewportSize[1]);
-
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		//gluPerspective(60.0f, (GLfloat)w / (GLfloat)h, 0.1f, 100.0f);
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
 	}
 
 /*--------------------------------------------//
@@ -286,33 +256,9 @@ Main program entry point
         glutTimerFunc(TIMER, TimerFunction, 0);
 
         //setup lighting parameters
-		glShadeModel(GL_SMOOTH);
 		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_NORMALIZE);
-		glEnable(GL_LIGHTING);
-		glEnable(GL_LIGHT0);
 		glEnable(GL_CULL_FACE);
-
-		glDisable(GL_BLEND);
-		glDisable(GL_ALPHA_TEST);
-		glDisable(GL_DITHER);
-		glDisable(GL_STENCIL_TEST);
-
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glReadBuffer(GL_BACK);
-		glDrawBuffer(GL_BACK);
-		glDepthFunc(GL_LEQUAL);
-		glDepthMask(TRUE);
-		glFrontFace(GL_CCW);
-
-		glClearStencil(0);
-		glStencilMask(0xFFFFFFFF);
-		glStencilFunc(GL_EQUAL, 0x00000000, 0x00000001);
-		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-		
 		glCullFace(GL_BACK);
-		glClearColor(1.0, 0.0, 0.0, 0.0);
-		glClearDepth(1.0);
 
         //start the game
         glutMainLoop();

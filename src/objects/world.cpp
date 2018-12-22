@@ -272,14 +272,14 @@ This is where the simulation is controlled
 	defers drawing to individual object
 	implementation
 	//--------------------------------------------*/
-		void world::draw(glm::mat4 projection, glm::mat4 view){
+		void world::draw(glm::mat4 projection, glm::mat4 view, glm::vec4 camera){
 			//Bind the shader that we want to use
 			ourShader->use();
 			ourShader->setMat4("ProjectionMatrix", projection);
 		    ourShader->setMat4("ViewMatrix", view);
+		    ourShader->setVec4("ViewPos", camera);
 			//draw each object in world
 			for (int i = 0; i < this->getObjectCount(); i++){
-				glLoadIdentity();
 				this->getObject(i)->draw(ourShader);
 			}
 			//Disable Shader

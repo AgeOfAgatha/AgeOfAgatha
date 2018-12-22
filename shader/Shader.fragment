@@ -2,7 +2,9 @@
 #version 330 core
 in VERTEXOUT{
 	vec4 color;
-	float light;
+	vec3 lightPos;
+	vec3 FragPos;
+	vec3 Normal;
 	vec2 texcoord;
 	float blend;
 }fragmentin;
@@ -14,8 +16,32 @@ uniform sampler2D texture1;
 uniform int texture2set;
 uniform sampler2D texture2;
 
+uniform vec4 ViewPos;
+
 void main(){
-	vec4 vertcolor = vec4(fragmentin.color[0]*fragmentin.light, fragmentin.color[1]*fragmentin.light, fragmentin.color[2]*fragmentin.light, fragmentin.color[3]);
+	vec3 lightcolor = vec3(0.5,0.5,0.5);
+	float ambient_strength = 0.1;
+
+	//diffuse
+	vec3 norm = normalize(fragmentin.Normal);
+	vec3 lightDir = normalize(fragmentin.lightPos - fragmentin.FragPos);
+	float diff = max(dot(norm, lightDir), 0.0);
+	vec3 diffuse = diff * lightcolor;
+
+	//specular
+	vec3 viewDir = normalize(ViewPos.xyz - fragmentin.FragPos);
+	vec3 reflectDir = reflect(-lightDir, norm);
+	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+	vec3 specular = (diff + ambient_strength) * spec * lightcolor;  
+
+	//ambient
+	vec3 ambient = lightcolor * ambient_strength;
+
+	//total light
+    vec3 light = diffuse + ambient + specular;
+	vec4 vertcolor = vec4(light, 1.0) * fragmentin.color;
+
+	//texture
 	if (texture1set == 1 || texture2set == 1){
 		if (texture1set == 1 && texture2set != 1){
 			color = texture(texture1, fragmentin.texcoord) * vertcolor;

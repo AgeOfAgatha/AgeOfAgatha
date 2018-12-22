@@ -54,22 +54,20 @@ This is our basic object
 	this gets deferred to each triangle to draw
 	//--------------------------------------------*/
 		void mesh::draw(Shader* shader){
-			glPushMatrix();
-				//Apply Transformations
-				if(deuler == true){
-					quat = glm::quat(glm::vec3(euler.p, euler.y, euler.r));
-					deuler = false;
-				}
-				glm::mat4 model = glm::toMat4(quat);
-				model = glm::translate(model, glm::vec3(this->position.x, this->position.y, this->position.z));
-		    	shader->setMat4("ModelMatrix", model);
-		        shader->setVec3("light_position", vec3(2.0f, 5.0f, 2.0f));
-				//draw geometry
-				for (int i = 0; i < this->getTriangleCount(); i++){
-					triangle* k = this->getTriangle(i);
-					k->draw(shader);
-				}
-			glPopMatrix();
+			//Apply Transformations
+			if(deuler == true){
+				quat = glm::quat(glm::vec3(euler.p, euler.y, euler.r));
+				deuler = false;
+			}
+			glm::mat4 model = glm::toMat4(quat);
+			model = glm::translate(model, glm::vec3(this->position.x, this->position.y, this->position.z));
+	    	shader->setMat4("ModelMatrix", model);
+	        shader->setVec3("LightPosition", glm::vec3(LIGHT_0_POSITION[0], LIGHT_0_POSITION[1], LIGHT_0_POSITION[2]));
+			//draw geometry
+			for (int i = 0; i < this->getTriangleCount(); i++){
+				triangle* k = this->getTriangle(i);
+				k->draw(shader);
+			}
 		};
 
 	/*--------------------------------------------//

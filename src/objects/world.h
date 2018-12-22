@@ -74,7 +74,7 @@ class world{
 			int getTimeStep();
 			int getObjectCount();
 			mesh* getObject(int i);
-			void draw(glm::mat4 projection, glm::mat4 view);
+			void draw(glm::mat4 projection, glm::mat4 view, glm::vec4 camera);
 			void applyGravity(mesh* &obj);
 			void applyFriction(mesh* &obj);
 			void update();

@@ -27,12 +27,15 @@ and the ui interface.
 			display->add(frame);
 
 			//load object
-			mesh* parent;
-			worldspace->loadObj("models/cube.obj", "models/cube.mtl", &parent);
-			parent->setPosition(vec3(0,0,1));
-
-			//mesh* parent2;
-			//worldspace->loadObj("models/cube.obj", "models/cube.mtl", &parent2);
+			for (int i = -1; i < 2; i++){
+				for (int j = -1; j < 2; j++){
+					for (int k = -1; k < 2; k++){
+						mesh* parent;
+						worldspace->loadObj("models/cube.obj", "models/cube.mtl", &parent);
+						parent->setPosition(vec3(3*(i),3*(j),3*(k)));
+					}
+				}
+			}
 		}
 
 	/*--------------------------------------------//
@@ -63,7 +66,7 @@ and the ui interface.
 			glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f );
 			glm::quat quat = glm::quat(glm::vec3(viewerAltitude, viewerAzimuth, 0));
 			glm::mat4 looking = glm::toMat4(quat);
-			glm::vec4 camera = looking * glm::vec4(position.x + 0.0f, position.y + 0.0f, position.z + 1.0f*VIEWER_DISTANCE, 1.0f);;
+			glm::vec4 camera = looking * glm::vec4(position.x + 0.0f, position.y + 0.0f, position.z + 3.0f*VIEWER_DISTANCE, 1.0f);;
 
 			//Create project matrix
 	        glm::mat4 projection;
@@ -80,7 +83,7 @@ and the ui interface.
 		    );
 		 
 			//Draw the world
-			worldspace->draw(projection, view);
+			worldspace->draw(projection, view, camera);
 		}
 
 	/*--------------------------------------------//

@@ -19,6 +19,7 @@ Includes
 	#include "../common/sorting.h"
 	#include "../common/vector.h"
 	#include "../common/quaternion.h"
+	#include "../globals.h"
 
 	#include <assert.h>
 	#include <stdio.h>
