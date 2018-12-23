@@ -17,13 +17,15 @@ const int 		TIMER = 20;//how often do we run the timer function which updates th
 const float 	ASPECT_RATIO            = 1.33f;
 const int   	INIT_WINDOW_POSITION[2] = { 0, 0 };
 const int   	INIT_WINDOW_SIZE[2]     = { 800, int(900/ASPECT_RATIO) };
-const float 	FRUSTUM_FIELD_OF_VIEW   = 35.0f;
+const float 	FRUSTUM_FIELD_OF_VIEW   = 45.0f;
 const float 	FRUSTUM_NEAR_PLANE      = 0.1f;
 const float 	FRUSTUM_FAR_PLANE       = 100.0f;
 const float 	BACKGROUND_COLOR[3]     = {0.0f, 0.0f, 0.0f};
 
 // Lighting Constants
-const float 	LIGHT_0_POSITION[]    = { 5.0f, 5.0f, 5.0f, 0.0f};
+const unsigned int SHADOW_WIDTH 	  = 1024;
+const unsigned int SHADOW_HEIGHT 	  = 1024;
+const float 	LIGHT_0_POSITION[]    = { 5.5f, 5.5f, 5.5f, 0.0f};
 const float 	LIGHT_AMBIENT[]       = { 0.8f, 0.8f, 0.8f, 1.0f};
 const float 	LIGHT_DIFFUSE[]       = { 0.9f, 0.9f, 0.9f, 1.0f};
 const float 	LIGHT_SPECULAR[]      = { 1.0f, 1.0f, 1.0f, 1.0f};
@@ -45,7 +47,7 @@ const float 	SPECULAR_EXPON =  20.0f;    // Low level of shininess (scale: 0-128
 // UI Property Constants
 const int 		MAX_CHARACTERS_TEXT = 1024; 					//Max amount of characters in one text element.
 const float 	DEFAULT_TEXT_COLOR[] = {1.0f, 0.0f, 0.0f}; 		//Default color for text
-const float 	DEFAULT_TEXT_POS[] = {-0.57f, 0.55f, -1.0f}; 	//Default position for text
+const float 	DEFAULT_TEXT_POS[] = {-1.0f, 1.0f, -1.0f}; 	//Default position for text
 
 #define GLOBALS_H
 #endif

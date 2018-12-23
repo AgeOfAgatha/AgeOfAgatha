@@ -32,82 +32,82 @@ main: simulation dependencies main.o
 #########################
 #Common Section
 #########################
-angles.o: ../src/common/angles.cpp ../src/common/angles.h
+angles.o: ../src/common/angles.cpp ../src/common/angles.h ../src/globals.h
 	$(CC) $(CFLAGS) ../src/common/angles.cpp
 
-line.o: ../src/common/line.cpp ../src/common/line.h
+line.o: ../src/common/line.cpp ../src/common/line.h ../src/globals.h
 	$(CC) $(CFLAGS) ../src/common/line.cpp
 
-plane.o: ../src/common/plane.cpp ../src/common/plane.h
+plane.o: ../src/common/plane.cpp ../src/common/plane.h ../src/globals.h
 	$(CC) $(CFLAGS) ../src/common/plane.cpp
 
-sorting.o: ../src/common/sorting.cpp ../src/common/sorting.h
+sorting.o: ../src/common/sorting.cpp ../src/common/sorting.h ../src/globals.h
 	$(CC) $(CFLAGS) ../src/common/sorting.cpp
 
-vector.o: ../src/common/vector.cpp ../src/common/vector.h
+vector.o: ../src/common/vector.cpp ../src/common/vector.h ../src/globals.h
 	$(CC) $(CFLAGS) ../src/common/vector.cpp
 
-quaternion.o: ../src/common/quaternion.cpp ../src/common/quaternion.h
+quaternion.o: ../src/common/quaternion.cpp ../src/common/quaternion.h ../src/globals.h
 	$(CC) $(CFLAGS) ../src/common/quaternion.cpp
 
 #########################
 #Actor Section
 #########################
-bone.o: ../src/objects/actors/bone.cpp ../src/objects/actors/bone.h
+bone.o: ../src/objects/actors/bone.cpp ../src/objects/actors/bone.h ../src/globals.h
 	$(CC) $(CFLAGS) ../src/objects/actors/bone.cpp
 
-joint.o: ../src/objects/actors/joint.cpp ../src/objects/actors/joint.h
+joint.o: ../src/objects/actors/joint.cpp ../src/objects/actors/joint.h ../src/globals.h
 	$(CC) $(CFLAGS) ../src/objects/actors/joint.cpp
 
-boneVertex.o: ../src/objects/actors/boneVertex.cpp ../src/objects/actors/boneVertex.h
+boneVertex.o: ../src/objects/actors/boneVertex.cpp ../src/objects/actors/boneVertex.h ../src/globals.h
 	$(CC) $(CFLAGS) ../src/objects/actors/boneVertex.cpp
 
-skeleton.o: ../src/objects/actors/skeleton.cpp ../src/objects/actors/skeleton.h
+skeleton.o: ../src/objects/actors/skeleton.cpp ../src/objects/actors/skeleton.h ../src/globals.h
 	$(CC) $(CFLAGS) ../src/objects/actors/skeleton.cpp
 
 #########################
 #Object Section
 #########################
-texture.o: ../src/objects/texture.cpp ../src/objects/texture.h
+texture.o: ../src/objects/texture.cpp ../src/objects/texture.h ../src/globals.h
 	$(CC) $(CFLAGS) ../src/objects/texture.cpp
 
-vertex.o: ../src/objects/vertex.cpp ../src/objects/vertex.h
+vertex.o: ../src/objects/vertex.cpp ../src/objects/vertex.h ../src/globals.h
 	$(CC) $(CFLAGS) ../src/objects/vertex.cpp
 
-triangle.o: ../src/objects/triangle.cpp ../src/objects/triangle.h
+triangle.o: ../src/objects/triangle.cpp ../src/objects/triangle.h ../src/globals.h
 	$(CC) $(CFLAGS) ../src/objects/triangle.cpp
 
-mesh.o: ../src/objects/mesh.cpp ../src/objects/mesh.h
+mesh.o: ../src/objects/mesh.cpp ../src/objects/mesh.h ../src/globals.h
 	$(CC) $(CFLAGS) ../src/objects/mesh.cpp
 
-world.o: ../src/objects/world.cpp ../src/objects/world.h
+world.o: ../src/objects/world.cpp ../src/objects/world.h ../src/globals.h
 	$(CC) $(CFLAGS) ../src/objects/world.cpp
 
 #########################
 #Interface Section
 #########################
-element.o: ../src/interface/element.cpp ../src/interface/element.h
+element.o: ../src/interface/element.cpp ../src/interface/element.h ../src/globals.h
 	$(CC) $(CFLAGS) ../src/interface/element.cpp
 
-interface.o: ../src/interface/interface.cpp ../src/interface/interface.h
+interface.o: ../src/interface/interface.cpp ../src/interface/interface.h ../src/globals.h
 	$(CC) $(CFLAGS) ../src/interface/interface.cpp
 
-frameDelay.o: ../src/interface/text/frameDelay.cpp ../src/interface/text/frameDelay.h
+frameDelay.o: ../src/interface/text/frameDelay.cpp ../src/interface/text/frameDelay.h ../src/globals.h
 	$(CC) $(CFLAGS) ../src/interface/text/frameDelay.cpp
 
 #########################
 #Simulation Section
 #########################
-game.o: ../src/simulation/game.cpp ../src/simulation/game.h
+game.o: ../src/simulation/game.cpp ../src/simulation/game.h ../src/globals.h
 	$(CC) $(CFLAGS) ../src/simulation/game.cpp
 
-shader.o: ../src/shader/shader.cpp ../src/shader/shader.h
+shader.o: ../src/shader/shader.cpp ../src/shader/shader.h ../src/globals.h
 	$(CC) $(CFLAGS) ../src/shader/shader.cpp
 
 #########################
 #Main section
 #########################
-main.o: ../src/main.cpp
+main.o: ../src/main.cpp ../src/globals.h
 	$(CC) $(CFLAGS) ../src/main.cpp
 
 clean:

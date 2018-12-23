@@ -44,6 +44,9 @@ class world{
 			int gravObjCnt;
 			mesh** gravObj;
 			Shader* ourShader;//Our graphical shader
+			Shader* DepthShader;//Our shadow shader
+		    unsigned int depthMapFBO;//Depth shader frame buffer object
+		    unsigned int depthMap;
 
 		/*--------------------------------------------//
 		Functions

@@ -255,7 +255,7 @@ Main program entry point
         glutDisplayFunc(Display);
         glutTimerFunc(TIMER, TimerFunction, 0);
 
-        //setup lighting parameters
+        //setup parameters
 		glEnable(GL_DEPTH_TEST);//3D
 		glEnable(GL_BLEND);
     	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
