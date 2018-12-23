@@ -1,14 +1,22 @@
 //[FRAGMENT SHADER]
 #version 330 core
 
+in vec4 FragPos;
+
+uniform vec3 LightPosition;
+uniform float FarPlane;
+
 uniform int texture1set;
 uniform sampler2D texture1;
 uniform int texture2set;
 uniform sampler2D texture2;
 
-uniform vec4 ViewPos;
-
-void main()
-{             
-    // gl_FragDepth = gl_FragCoord.z;
+void main(){             
+    float lightDistance = length(FragPos.xyz - LightPosition);
+    
+    // map to [0;1] range by dividing by FarPlane
+    lightDistance = lightDistance / FarPlane;
+    
+    // write this as modified depth
+    gl_FragDepth = lightDistance;
 }

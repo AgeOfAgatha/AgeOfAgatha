@@ -8,9 +8,7 @@ layout(location = 4) in float Blend;
 
 out VERTEXOUT{
 	vec4 color;
-	vec3 lightPos;
 	vec3 FragPos;
-	vec4 FragPosLightSpace;
 	vec3 Normal;
 	vec2 texcoord;
 	float blend;
@@ -20,17 +18,11 @@ uniform mat4 ModelMatrix;
 uniform mat4 ViewMatrix;
 uniform mat4 ProjectionMatrix;
 
-uniform mat4 lightSpaceMatrix;
-
-uniform vec3 LightPosition;
-
 void main(){
 	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * position;
 
 	vertexout.color = col;
-	vertexout.lightPos = LightPosition;
 	vertexout.FragPos = (ModelMatrix * position).xyz;
-	vertexout.FragPosLightSpace = lightSpaceMatrix * vec4(vertexout.FragPos, 1.0);
 	vertexout.Normal = mat3(transpose(inverse(ModelMatrix))) * normal;
 	vertexout.texcoord = TexCoord;
 	vertexout.blend = Blend;

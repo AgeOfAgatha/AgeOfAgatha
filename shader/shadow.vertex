@@ -6,14 +6,10 @@ layout(location = 2) in vec4 col;
 layout(location = 3) in vec2 TexCoord;
 layout(location = 4) in float Blend;
 
-uniform mat4 lightSpaceMatrix;
 uniform mat4 ModelMatrix;
 uniform mat4 ViewMatrix;
 uniform mat4 ProjectionMatrix;
 
-uniform vec3 LightPosition;
-
-void main()
-{
-    gl_Position = lightSpaceMatrix * ModelMatrix * position;
+void main(){
+    gl_Position = ModelMatrix * position;
 }

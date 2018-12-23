@@ -29,23 +29,23 @@ This is where the simulation is controlled
 
 			//load shaders
 			ourShader = new Shader("shader/Shader.vertex", "shader/Shader.fragment", NULL);
-			DepthShader = new Shader("shader/shadow.vertex", "shader/shadow.fragment", NULL);
+			DepthShader = new Shader("shader/shadow.vertex", "shader/shadow.fragment", "shader/shadow.geometry");
 
-			// configure depth map FBO
+			//configure depth map FBO
 		    glGenFramebuffers(1, &depthMapFBO);
-		    // create depth texture
+		    //create depth cubemap texture
 		    glGenTextures(1, &depthMap);
-		    glBindTexture(GL_TEXTURE_2D, depthMap);
-		    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-		    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-		    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-		    float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
-		    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-		    // attach depth texture as FBO's depth buffer
+		    glBindTexture(GL_TEXTURE_CUBE_MAP, depthMap);
+		    for (unsigned int i = 0; i < 6; ++i)
+		        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		    //attach depth texture as FBO's depth buffer
 		    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-		    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+		    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthMap, 0);
 		    glDrawBuffer(GL_NONE);
 		    glReadBuffer(GL_NONE);
 		    glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -296,18 +296,21 @@ This is where the simulation is controlled
 	//--------------------------------------------*/
 		void world::draw(glm::mat4 projection, glm::mat4 view, glm::vec4 camera){
 			//create light projection and view matrices
-			glm::mat4 lightProjection, lightView, lightSpaceMatrix;
-	        //lightProjection = glm::perspective(glm::radians(FRUSTUM_FIELD_OF_VIEW), (GLfloat)SHADOW_WIDTH / (GLfloat)SHADOW_HEIGHT, FRUSTUM_NEAR_PLANE, FRUSTUM_FAR_PLANE);
-	        lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, FRUSTUM_NEAR_PLANE, FRUSTUM_FAR_PLANE);
-	        lightView = glm::lookAt(
-	        	glm::vec3(LIGHT_0_POSITION[0], LIGHT_0_POSITION[1], LIGHT_0_POSITION[2]), 
-	        	glm::vec3(0.0f), 
-	        	glm::vec3(0.0, 1.0, 0.0)
-	        );
-	        lightSpaceMatrix = lightProjection * lightView;
+	        glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT, FRUSTUM_NEAR_PLANE, FRUSTUM_FAR_PLANE);
+	        std::vector<glm::mat4> shadowTransforms;
+	        glm::vec3 lightPos = glm::vec3(LIGHT_0_POSITION[0], LIGHT_0_POSITION[1], LIGHT_0_POSITION[2]);
+	        shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)));
+	        shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)));
+	        shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)));
+	        shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)));
+	        shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)));
+	        shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f)));
 	        //render scene from light's point of view
 	        DepthShader->use();
-	        DepthShader->setMat4("lightSpaceMatrix", lightSpaceMatrix);
+	        for (unsigned int i = 0; i < 6; ++i)
+                DepthShader->setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+            DepthShader->setFloat("FarPlane", FRUSTUM_FAR_PLANE);
+            DepthShader->setVec3("LightPosition", lightPos);
 
 	        //swap viewport to shadow size
 	        GLint viewport[4];
@@ -332,11 +335,12 @@ This is where the simulation is controlled
 			ourShader->setMat4("ProjectionMatrix", projection);
 		    ourShader->setMat4("ViewMatrix", view);
 		    ourShader->setVec4("ViewPos", camera);
-		    ourShader->setMat4("lightSpaceMatrix", lightSpaceMatrix);
+            ourShader->setVec3("LightPosition", lightPos);
+            ourShader->setFloat("FarPlane", FRUSTUM_FAR_PLANE);
 		    
-			ourShader->setInt("shadowMap", depthMap);
+			ourShader->setInt("depthMap", depthMap);
 	        glActiveTexture(GL_TEXTURE0+depthMap);
-	        glBindTexture(GL_TEXTURE_2D, depthMap);
+	        glBindTexture(GL_TEXTURE_CUBE_MAP, depthMap);
 			//draw each object in world
 			for (int i = 0; i < this->getObjectCount(); i++){
 				this->getObject(i)->draw(ourShader);
