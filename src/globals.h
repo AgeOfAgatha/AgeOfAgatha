@@ -23,7 +23,7 @@ const float 	FRUSTUM_FAR_PLANE       = 100.0f;
 const float 	BACKGROUND_COLOR[3]     = {0.0f, 0.0f, 0.0f};
 
 // Lighting Constants
-const float 	LIGHT_0_POSITION[]    = { 30.0f, 30.0f, 30.0f, 0.0f};
+const float 	LIGHT_0_POSITION[]    = { 5.0f, 5.0f, 5.0f, 0.0f};
 const float 	LIGHT_AMBIENT[]       = { 0.8f, 0.8f, 0.8f, 1.0f};
 const float 	LIGHT_DIFFUSE[]       = { 0.9f, 0.9f, 0.9f, 1.0f};
 const float 	LIGHT_SPECULAR[]      = { 1.0f, 1.0f, 1.0f, 1.0f};

@@ -18,41 +18,54 @@ uniform sampler2D texture2;
 
 uniform vec4 ViewPos;
 
+vec3 BlinnPhong(vec3 normal, vec3 fragPos, vec3 lightPos, vec3 lightColor)
+{
+    // diffuse
+    vec3 lightDir = normalize(lightPos - fragPos);
+    float diff = max(dot(lightDir, normal), 0.0);
+    vec3 diffuse = diff * lightColor;
+    // specular
+    vec3 viewDir = normalize(ViewPos.xyz - fragPos);
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = 0.0;
+    vec3 halfwayDir = normalize(lightDir + viewDir);  
+    spec = pow(max(dot(normal, halfwayDir), 0.0), 64.0);
+    vec3 specular = spec * lightColor;    
+    // simple attenuation
+    float max_distance = 4;
+    float distance = length(lightPos - fragPos) / max_distance;
+    float attenuation = 1.0 / (distance * distance);
+    
+    diffuse *= attenuation;
+    specular *= attenuation;
+    
+    return diffuse + specular;
+}
+
 void main(){
-	vec3 lightcolor = vec3(0.5,0.5,0.5);
-	float ambient_strength = 0.1;
-
-	//diffuse
-	vec3 norm = normalize(fragmentin.Normal);
-	vec3 lightDir = normalize(fragmentin.lightPos - fragmentin.FragPos);
-	float diff = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = diff * lightcolor;
-
-	//specular
-	vec3 viewDir = normalize(ViewPos.xyz - fragmentin.FragPos);
-	vec3 reflectDir = reflect(-lightDir, norm);
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-	vec3 specular = (diff + ambient_strength) * spec * lightcolor;  
-
-	//ambient
-	vec3 ambient = lightcolor * ambient_strength;
-
-	//total light
-    vec3 light = diffuse + ambient + specular;
-	vec4 vertcolor = vec4(light, 1.0) * fragmentin.color;
+    vec3 lightColors[1];
+    lightColors[0] = vec3(0.5,0.5,0.5);
+    vec3 lightPositions[1];
+    lightPositions[0] = fragmentin.lightPos;
 
 	//texture
 	if (texture1set == 1 || texture2set == 1){
 		if (texture1set == 1 && texture2set != 1){
-			color = texture(texture1, fragmentin.texcoord) * vertcolor;
+			color = texture(texture1, fragmentin.texcoord) * fragmentin.color;
 		}
 		if (texture1set != 1 && texture2set == 1){
-			color = texture(texture1, fragmentin.texcoord) * vertcolor;
+			color = texture(texture1, fragmentin.texcoord) * fragmentin.color;
 		}
 		if (texture1set == 1 && texture2set == 1){
-			color = mix(texture(texture1, fragmentin.texcoord), texture(texture2, fragmentin.texcoord), fragmentin.blend) * vertcolor;
+			color = mix(texture(texture1, fragmentin.texcoord), texture(texture2, fragmentin.texcoord), fragmentin.blend) * fragmentin.color;
 		}
 	}else{
-		color = vertcolor;
+		color = fragmentin.color;
 	}
+	//process lighting
+	vec3 lighting = vec3(0.0);
+    for(int i = 0; i < 1; ++i)
+        lighting += BlinnPhong(normalize(fragmentin.Normal), fragmentin.FragPos, lightPositions[i], lightColors[i]);
+    color *= vec4(lighting,1.0);
+    color = pow(color, vec4(1.0/2.2));
 }
