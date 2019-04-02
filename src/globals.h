@@ -32,7 +32,7 @@ const float 	LIGHT_SPECULAR[]      = { 1.0f, 1.0f, 1.0f, 1.0f};
 const float 	LIGHT_MODEL_AMBIENT[] = { 0.7f, 0.7f, 0.7f, 1.0f};
 
 // Viewer Positioning Constants
-const float 	VIEWER_DISTANCE         = 6.0f;
+const float 	VIEWER_DISTANCE         = 10.0f;
 const float 	INITIAL_VIEWER_AZIMUTH = 0;
 const float 	INITIAL_VIEWER_ALTITUDE = 0;
 const float 	VIEWER_ANGLE_INCREMENT  = PI / 60.0f;

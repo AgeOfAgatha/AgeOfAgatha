@@ -1,0 +1,106 @@
+//[FRAGMENT SHADER]
+#version 330
+
+in VERTEXOUT{
+    vec4 color;
+    vec3 FragPos;
+    vec3 Normal;
+    vec2 texcoord;
+    float blend;
+}fragmentin;
+
+layout (location = 0) out vec4 FragColor;
+
+struct light{
+    vec3 color;
+    float ambientIntensity;
+    float diffuseIntensity;
+};
+
+struct direclight{
+    light base;
+    vec3 direction;
+};
+
+struct fallofflight{
+    float constant;
+    float linear;
+    float exponential;
+};
+
+struct pointlight{
+    light base;
+    vec3 position;
+    fallofflight falloff;
+};
+
+struct spotlight{
+    pointlight base;
+    vec3 direction;
+    float cutoff;
+};
+
+uniform sampler2D PositionMap;
+uniform sampler2D ColorMap;
+uniform sampler2D NormalMap;
+
+uniform vec4 ViewPos;
+uniform vec2 ScreenSize;
+
+uniform direclight DirecLight;
+uniform pointlight PointLight;
+uniform spotlight SpotLight;
+
+uniform float MatSpecularIntensity;
+uniform float SpecularPower;
+uniform int LightType;
+
+vec4 CalcLightInternal(light Light, vec3 LightDirection, vec3 WorldPos, vec3 Normal){
+    vec4 AmbientColor = vec4(Light.color * Light.ambientIntensity, 1.0);
+    float DiffuseFactor = dot(Normal, -LightDirection);
+
+    vec4 DiffuseColor  = vec4(0, 0, 0, 0);
+    vec4 SpecularColor = vec4(0, 0, 0, 0);
+
+    if (DiffuseFactor > 0.0) {
+        DiffuseColor = vec4(Light.color * Light.diffuseIntensity * DiffuseFactor, 1.0);
+
+        vec3 VertexToEye = normalize(ViewPos.xyz - WorldPos);
+        vec3 LightReflect = normalize(reflect(LightDirection, Normal));
+        float SpecularFactor = dot(VertexToEye, LightReflect);        
+        if (SpecularFactor > 0.0) {
+            SpecularFactor = pow(SpecularFactor, SpecularPower);
+            SpecularColor = vec4(Light.color * MatSpecularIntensity * SpecularFactor, 1.0);
+        }
+    }
+
+    return (AmbientColor + DiffuseColor + SpecularColor);
+}
+
+vec4 CalcDirectionalLight(vec3 WorldPos, vec3 Normal){
+    return CalcLightInternal(DirecLight.base, DirecLight.direction, WorldPos, Normal);
+}
+
+vec4 CalcPointLight(vec3 WorldPos, vec3 Normal){
+    vec3 LightDirection = WorldPos - PointLight.position;
+    float Distance = length(LightDirection);
+    LightDirection = normalize(LightDirection);
+
+    vec4 Color = CalcLightInternal(PointLight.base, LightDirection, WorldPos, Normal);
+
+    float Attenuation =  PointLight.falloff.constant +
+                         PointLight.falloff.linear * Distance +
+                         PointLight.falloff.exponential * Distance * Distance;
+
+    Attenuation = max(1.0, Attenuation);
+
+    return Color / Attenuation;
+}
+
+void main(){
+    vec2 TexCoord = gl_FragCoord.xy / ScreenSize;
+    vec3 WorldPos = texture(PositionMap, TexCoord).rgb;
+    vec3 Color = texture(ColorMap, TexCoord).rgb;
+    vec3 Normal = texture(NormalMap, TexCoord).rgb;
+    FragColor = vec4(Color, 1.0) * CalcPointLight(WorldPos, Normal);
+}
