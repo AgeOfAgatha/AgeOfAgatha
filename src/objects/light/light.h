@@ -4,7 +4,10 @@
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
+    #include "../../../deps/glm/glm.hpp"
+
     #include "../../globals.h"
+    #include "../../common/vector.h"
 
     #include <stdlib.h>
     #include <stdio.h>
@@ -20,16 +23,13 @@ Light Class
             Class Variables
             //--------------------------------------------*/
                 vec3 color;
-                float ambientIntensity;
-                float diffuseIntensity;
+
 
             /*--------------------------------------------//
             Constructor
             //--------------------------------------------*/
                 light(){
-                    color = vec3(0.0f, 0.0f, 0.0f);
-                    ambientIntensity = 0.0f;
-                    diffuseIntensity = 0.0f;
+                    color = vec3(1.0f, 1.0f, 1.0f);
                 }
     };
 #endif

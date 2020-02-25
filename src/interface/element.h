@@ -12,15 +12,18 @@ class element;
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
+	#include <glew.h>
+	#include <freeglut.h>
+	#include "../../deps/glm/glm.hpp"
+
 	#include "interface.h"
 
 class element{
 	private:
-	protected:
 		/*--------------------------------------------//
 		Class Variables
 		//--------------------------------------------*/
-			interface* ui;//the containing interface
+			uinterface *ui;//the containing interface
 			element* parent;//the elements parent if any
 
 	public:
@@ -37,8 +40,8 @@ class element{
 		/*--------------------------------------------//
 		Functions
 		//--------------------------------------------*/
-			void setInterface(interface* u);
-			interface* getInterface();
+			void setInterface(uinterface* u);
+			uinterface* getInterface();
 			void setParent(element* p);
 			element* getParent();
 			virtual void draw(){}

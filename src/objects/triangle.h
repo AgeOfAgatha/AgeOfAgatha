@@ -9,15 +9,15 @@ class triangle;
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
+	#include <glew.h>
+	#include <freeglut.h>
 	#include "../../deps/glm/glm.hpp"
-	#include "../../deps/gl/glew.h"
-	#include "../../deps/gl/freeglut.h"
 	
 	#include "texture.h"
 	#include "vertex.h"
 	#include "mesh.h"
 	#include "../globals.h"
-	#include "../shader/shader.h"
+	#include "../shaders/shader.h"
 	#include "../common/plane.h"
 	#include "../common/line.h"
 

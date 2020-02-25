@@ -9,12 +9,12 @@ class mesh;
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
-	#include "../../deps/gl/glew.h"
-	#include "../../deps/gl/freeglut.h"
+	#include <glew.h>
+	#include <freeglut.h>
 	#include "../../deps/glm/glm.hpp"
 
 	#include "triangle.h"
-	#include "../shader/shader.h"
+	#include "../shaders/shader.h"
 	#include "../common/angles.h"
 	#include "../common/sorting.h"
 	#include "../common/vector.h"

@@ -1,53 +1,85 @@
 #ifndef GLOBALS_H
+#define GLOBALS_H
+using namespace std;
 
-const float 	PI = 3.1415926535f;
+//Mathematical
+#define STR(x) #x
+#define MAX(x,y) (((x) > (y)) ? (x) : (y))
+#define TORAD(x) ((M_PI/180.0)*(x))
+#define TODEG(x) ((180.0/M_PI)*(x))
+#if defined(_WIN32)
+#  define drand48() (((float) rand())/((float) RAND_MAX))
+#  define srand48(x) (srand((x)))
+#elif defined __APPLE__
+#  define drand48() (((float) rand())/((float) RAND_MAX))
+#  define srand48(x) (srand((x)))
+#endif
+#define	 		PI  						3.1415926535f						//
 
-// Driver Constants
-const int 		TIMESTEP = 3;//how often do we calculate physics?
-const int 		TIMEOUT = 3;//how many iterations before an object is considered 'asleep'
-const double	FRICTIONDIST = 3.0;//how much to increase object size while testing for nearby objects to apply friction to
-const double 	VERTEXRAD = 1.0;//how big of a sphere should a vertex be considered as for collisions
-const double	GRAVOBJMASS = 100;//how much mass does an object need before it is considered to be applying gravity to other objects
-const double 	GRAVITYCONSTANT = 100;//multiplier for all gravity applied in the simulation
-const double 	FRICTIONCONSTANT = 100;//multiplier for all friction applied in the simulation
-const double 	DEFORMCONSTANT = 0.1;//multiplier for all deformation applied in the simulation
-const int 		TIMER = 20;//how often do we run the timer function which updates the world
-
-// Window Position/Resizing Constants
-const float 	ASPECT_RATIO            = 1.33f;
-const int   	INIT_WINDOW_POSITION[2] = { 0, 0 };
-const int   	INIT_WINDOW_SIZE[2]     = { 800, int(900/ASPECT_RATIO) };
-const float 	FRUSTUM_FIELD_OF_VIEW   = 45.0f;
-const float 	FRUSTUM_NEAR_PLANE      = 0.1f;
-const float 	FRUSTUM_FAR_PLANE       = 100.0f;
-const float 	BACKGROUND_COLOR[3]     = {0.0f, 0.0f, 0.0f};
-
-// Lighting Constants
-const unsigned int SHADOW_WIDTH 	  = 1024;
-const unsigned int SHADOW_HEIGHT 	  = 1024;
-const float 	LIGHT_0_POSITION[]    = { 5.5f, 5.5f, 5.5f, 0.0f};
-const float 	LIGHT_AMBIENT[]       = { 0.8f, 0.8f, 0.8f, 1.0f};
-const float 	LIGHT_DIFFUSE[]       = { 0.9f, 0.9f, 0.9f, 1.0f};
-const float 	LIGHT_SPECULAR[]      = { 1.0f, 1.0f, 1.0f, 1.0f};
-const float 	LIGHT_MODEL_AMBIENT[] = { 0.7f, 0.7f, 0.7f, 1.0f};
-
-// Viewer Positioning Constants
-const float 	VIEWER_DISTANCE         = 10.0f;
-const float 	INITIAL_VIEWER_AZIMUTH = 0;
-const float 	INITIAL_VIEWER_ALTITUDE = 0;
-const float 	VIEWER_ANGLE_INCREMENT  = PI / 60.0f;
-
-// Material Properties Constants
-const int 		MAX_TRIANGLE_MATERIALS  = 2;// Maximum supported textures per triangle
-const float 	AMBIENT_COEFF  = -1.0f;    // Minimal ambient reflectance.
-const float 	DIFFUSE_COEFF  =  1.0f;    // Maximal diffuse reflectance.
-const float 	SPECULAR_COEFF =  1.0f;    // Maximal specular reflectance.
-const float 	SPECULAR_EXPON =  20.0f;    // Low level of shininess (scale: 0-128).
+//window settings
+#define 		MAX_FRAMES_IN_FLIGHT  	 	2									//
+#define 		INIT_WINDOW_POSITION_X 		0									//
+#define 		INIT_WINDOW_POSITION_Y 		0									//
+#define 		INIT_WINDOW_SIZE_X    		512									//
+#define 		INIT_WINDOW_SIZE_Y    		512									//
+#define 		ASPECT_RATIO            	(double)INIT_WINDOW_SIZE_X/INIT_WINDOW_SIZE_Y
+#define 		FRUSTUM_FIELD_OF_VIEW   	45.0f								//
+#define 		FRUSTUM_NEAR_PLANE      	0.1f 								//
+#define 		FRUSTUM_FAR_PLANE       	100.0f								//
+#define 		BACKGROUND_COLOR_R	     	0.0f								//
+#define 		BACKGROUND_COLOR_G	     	0.0f								//
+#define 		BACKGROUND_COLOR_B	     	0.0f								//
+#define			WINDOW_TITLE 				"Root"								//
+#define			ENGINE_TITLE 				"Root Engine"						//
 
 // UI Property Constants
-const int 		MAX_CHARACTERS_TEXT = 1024; 					//Max amount of characters in one text element.
-const float 	DEFAULT_TEXT_COLOR[] = {1.0f, 0.0f, 0.0f}; 		//Default color for text
-const float 	DEFAULT_TEXT_POS[] = {-1.0f, 1.0f, -1.0f}; 	//Default position for text
+#define			MAX_CHARACTERS_TEXT 		1024 								//Max amount of characters in one text element.
+#define			DEFAULT_TEXT_COLOR_R 		1.0f 								//Default color for text
+#define			DEFAULT_TEXT_COLOR_G 		0.0f								//Default color for text
+#define			DEFAULT_TEXT_COLOR_B 		0.0f 								//Default color for text
+#define			DEFAULT_TEXT_POS_X 			-1.0f 								//Default position for text
+#define			DEFAULT_TEXT_POS_Y 			1.0f 								//Default position for text
+#define			DEFAULT_TEXT_POS_Z 			-1.0f 								//Default position for text
 
-#define GLOBALS_H
+//Driver Constants
+#define			TIMESTEP 					3									//how often do we calculate physics?
+#define			TIMEOUT 					3									//how many iterations before an object is considered 'asleep'
+#define			FRICTIONDIST 				3.0									//how much to increase object size while testing for nearby objects to apply friction to
+#define			VERTEXRAD 					1.0									//how big of a sphere should a vertex be considered as for collisions
+#define			GRAVOBJMASS 				100									//how much mass does an object need before it is considered to be applying gravity to other objects
+#define			GRAVITYCONSTANT 			100									//multiplier for all gravity applied in the simulation
+#define			FRICTIONCONSTANT 			100									//multiplier for all friction applied in the simulation
+#define			DEFORMCONSTANT 				0.1									//multiplier for all deformation applied in the simulation
+#define			TIMER 						20									//how often do we run the timer function which updates the world
+#define 		BUFFER_RES_X				512									//what resolution to render for our buffer (width)
+#define 		BUFFER_RES_Y				512									//what resolution to render for our buffer (height)
+
+// Material Properties Constants
+#define			MAX_TRIANGLE_MATERIALS   	2									// Maximum supported textures per triangle
+#define			AMBIENT_COEFF				1.0f								// Minimal ambient reflectance.
+#define			DIFFUSE_COEFF    			1.0f								// Maximal diffuse reflectance.
+#define			SPECULAR_COEFF   			1.0f								// Maximal specular reflectance.
+#define			SPECULAR_EXPON   			20.0f								// Low level of shininess (scale: 0-128).
+
+//Lighting Constants
+#define			SHADOW_WIDTH				1024 								//
+#define			SHADOW_HEIGHT 				1024 								//
+#define			LIGHT_AMBIENT_R 			0.8f 								//
+#define			LIGHT_AMBIENT_G 			0.8f								//
+#define			LIGHT_AMBIENT_B 			0.8f								//
+#define			LIGHT_DIFFUSE_R 			0.9f								//
+#define			LIGHT_DIFFUSE_G 			0.9f								//
+#define			LIGHT_DIFFUSE_B 			0.9f								//
+#define			LIGHT_SPECULAR_R 			1.0f								//
+#define			LIGHT_SPECULAR_G 			1.0f								//
+#define			LIGHT_SPECULAR_B 			1.0f								//
+#define			LIGHT_MODEL_AMBIENT_R 		0.7f								//
+#define			LIGHT_MODEL_AMBIENT_G 		0.7f								//
+#define			LIGHT_MODEL_AMBIENT_B 		0.7f								//
+
+// Viewer Positioning Constants
+#define			VIEWER_DISTANCE				10.0f 								//
+#define			INITIAL_VIEWER_AZIMUTH		0									//
+#define			INITIAL_VIEWER_ALTITUDE 	0									//
+#define			VIEWER_ANGLE_INCREMENT 		PI / 60.0f							//
 #endif

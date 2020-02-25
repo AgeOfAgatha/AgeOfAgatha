@@ -10,6 +10,8 @@ class joint;
 /*--------------------------------------------//
 Pre Includes
 //--------------------------------------------*/
+	#include <glew.h>
+	#include <freeglut.h>
 	#include "../../../deps/glm/glm.hpp"
 
 	#include "../../common/vector.h"

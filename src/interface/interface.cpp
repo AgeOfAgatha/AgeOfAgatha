@@ -13,7 +13,7 @@ interface.  This is like the world for physics.
 	/*--------------------------------------------//
 	Constructors
 	//--------------------------------------------*/
-		interface::interface(){
+		uinterface::uinterface(){
 			ui = NULL;
 			uiNum = 0;
 		}
@@ -21,7 +21,7 @@ interface.  This is like the world for physics.
 	/*--------------------------------------------//
 	Add element
 	//--------------------------------------------*/
-		void interface::add(element* e){
+		void uinterface::add(element* e){
 			element** newui = (element**) realloc(ui, sizeof(element*)*(uiNum+1));
 
 			if (newui!=NULL) {
@@ -38,7 +38,7 @@ interface.  This is like the world for physics.
 	/*--------------------------------------------//
 	Remove element
 	//--------------------------------------------*/
-		void interface::remove(element* e){
+		void uinterface::remove(element* e){
 			for (int i = 0; i < uiNum; i++){
 				if (e == ui[i]){
 					//move last object to here
@@ -61,7 +61,7 @@ interface.  This is like the world for physics.
 	/*--------------------------------------------//
 	Draw
 	//--------------------------------------------*/
-		void interface::draw(){
+		void uinterface::draw(){
 			glPushMatrix();
 				for (int i = 0; i < uiNum; i++){
 					ui[i]->draw();

@@ -10,12 +10,16 @@ class FrameDelay;
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
-	#include "../../../deps/gl/glut.h"
+	#include <glew.h>
+	#include <freeglut.h>
+	#include "../../../deps/glm/glm.hpp"
 
 	#include "../../globals.h"
+	#include "../interface.h"
 	#include "../element.h"
 	#include "../../common/vector.h"
 
+	#include <time.h>
 	#include <string.h>
 
 class FrameDelay:public element{

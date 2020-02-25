@@ -15,13 +15,13 @@ left hand corner of the window
 	//--------------------------------------------*/
 		FrameDelay::FrameDelay():element(){
 			//default color
-			color[0] = DEFAULT_TEXT_COLOR[0];
-			color[1] = DEFAULT_TEXT_COLOR[1];
-			color[2] = DEFAULT_TEXT_COLOR[2];
+			color[0] = DEFAULT_TEXT_COLOR_R;
+			color[1] = DEFAULT_TEXT_COLOR_G;
+			color[2] = DEFAULT_TEXT_COLOR_B;
 			//default position
-			pos[0] = DEFAULT_TEXT_POS[0];
-			pos[1] = DEFAULT_TEXT_POS[1];
-			pos[2] = DEFAULT_TEXT_POS[2];
+			pos[0] = DEFAULT_TEXT_POS_X;
+			pos[1] = DEFAULT_TEXT_POS_Y;
+			pos[2] = DEFAULT_TEXT_POS_Z;
 			//initialize time
 			oldtime = 0;
 		}
@@ -84,11 +84,23 @@ left hand corner of the window
 		void FrameDelay::draw(){
 			glPushMatrix();
 				//measure speed
-				double newtime = glutGet(GLUT_ELAPSED_TIME);
+				time_t curtime;
+				char buf[255];
+				static double latency = 0;
+				static time_t lastime = 0;
+				static int fps = 0;
+
+
+				// Update frames-per-second
+				curtime = clock();
+				latency = (latency + (double)(curtime - lastime)/CLOCKS_PER_SEC) / 2;
+				if (latency > 0)
+					fps = 60 / latency;
+				lastime = curtime;
+
 				char format[MAX_CHARACTERS_TEXT];
 				memset(format, '\0', sizeof(format));
-				sprintf (format, "%0.0lfms", newtime-oldtime);
-				oldtime = newtime;
+				sprintf (format, "%0.0lfms\n%d FPS", latency,fps);
 
 				//display
 				glTranslatef(pos[0], pos[1], pos[2]);

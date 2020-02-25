@@ -10,9 +10,9 @@ class vertex;
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
+	#include <glew.h>
+	#include <freeglut.h>
 	#include "../../deps/glm/glm.hpp"
-	#include "../../deps/gl/glew.h"
-	#include "../../deps/gl/freeglut.h"
 
 	#include "../common/vector.h"
 	#include "mesh.h"

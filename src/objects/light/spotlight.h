@@ -6,7 +6,7 @@ Includes
 //--------------------------------------------*/
     #include "../../globals.h"
     #include "light.h"
-    #include "pointlight.h"
+    #include "direclight.h"
 
     #include <stdlib.h>
     #include <stdio.h>
@@ -14,22 +14,30 @@ Includes
 /*--------------------------------------------//
 Spot Light Class
 //--------------------------------------------*/
-    class spotlight:public pointlight{
+    class spotlight{
         private:
         protected:
         public: 
             /*--------------------------------------------//
             Class Variables
             //--------------------------------------------*/
-                vec3 direction;
-                float cutoff;
+                direclight direc;
+                vec3 position;
+                float fov;
+                float constant;
+                float linear;
+                float exponential;
 
             /*--------------------------------------------//
             Constructor
             //--------------------------------------------*/
                 spotlight(){
-                    direction = vec3(0.0f, 0.0f, 0.0f);
-                    cutoff = 0.0f;
+                    direc = direclight();
+                    position = vec3(0.0f, 0.0f, 0.0f);
+                    fov = 360.0f;
+                    constant = 1.0f;
+                    linear = 1.0f;
+                    exponential = 1.0f;
                 }
     };
 #endif

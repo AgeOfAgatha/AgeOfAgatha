@@ -13,20 +13,22 @@ Includes
 /*--------------------------------------------//
 Spot Light Class
 //--------------------------------------------*/
-    class direclight:public light{
+    class direclight{
         private:
         protected:
         public: 
             /*--------------------------------------------//
             Class Variables
             //--------------------------------------------*/
+                light base;
                 vec3 direction;
 
             /*--------------------------------------------//
             Constructor
             //--------------------------------------------*/
-                direclight():light(){
-                    direction = vec3(0.0f, 0.0f, 0.0f);
+                direclight(){
+                    base = light();
+                    direction = vec3(0.0f, 0.0f, -1.0f);
                 }
     };
 #endif

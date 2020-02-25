@@ -62,7 +62,6 @@ This is our basic object
 			glm::mat4 model = glm::toMat4(quat);
 			model = glm::translate(model, glm::vec3(this->position.x, this->position.y, this->position.z));
 	    	shader->setMat4("ModelMatrix", model);
-	        shader->setVec3("LightPosition", glm::vec3(LIGHT_0_POSITION[0], LIGHT_0_POSITION[1], LIGHT_0_POSITION[2]));
 			//draw geometry
 			for (int i = 0; i < this->getTriangleCount(); i++){
 				triangle* k = this->getTriangle(i);

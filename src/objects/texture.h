@@ -6,7 +6,9 @@ Texture definition
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
-    #include "../../deps/gl/glut.h"
+	#include <glew.h>
+	#include <freeglut.h>
+	#include "../../deps/glm/glm.hpp"
 	#include "../../deps/stb/stb_image.h"
 
 class texture{

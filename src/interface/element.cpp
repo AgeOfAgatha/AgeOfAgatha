@@ -30,14 +30,14 @@ for the interface class.
 	/*--------------------------------------------//
 	Set Interface
 	//--------------------------------------------*/
-		void element::setInterface(interface* u){
+		void element::setInterface(uinterface* u){
 			ui = u;
 		}
 
 	/*--------------------------------------------//
 	Get Interface
 	//--------------------------------------------*/
-		interface* element::getInterface(){
+		uinterface* element::getInterface(){
 			return ui;
 		}
 

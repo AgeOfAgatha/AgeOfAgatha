@@ -5,21 +5,22 @@ interface.  This is like the world for physics.
 //--------------------------------------------*/
 #ifndef INTERFACE_H
 #define INTERFACE_H
-class interface;
+class uinterface;
 
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
-	#include "../../deps/gl/glut.h"
+	#include <glew.h>
+	#include <freeglut.h>
+	#include "../../deps/glm/glm.hpp"
 
 	#include "element.h"
 
 	#include <stdlib.h>
 	#include <stdio.h>
 
-class interface{
+class uinterface{
 	private:
-	protected:
 		/*--------------------------------------------//
 		Class Variables
 		//--------------------------------------------*/
@@ -30,7 +31,7 @@ class interface{
 		/*--------------------------------------------//
 		Constructors
 		//--------------------------------------------*/
-			interface();
+			uinterface();
 
 		/*--------------------------------------------//
 		Functions
