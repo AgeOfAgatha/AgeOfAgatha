@@ -1,0 +1,29 @@
+//[VERTEX SHADER]
+#version 330                                                                        
+layout(location = 0) in vec4 position;
+layout(location = 1) in vec3 normal;
+layout(location = 2) in vec4 col;
+layout(location = 3) in vec2 tc;
+layout(location = 4) in float bl;
+
+out VERTEXOUT{
+	vec4 Color;
+	vec3 FragPos;
+	vec3 Normal;
+	vec2 TexCoord;
+	float Blend;
+}vertexout;
+
+uniform mat4 ModelMatrix;
+uniform mat4 ViewMatrix;
+uniform mat4 ProjectionMatrix;
+
+void main(){
+    gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * position;
+    
+    vertexout.Color = col;
+	vertexout.FragPos = (ModelMatrix * position).xyz;
+	vertexout.Normal = mat3(transpose(inverse(ModelMatrix))) * normal;
+	vertexout.TexCoord = tc;
+	vertexout.Blend = bl;
+}

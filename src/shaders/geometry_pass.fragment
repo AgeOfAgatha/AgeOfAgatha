@@ -1,0 +1,37 @@
+//[FRAGMENT SHADER]
+#version 330
+
+in VERTEXOUT{
+	vec4 Color;
+	vec3 FragPos;
+	vec3 Normal;
+	vec2 TexCoord;
+	float Blend;
+}fragmentin;
+
+layout (location = 0) out vec3 WorldPosOut;
+layout (location = 1) out vec3 NormalOut;
+layout (location = 2) out vec4 DiffuseOut;
+
+uniform int texture1set;
+uniform sampler2D texture1;
+uniform int texture2set;
+uniform sampler2D texture2;
+
+void main(){
+	if (texture1set == 1 || texture2set == 1){
+		if (texture1set == 1 && texture2set != 1){
+			DiffuseOut = texture(texture1, fragmentin.TexCoord) * fragmentin.Color;
+		}
+		if (texture1set != 1 && texture2set == 1){
+			DiffuseOut = texture(texture1, fragmentin.TexCoord) * fragmentin.Color;
+		}
+		if (texture1set == 1 && texture2set == 1){
+			DiffuseOut = mix(texture(texture1, fragmentin.TexCoord), texture(texture2, fragmentin.TexCoord), fragmentin.Blend) * fragmentin.Color;
+		}
+	}else{
+		DiffuseOut = fragmentin.Color;
+	}
+	WorldPosOut     = fragmentin.FragPos;
+	NormalOut       = normalize(fragmentin.Normal);
+}

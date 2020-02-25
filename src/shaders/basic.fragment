@@ -1,0 +1,101 @@
+//[FRAGMENT SHADER]
+#version 330
+
+in VERTEXOUT{
+	vec4 Color;
+	vec3 FragPos;
+	vec3 Normal;
+	vec2 TexCoord;
+	float Blend;
+}fragmentin;
+
+layout (location = 0) out vec4 FragColor;
+
+struct light{
+    vec3 color;
+};
+
+struct direclight{
+    light base;
+    vec3 direction;
+};
+
+struct spotlight{
+    direclight direc;
+    vec3 position;
+    float fov;
+    float constant;
+    float linear;
+    float exponential;
+};
+uniform vec4 ViewPos;
+uniform int texture1set;
+uniform sampler2D texture1;
+uniform int texture2set;
+uniform sampler2D texture2;
+
+uniform direclight DirecLight;
+uniform spotlight SpotLight;
+
+uniform int LightType;
+
+vec3 CalcLightInternal(vec3 LightDirection, float Attenuation, vec3 Color){
+	vec3 FragDiff = fragmentin.Color.xyz;
+
+	if (texture1set == 1 || texture2set == 1){
+		if (texture1set == 1 && texture2set != 1){
+			FragDiff = FragDiff * texture(texture1, fragmentin.TexCoord).xyz;
+		}
+		if (texture1set != 1 && texture2set == 1){
+			FragDiff = FragDiff * texture(texture1, fragmentin.TexCoord).xyz;
+		}
+		if (texture1set == 1 && texture2set == 1){
+			FragDiff = FragDiff * mix(texture(texture1, fragmentin.TexCoord), texture(texture2, fragmentin.TexCoord), fragmentin.Blend).xyz;
+		}
+	}
+
+    //Ambient
+    LightDirection = normalize(SpotLight.position - fragmentin.FragPos);
+    vec3 Lighting = vec3(5.0/255);
+    //Diffuse
+    vec3 Diffuse = max(dot(fragmentin.Normal, LightDirection), 0.0) * FragDiff * Color;
+    //Specular
+    vec3 ViewDir  = normalize(ViewPos.xyz - fragmentin.FragPos);
+    vec3 HalfwayDir = normalize(LightDirection + ViewDir);  
+    vec3 LightReflect = normalize(reflect(-LightDirection, fragmentin.Normal));
+    float SpecularFactor = dot(ViewDir, LightReflect) * dot(fragmentin.Normal, HalfwayDir);
+    float Specular = pow(max(SpecularFactor, 0.0), 32) * fragmentin.Color.w;
+    //Attenuation
+    Diffuse *= Attenuation;
+    Specular *= Attenuation;
+    Lighting += Diffuse + Diffuse*Specular;
+
+    return Lighting;
+}
+
+vec3 CalcDirectionalLight(){
+    vec3 LightDirection = DirecLight.direction;
+    float Attenuation = 1.0;
+    vec3 Color = DirecLight.base.color;
+
+    return CalcLightInternal(LightDirection, Attenuation, Color);
+}
+
+vec3 CalcSpotLight(){
+    vec3 LightDirection = SpotLight.position - fragmentin.FragPos;
+    float Distance = length(LightDirection);
+    LightDirection = normalize(LightDirection);
+    float Attenuation = 1.0 / (SpotLight.constant + SpotLight.linear * Distance + SpotLight.exponential * Distance * Distance);
+    vec3 Color = SpotLight.direc.base.color;
+
+    return CalcLightInternal(LightDirection, Attenuation, Color);
+}
+
+void main(){             
+    if (LightType == 0){
+        FragColor = vec4(CalcSpotLight(), 1.0);
+    }
+    if (LightType == 1){
+        FragColor = vec4(CalcDirectionalLight(), 1.0);
+    }
+}

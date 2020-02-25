@@ -1,0 +1,58 @@
+//[FRAGMENT SHADER]
+#version 330
+
+in VERTEXOUT{
+	vec4 color;
+	vec3 FragPos;
+	vec3 Normal;
+	vec2 texcoord;
+	float blend;
+	float trans;
+}fragmentin;
+
+layout (location = 0) out vec3 WorldPosOut;
+layout (location = 1) out vec3 NormalOut;
+layout (location = 2) out vec3 DiffuseOut;
+
+uniform sampler2D ColorMap;
+uniform vec2 ScreenSize;
+
+uniform int texture1set;
+uniform sampler2D texture1;
+uniform int texture2set;
+uniform sampler2D texture2;
+
+float near = 0.1; 
+float far  = 100.0; 
+  
+float LinearizeDepth(float depth) {
+    float z = depth * 2.0 - 1.0; // back to NDC 
+    return (2.0 * near * far) / (far + near - z * (far - near));	
+}
+
+void main(){
+	//calculate our own color
+	vec3 selfDiffuse;
+	if (texture1set == 1 || texture2set == 1){
+		if (texture1set == 1 && texture2set != 1){
+			selfDiffuse = (texture(texture1, fragmentin.texcoord) * fragmentin.color).xyz;
+		}
+		if (texture1set != 1 && texture2set == 1){
+			selfDiffuse = (texture(texture2, fragmentin.texcoord) * fragmentin.color).xyz;
+		}
+		if (texture1set == 1 && texture2set == 1){
+			selfDiffuse = (mix(texture(texture1, fragmentin.texcoord), texture(texture2, fragmentin.texcoord), fragmentin.blend) * fragmentin.color).xyz;
+		}
+	}else{
+		selfDiffuse = (fragmentin.color).xyz;
+	}
+	//get data about background
+	vec2 TexCoord = gl_FragCoord.xy / ScreenSize;
+    vec3 Color = texture(ColorMap, TexCoord).rgb;
+
+   	//output data
+	DiffuseOut 		= mix(Color, mix(Color * selfDiffuse * fragmentin.trans, selfDiffuse * fragmentin.trans, fragmentin.trans), 1-fragmentin.trans);
+	DiffuseOut 		= (vec4(Color + vec3(1.0)*fragmentin.trans*fragmentin.trans,1.0) * vec4(selfDiffuse, fragmentin.trans)).xyz;
+	WorldPosOut     = fragmentin.FragPos;
+	NormalOut       = normalize(fragmentin.Normal) * fragmentin.trans;
+}
