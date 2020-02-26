@@ -6,9 +6,7 @@ using namespace std;
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
-	#include <glew.h>
-	#include <freeglut.h>
-
+	#include "globals.h"
 	#include "simulation/game.h"
 
 	#include <stdio.h>

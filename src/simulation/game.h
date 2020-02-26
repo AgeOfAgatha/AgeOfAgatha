@@ -9,13 +9,10 @@ and the ui interface.
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
-	#include <glew.h>
-	#include <freeglut.h>
-
+	#include "../globals.h"
 	#include "../../deps/stb/stb_image.h"
 	#include "../../deps/glm/glm.hpp"
 
-    #include "../globals.h"
 	#include "../common/vector.h"
 	#include "../common/quaternion.h"
 	#include "../objects/world.h"

@@ -10,11 +10,9 @@ class FrameDelay;
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
-	#include <glew.h>
-	#include <freeglut.h>
+	#include "../../globals.h"
 	#include "../../../deps/glm/glm.hpp"
 
-	#include "../../globals.h"
 	#include "../interface.h"
 	#include "../element.h"
 	#include "../../common/vector.h"

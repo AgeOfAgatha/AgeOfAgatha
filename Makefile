@@ -1,7 +1,10 @@
-CC = /opt/mingw64/bin/x86_64-w64-mingw32-g++
-CFLAGS = -std=c++11 -w -g -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/usr/include/GL
-LIBS = ./lib/libfltk.a ./lib/libfltk_gl.a ./lib/libfltk.a ./lib/glew32.lib ./lib/glew32s.lib ./lib/libfreeglut.dll.a ./lib/libfreeglut_static.a ./glew32.dll ./libfreeglut.dll -lcomctl32 -lws2_32 -lopengl32 -lwinmm -lglu32 -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
-EXEEXT = .exe
+CCW = i686-w64-mingw32-g++
+CCL = g++
+CFLAGS = -std=c++14 -w -g -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/usr/include -I/usr/include/x86_64-linux-gnu -I$(shell pwd)/deps  -static-libgcc
+LIBSW = -mwindows -L/usr/lib/x86_64-linux-gnu/ -lopengl32 -lglu32 -lglut32
+LIBSL = -lGL -lGLU -lglut
+EXTW = .exe
+EXTL = .pe
 
 .PHONY: all help clean
 
@@ -19,9 +22,13 @@ help:
 	@echo 	clean
 	@echo 	help
 
-run$(EXEEXT): bin/*.o
+run$(EXTW): bin/*.o
 	@echo 	Executable is being assembled...
-	@$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
+	@$(CCW) $(CFLAGS) $^ -o $@ $(LIBSW)
+
+run$(EXTL): bin/*.o
+	@echo 	Executable is being assembled...
+	@$(CCL) $(CFLAGS) $^ -o $@ $(LIBSL)
 
 clean:
 	@echo Cleaning...

@@ -6,9 +6,7 @@ class Shader;
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
-    #include <glew.h>
-    #include <freeglut.h>
-
+    #include "../globals.h"
     #include "../../deps/glm/glm.hpp"
     #include "../../deps/glm/gtc/matrix_transform.hpp"
     #include "../../deps/glm/gtc/type_ptr.hpp"

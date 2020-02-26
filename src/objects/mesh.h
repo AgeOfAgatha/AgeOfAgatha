@@ -9,8 +9,7 @@ class mesh;
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
-	#include <glew.h>
-	#include <freeglut.h>
+	#include "../globals.h"
 	#include "../../deps/glm/glm.hpp"
 
 	#include "triangle.h"
@@ -19,7 +18,6 @@ Includes
 	#include "../common/sorting.h"
 	#include "../common/vector.h"
 	#include "../common/quaternion.h"
-	#include "../globals.h"
 
 	#include <assert.h>
 	#include <stdio.h>

@@ -6,8 +6,7 @@ Texture definition
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
-	#include <glew.h>
-	#include <freeglut.h>
+	#include "../globals.h"
 	#include "../../deps/glm/glm.hpp"
 	#include "../../deps/stb/stb_image.h"
 

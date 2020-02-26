@@ -10,8 +10,7 @@ class boneVertex;
 /*--------------------------------------------//
 Pre Includes
 //--------------------------------------------*/
-	#include <glew.h>
-	#include <freeglut.h>
+	#include "../../globals.h"
 	#include "../../../deps/glm/glm.hpp"
 
 	#include "../../common/quaternion.h"
@@ -21,7 +20,7 @@ Pre Includes
 
 class boneVertex:public vertex{
 	private:
-	protected:	
+	protected:
 		/*--------------------------------------------//
 		Class Variables
 		//--------------------------------------------*/

@@ -10,8 +10,7 @@ class joint;
 /*--------------------------------------------//
 Pre Includes
 //--------------------------------------------*/
-	#include <glew.h>
-	#include <freeglut.h>
+	#include "../../globals.h"
 	#include "../../../deps/glm/glm.hpp"
 
 	#include "../../common/vector.h"
@@ -27,7 +26,7 @@ class joint{
 			vec3 offset;//what is our vec3 offset from our parent bone
 			vec3 wPos;//our stored world position
 			bool wPosParity;//the bool parity property used by getPos
-			
+
 		/*--------------------------------------------//
 		Constructors
 		//--------------------------------------------*/

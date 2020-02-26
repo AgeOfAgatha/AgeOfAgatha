@@ -1,5 +1,7 @@
-CC = /opt/mingw64/bin/x86_64-w64-mingw32-g++
-CFLAGS = -std=c++11 -w -g -c -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/usr/include/GL -I~/AoA/deps/gl
+CCW = i686-w64-mingw32-g++ -mwindows
+CC = g++
+CFLAGS = -std=c++14 -w -g -c -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I$(shell pwd)/../deps/gl -I$(shell pwd)/../deps -I$(shell pwd)/../deps/GL -static-libgcc
+
 
 .PHONY: all shaders dependencies common objects actors interface interface_text simulation main clean
 all: main
@@ -27,9 +29,9 @@ shader.o: ../src/shaders/shader.cpp ../src/shaders/shader.h
 #########################
 #Dependencies section
 #########################
-glew.o: ../deps/gl/glew.c ../deps/gl/glew.h ../deps/gl/eglew.h ../deps/gl/gl.h ../deps/gl/glu.h ../deps/gl/glut.h ../deps/gl/wglew.h ../deps/gl/glxew.h
+glew.o: ../deps/GL/glew.c ../deps/GL/glew.h
 	@echo	Making glew...
-	@$(CC) $(CFLAGS) ../deps/gl/glew.c -o $@
+	@$(CC) $(CFLAGS) ../deps/GL/glew.c -o $@
 
 #########################
 #Common Section
