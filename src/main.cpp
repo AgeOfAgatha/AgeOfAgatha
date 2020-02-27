@@ -132,8 +132,6 @@ GLUT functions - passes down class stack
 	void MenuUse(int v){app->MenuUse(v);}
 	void HandleButton(int button, int state, int x, int y){app->HandleButton(button,state,x,y);}
 	void HandleMotion(int x, int y){app->HandleMotion(x,y);}
-	void HandleScroll(int wheel, int direc, int x, int y){app->HandleScroll(wheel, direc, x, y);}
-	void ExitFunction(int value){}
 
 /*--------------------------------------------//
 Main - Entry point for program
@@ -145,14 +143,14 @@ Main - Entry point for program
 		GLint currWindowSize[2];//Size of the window
 		currWindowSize[0] = INIT_WINDOW_SIZE_X;
 		currWindowSize[1] = INIT_WINDOW_SIZE_Y;
-		
+
 		//create glut window
 		int window;
-	    glutInitWindowPosition(INIT_WINDOW_POSITION_X, INIT_WINDOW_POSITION_Y);
+		glutInitWindowPosition(INIT_WINDOW_POSITION_X, INIT_WINDOW_POSITION_Y);
 		glutInitWindowSize(currWindowSize[0], currWindowSize[1]);
 		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_STENCIL);
-	    glClearColor(BACKGROUND_COLOR_R, BACKGROUND_COLOR_G, BACKGROUND_COLOR_B, 1.0f);
-		window = __glutCreateWindowWithExit("Age of Agatha", ExitFunction);
+		glClearColor(BACKGROUND_COLOR_R, BACKGROUND_COLOR_G, BACKGROUND_COLOR_B, 1.0f);
+		window = glutCreateWindow("Age of Agatha");
 		glViewport(0, 0, currWindowSize[0], currWindowSize[1]);
 
 		glewExperimental = true;
@@ -169,12 +167,11 @@ Main - Entry point for program
 		glutTimerFunc(TIMER, Update, 0);
 		glutMouseFunc(HandleButton);
 		glutMotionFunc(HandleMotion);
-		glutMouseWheelFunc(HandleScroll);
 		glutPassiveMotionFunc(HandleMotion);
 		glutKeyboardFunc(KeypressASCII);
-        glutSpecialFunc(KeypressNonASCII);
+		glutSpecialFunc(KeypressNonASCII);
 
-        glutReshapeFunc(Reshape);
+		glutReshapeFunc(Reshape);
 		glutDisplayFunc(Draw);
 		glutVisibilityFunc(Visible);
 		glutMenuStateFunc(MenuUse);

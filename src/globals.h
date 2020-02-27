@@ -1,6 +1,7 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 using namespace std;
+#define GLUT_DISABLE_ATEXIT_HACK
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glu.h>

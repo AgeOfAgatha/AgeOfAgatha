@@ -1,5 +1,5 @@
 //[FRAGMENT SHADER]
-#version 330
+#version 330 core
 
 in VERTEXOUT{
 	vec4 Color;

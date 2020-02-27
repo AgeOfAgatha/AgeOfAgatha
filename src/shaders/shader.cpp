@@ -10,7 +10,7 @@ Includes
 Shader Class
 //--------------------------------------------*/
     /*--------------------------------------------//
-    utility function 
+    utility function
     prints the compile errors
     //--------------------------------------------*/
         void Shader::printShaderInfoLog(GLint shader){
@@ -31,10 +31,10 @@ Shader Class
         }
 
     /*--------------------------------------------//
-    utility function 
+    utility function
     for checking shader compilation/linking errors.
     //--------------------------------------------*/
-        void Shader::checkCompileErrors(GLuint shader, char* type){
+        void Shader::checkCompileErrors(GLuint shader, const char* type){
             GLint success;
             if(strcmp(type, "Program") != 0){
                 glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
@@ -58,7 +58,7 @@ Shader Class
         }
 
     /*--------------------------------------------//
-    utility function 
+    utility function
     Loads a file and reads it to a string
     //--------------------------------------------*/
         std::string Shader::loadFile(const char *fname){
@@ -76,7 +76,7 @@ Shader Class
         }
 
     /*--------------------------------------------//
-    utility function 
+    utility function
     Loads shader bins format
     //--------------------------------------------*/
         GLenum Shader::getFormat(const char* name){
@@ -94,7 +94,7 @@ Shader Class
         }
 
     /*--------------------------------------------//
-    constructor 
+    constructor
     generates the shader on the fly
     //--------------------------------------------*/
         Shader::Shader(const char* name, const char* vertexPath, const char* fragmentPath, const char* geometryPath){
@@ -135,7 +135,7 @@ Shader Class
                     vertex = glCreateShader(GL_VERTEX_SHADER);
                     glShaderSource(vertex, 1, &vShaderCode, NULL);
                     glCompileShader(vertex);
-                    checkCompileErrors(vertex, "Vertex");
+                    checkCompileErrors(vertex, vertexPath);
                 }
                 // fragment Shader
                 unsigned int fragment;
@@ -144,7 +144,7 @@ Shader Class
                     fragment = glCreateShader(GL_FRAGMENT_SHADER);
                     glShaderSource(fragment, 1, &fShaderCode, NULL);
                     glCompileShader(fragment);
-                    checkCompileErrors(fragment, "Fragment");
+                    checkCompileErrors(fragment, fragmentPath);
                 }
                 // geometry shader
                 unsigned int geometry;
@@ -153,7 +153,7 @@ Shader Class
                     geometry = glCreateShader(GL_GEOMETRY_SHADER);
                     glShaderSource(geometry, 1, &gShaderCode, NULL);
                     glCompileShader(geometry);
-                    checkCompileErrors(geometry, "Geometry");
+                    checkCompileErrors(geometry, geometryPath);
                 }
                 // shader Program
                 ID = glCreateProgram();
@@ -171,31 +171,30 @@ Shader Class
                 //Check compatibility
                 GLint formats = 0;
                 glGetIntegerv(GL_NUM_PROGRAM_BINARY_FORMATS, &formats);
-                if( formats < 1 ) {
-                    std::cerr << "Driver does not support any binary formats." << std::endl;
-                    exit(EXIT_FAILURE);
-                }
+                if( formats > 0 ) {
 
-                //Get the binary length
-                GLint length = 0;
-                glGetProgramiv(ID, GL_PROGRAM_BINARY_LENGTH, &length);
+	                //Get the binary length
+        	        GLint length = 0;
+                	glGetProgramiv(ID, GL_PROGRAM_BINARY_LENGTH, &length);
 
-                //Retrieve the binary code
-                std::vector<GLubyte> buffer(length);
-                GLenum format = 0;
-                glGetProgramBinary(ID, length, NULL, &format, buffer.data());
+	                //Retrieve the binary code
+        	        std::vector<GLubyte> buffer(length);
+                	GLenum format = 0;
+	                glGetProgramBinary(ID, length, NULL, &format, buffer.data());
 
-                //Write the binary to a file.
-                std::string fName(std::string(name) + std::string(".bin"));
-                std::cout << "Writing to " << fName << ", binary format = " <<format << std::endl;
-                std::ofstream out(fName.c_str(), std::ios::binary);
-                out.write( reinterpret_cast<char *>(buffer.data()), length );
-                out.close();
-                //Write the format to a file
-                std::ofstream formatfile;
-                formatfile.open (std::string(name) + std::string(".format"));
-                formatfile << format;
-                formatfile.close();
+	                //Write the binary to a file.
+        	        std::string fName(std::string(name) + std::string(".bin"));
+                	std::cout << "Writing to " << fName << ", binary format = " <<format << std::endl;
+	                std::ofstream out(fName.c_str(), std::ios::binary);
+        	        out.write( reinterpret_cast<char *>(buffer.data()), length );
+                	out.close();
+
+	                //Write the format to a file
+        	        std::ofstream formatfile;
+                	formatfile.open (std::string(name) + std::string(".format"));
+	                formatfile << format;
+        	        formatfile.close();
+		}
 
                 // delete the shaders as they're linked into our program now and no longer necessery
                 if(vertexPath != NULL)
@@ -206,13 +205,13 @@ Shader Class
                     glDeleteShader(geometry);
             }
         }
-    
+
     /*--------------------------------------------//
     Use
     Applies the shader program
     //--------------------------------------------*/
-        void Shader::use(){ 
-            glUseProgram(ID); 
+        void Shader::use(){
+            glUseProgram(ID);
         }
 
     /*--------------------------------------------//

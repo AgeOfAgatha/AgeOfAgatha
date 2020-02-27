@@ -6,30 +6,49 @@ LIBSL = -lGL -lGLU -lglut
 EXTW = .exe
 EXTL = .pe
 
-.PHONY: all help clean
+.PHONY: all help clean clean-all
 
 all:
-	@(echo Compiling object code... && $(MAKE) -C bin all --no-print-directory && echo 	Done Compiling) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo Assembling executable... && $(MAKE) run$(EXEEXT) --no-print-directory && echo 	Done Assembling) | grep -vE "(Nothing to be done for|is up to date)"
-	@rm ./*.bin -f 2>/dev/null
-	@rm ./*.format -f 2>/dev/null
-	@echo Running executable... && ./run$(EXEEXT)
+	@echo making linux executable... && $(MAKE) linux --no-print-directory
+	@echo making windows executable... && $(MAKE) windows --no-print-directory
+
+linux:
+	@(echo '\t'Compiling object code... && $(MAKE) -C binl all --no-print-directory && echo '\t'Done Compiling) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo '\t'Assembling executable... && $(MAKE) run$(EXTL) --no-print-directory && echo '\t'Done Assembling) | grep -vE "(Nothing to be done for|is up to date)"
+
+windows:
+	@(echo '\t'Compiling object code... && $(MAKE) -C binw all --no-print-directory && echo '\t'Done Compiling) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo '\t'Assembling executable... && $(MAKE) run$(EXTW) --no-print-directory && echo '\t'Done Assembling) | grep -vE "(Nothing to be done for|is up to date)"
 
 help:
 	@echo Available build targets:
-	@echo 	all
-	@echo 	run
-	@echo 	clean
-	@echo 	help
+	@echo -e '\t'all
+	@echo -e '\t'linux
+	@echo -e '\t'windows
+	@echo -e '\t'run$(EXTW)
+	@echo -e '\t'run$(EXTL)
+	@echo -e '\t'clean
+	@echo -e '\t'clean-all
+	@echo -e '\t'help
 
-run$(EXTW): bin/*.o
-	@echo 	Executable is being assembled...
+run$(EXTW): binw/*.o
+	@echo -e '\t\t'Executable is being assembled...
 	@$(CCW) $(CFLAGS) $^ -o $@ $(LIBSW)
 
-run$(EXTL): bin/*.o
-	@echo 	Executable is being assembled...
+run$(EXTL): binl/*.o
+	@echo -e '\t\t'Executable is being assembled...
 	@$(CCL) $(CFLAGS) $^ -o $@ $(LIBSL)
 
-clean:
+clean-all:
 	@echo Cleaning...
-	@$(MAKE) -C bin clean --no-print-directory
+	@$(MAKE) clean --no-print-directory
+	@echo -e '\t'Cleaning object files in binl...
+	@rm ./binl/*.o -f 2>/dev/null
+	@echo -e '\t'Cleaning object files in binw...
+	@rm ./binw/*.o -f 2>/dev/null
+	@echo Done cleaning
+
+clean:
+	@echo Cleaning shader files in root...
+	@rm ./*.bin -f 2>/dev/null
+	@rm ./*.format -f 2>/dev/null

@@ -29,19 +29,20 @@ Shader Class
             //--------------------------------------------*/
                 GLenum getFormat(const char* name);
                 void printShaderInfoLog(GLint shader);
-                void checkCompileErrors(GLuint shader, char* type);
+                void checkCompileErrors(GLuint shader, const char* type);
                 std::string loadFile(const char *fname);
-        
-        public: 
+
+        public:
             /*--------------------------------------------//
             Class Variables
             //--------------------------------------------*/
-                unsigned int ID;   
+                unsigned int ID;
+
             /*--------------------------------------------//
             constructor
             //--------------------------------------------*/
                 Shader(const char* name, const char* vertexPath, const char* fragmentPath, const char* geometryPath);
-            
+
             /*--------------------------------------------//
             Functions
             //--------------------------------------------*/

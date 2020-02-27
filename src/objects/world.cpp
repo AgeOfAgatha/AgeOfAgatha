@@ -8,7 +8,7 @@ This is where the simulation is controlled
 	Includes
 	//--------------------------------------------*/
 		#include "world.h"
-	
+
 	/*--------------------------------------------//
 	Constructors
 	//--------------------------------------------*/
@@ -27,7 +27,7 @@ This is where the simulation is controlled
 					dlights = NULL;
 					gravObjCnt = 0;
 					gravObj = NULL;
-					
+
 					timestep = 1;
 					timeout = 1;
 					vertexrad = 1.0;
@@ -36,7 +36,7 @@ This is where the simulation is controlled
 					frictionDist = 100;
 					frictionConst = 100;
 					deformConst = 0.1;
-						
+
 				BufferInit();
 				ShaderInit();
 			};
