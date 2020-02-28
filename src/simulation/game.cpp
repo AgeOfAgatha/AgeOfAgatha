@@ -223,20 +223,23 @@ and the ui interface.
 	HandleButton - handle mouse button events
 	//--------------------------------------------*/
 		void game::HandleButton(int button, int state, int x, int y){
-		    glutPostRedisplay();
+			glutPostRedisplay();
 
-		    if(button == GLUT_LEFT_BUTTON){
-		        if (state == GLUT_DOWN)
-			        lbutton = true;
-		        else
-		        	lbutton = false;
-		    }
-		    if(button == GLUT_LEFT_BUTTON){
-		        if (state == GLUT_DOWN)
-			        lbutton = true;
-		        else
-		        	lbutton = false;
-		    }
+			if(button == GLUT_LEFT_BUTTON){
+				if (state == GLUT_DOWN)
+					lbutton = true;
+				else
+					lbutton = false;
+			}
+			if(button == GLUT_LEFT_BUTTON){
+				if (state == GLUT_DOWN)
+			       		lbutton = true;
+		        	else
+		        		lbutton = false;
+			}
+			if (lbutton && state == GLUT_DOWN){
+				viewerDistance += int(button == 4) - int(button == 3);
+			}
 		}
 
 	/*--------------------------------------------//
@@ -253,7 +256,7 @@ and the ui interface.
 				if (!lstate){
 					oldx = x;
 					oldy = y;
-					lstate = true;				
+					lstate = true;
 				}
 
 				if (oldx != x){
@@ -274,14 +277,5 @@ and the ui interface.
 				lstate = false;
 			}
 		}
-
-	/*--------------------------------------------//
-	HandleScroll - handle mouse wheel scrolling
-	//--------------------------------------------*/
-			void game::HandleScroll(int wheel, int direc, int x, int y){
-				if (lbutton){
-					viewerDistance -= direc;
-				}
-			}
 
 #endif

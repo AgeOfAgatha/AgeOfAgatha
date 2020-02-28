@@ -74,6 +74,5 @@ class game{
 			void MenuUse(int v);
 			void HandleButton(int button, int state, int x, int y);
 			void HandleMotion(int x, int y);
-			void HandleScroll(int wheel, int direc, int x, int y);
 };
 #endif
