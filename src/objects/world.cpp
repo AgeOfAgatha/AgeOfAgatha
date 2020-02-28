@@ -604,7 +604,7 @@ This is where the simulation is controlled
 					int world::getSLightCount(){
 						return slightCnt;
 					}
-					
+
 					spotlight* world::getSLight(int i){
 						return slights[i];
 					}
@@ -965,7 +965,7 @@ This is where the simulation is controlled
 						// back face
 			            {-1.0f, -1.0f, -1.0f, 1.0f}, // bottom-left
 			            { 1.0f,  1.0f, -1.0f, 1.0f}, // top-right
-			            { 1.0f, -1.0f, -1.0f, 1.0f}, // bottom-right         
+			            { 1.0f, -1.0f, -1.0f, 1.0f}, // bottom-right
 			            { 1.0f,  1.0f, -1.0f, 1.0f}, // top-right
 			            {-1.0f, -1.0f, -1.0f, 1.0f}, // bottom-left
 			            {-1.0f,  1.0f, -1.0f, 1.0f}, // top-left
@@ -986,10 +986,10 @@ This is where the simulation is controlled
 			            // right face
 			            { 1.0f,  1.0f,  1.0f, 1.0f}, // top-left
 			            { 1.0f, -1.0f, -1.0f, 1.0f}, // bottom-right
-			            { 1.0f,  1.0f, -1.0f, 1.0f}, // top-right         
+			            { 1.0f,  1.0f, -1.0f, 1.0f}, // top-right
 			            { 1.0f, -1.0f, -1.0f, 1.0f}, // bottom-right
 			            { 1.0f,  1.0f,  1.0f, 1.0f}, // top-left
-			            { 1.0f, -1.0f,  1.0f, 1.0f}, // bottom-left     
+			            { 1.0f, -1.0f,  1.0f, 1.0f}, // bottom-left
 			            // bottom face
 			            {-1.0f, -1.0f, -1.0f, 1.0f}, // top-right
 			            { 1.0f, -1.0f, -1.0f, 1.0f}, // top-left
@@ -1000,10 +1000,10 @@ This is where the simulation is controlled
 			            // top face
 			            {-1.0f,  1.0f, -1.0f, 1.0f}, // top-left
 			            { 1.0f,  1.0f , 1.0f, 1.0f}, // bottom-right
-			            { 1.0f,  1.0f, -1.0f, 1.0f}, // top-right     
+			            { 1.0f,  1.0f, -1.0f, 1.0f}, // top-right
 			            { 1.0f,  1.0f,  1.0f, 1.0f}, // bottom-right
 			            {-1.0f,  1.0f, -1.0f, 1.0f}, // top-left
-			            {-1.0f,  1.0f,  1.0f, 1.0f}  // bottom-left   
+			            {-1.0f,  1.0f,  1.0f, 1.0f}  // bottom-left
 					};
 					//normal array
 					double norm[36][3] = {
@@ -1435,8 +1435,7 @@ This is where the simulation is controlled
 				glDisable(GL_STENCIL_TEST);
 
 
-		        glUseProgram(0);
+		        	glUseProgram(0);
 				glFlush();
 			};
-	
 #endif

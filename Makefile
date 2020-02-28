@@ -27,6 +27,7 @@ help:
 	@echo -e '\t'windows
 	@echo -e '\t'run$(EXTW)
 	@echo -e '\t'run$(EXTL)
+	@echo -e '\t'run
 	@echo -e '\t'clean
 	@echo -e '\t'clean-all
 	@echo -e '\t'help
@@ -38,6 +39,9 @@ run$(EXTW): binw/*.o
 run$(EXTL): binl/*.o
 	@echo -e '\t\t'Executable is being assembled...
 	@$(CCL) $(CFLAGS) $^ -o $@ $(LIBSL)
+
+run: run$(EXTL)
+	@MESA_GL_VERSION_OVERRIDE=4.3 ./run$(EXTL)
 
 clean-all:
 	@echo Cleaning...

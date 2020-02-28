@@ -82,34 +82,32 @@ left hand corner of the window
 	Draw function
 	//--------------------------------------------*/
 		void FrameDelay::draw(){
-			glPushMatrix();
-				//measure speed
-				time_t curtime;
-				char buf[255];
-				static double latency = 0;
-				static time_t lastime = 0;
-				static int fps = 0;
+			//measure speed
+			time_t curtime;
+			char buf[255];
+			static double latency = 0;
+			static time_t lastime = 0;
+			static int fps = 0;
 
 
-				// Update frames-per-second
-				curtime = clock();
-				latency = (latency + (double)(curtime - lastime)/CLOCKS_PER_SEC) / 2;
-				if (latency > 0)
-					fps = 60 / latency;
-				lastime = curtime;
+			// Update frames-per-second
+			curtime = clock();
+			latency = (latency + (double)(curtime - lastime)/CLOCKS_PER_SEC) / 2;
+			if (latency > 0)
+				fps = 60 / latency;
+			lastime = curtime;
 
-				char format[MAX_CHARACTERS_TEXT];
-				memset(format, '\0', sizeof(format));
-				sprintf (format, "%0.0lfms\n%d FPS", latency,fps);
+			char format[MAX_CHARACTERS_TEXT];
+			memset(format, '\0', sizeof(format));
+			sprintf (format, "%0.0lfms\n%d FPS", latency,fps);
 
-				//display
-				glTranslatef(pos[0], pos[1], pos[2]);
-				glRasterPos3f(0.0, 0.0, 0.0);
-				glColor3f(color[0], color[1], color[2]);
-				int len = strlen(format);
-				for (int i = 0; i < len; i++) {
-				    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, format[i]);
-				}
-			glPopMatrix();
+			//display
+/*			glTranslatef(pos[0], pos[1], pos[2]);
+			glRasterPos3f(0.0, 0.0, 0.0);
+			glColor3f(color[0], color[1], color[2]);
+			int len = strlen(format);
+			for (int i = 0; i < len; i++) {
+			    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, format[i]);
+			}*/
 		}
 #endif

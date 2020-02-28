@@ -62,10 +62,8 @@ interface.  This is like the world for physics.
 	Draw
 	//--------------------------------------------*/
 		void uinterface::draw(){
-			glPushMatrix();
-				for (int i = 0; i < uiNum; i++){
-					ui[i]->draw();
-				}
-			glPopMatrix();
+			for (int i = 0; i < uiNum; i++){
+				ui[i]->draw();
+			}
 		}
 #endif

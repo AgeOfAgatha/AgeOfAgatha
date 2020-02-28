@@ -9,7 +9,7 @@ and the ui interface.
 	Includes
 	//--------------------------------------------*/
 		#include "game.h"
-	
+
 	/*--------------------------------------------//
 	Constructors
 	//--------------------------------------------*/
@@ -61,11 +61,11 @@ and the ui interface.
 			delete worldspace;
 			delete display;
 		}
-		
+
 	/*--------------------------------------------//
 	PreDraw
-	Passes the function call down the stack for 
-	drawing elements before the lighting has been 
+	Passes the function call down the stack for
+	drawing elements before the lighting has been
 	added.
 	//--------------------------------------------*/
 		void game::PreDraw(){
@@ -73,7 +73,7 @@ and the ui interface.
 
 	/*--------------------------------------------//
 	Draw
-	Performs player camera related operations and 
+	Performs player camera related operations and
 	passes down the stack for drawing objects after
 	lighting has been done.
 	//--------------------------------------------*/
@@ -85,18 +85,17 @@ and the ui interface.
 			glm::vec4 camera = looking * glm::vec4(position.x + 0.0f, position.y + 0.0f, position.z + 1.0f*viewerDistance, 1.0f);;
 
 			//Create project matrix
-	        glm::mat4 projection;
-		    projection = glm::perspective(glm::radians(FRUSTUM_FIELD_OF_VIEW), (float)currWindowSize[0]/currWindowSize[1], (float)FRUSTUM_NEAR_PLANE, (float)FRUSTUM_FAR_PLANE);
-		    
-		    //Find up vector
-		    glm::vec4 up = looking * glm::vec4(0,1,0,1);
-		    //Create view matrix
-	        glm::mat4 view;
-		    view = glm::lookAt(
-			    glm::vec3(camera[0], camera[1], camera[2]),
-			    position,
-			   	glm::vec3(up[0], up[1], up[2])
-		    );
+			glm::mat4 projection;
+			projection = glm::perspective(glm::radians(FRUSTUM_FIELD_OF_VIEW), (float)currWindowSize[0]/currWindowSize[1], (float)FRUSTUM_NEAR_PLANE, (float)FRUSTUM_FAR_PLANE);
+			//Find up vector
+			glm::vec4 up = looking * glm::vec4(0,1,0,1);
+			//Create view matrix
+			glm::mat4 view;
+			view = glm::lookAt(
+				glm::vec3(camera[0], camera[1], camera[2]),
+				position,
+				glm::vec3(up[0], up[1], up[2])
+			);
 
 			//Draw the world
 			worldspace->draw(projection, view, camera, currWindowSize);
@@ -110,11 +109,9 @@ and the ui interface.
 	//--------------------------------------------*/
 		void game::PostDraw(){
 			//Draw interface overlay
-			glPushMatrix();
-				glDisable( GL_DEPTH_TEST );
-				display->draw();
-				glEnable( GL_DEPTH_TEST );
-			glPopMatrix();
+			glDisable( GL_DEPTH_TEST );
+			display->draw();
+			glEnable( GL_DEPTH_TEST );
 		}
 
 	/*--------------------------------------------//
