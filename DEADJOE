@@ -1,0 +1,21 @@
+
+*** These modified files were found in JOE when it aborted on Fri Feb 28 15:44:53 2020
+*** JOE was aborted by UNIX signal 1
+
+*** File '(Unnamed)'
+:wq!
+exit
+save
+close
+quit
+:wq
+
+*** File '(Unnamed)'
+/root/.gitconfig
+/root/.gitconfig
+
+*** File '* Startup Log *'
+Processing '/etc/joe/editorrc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/editorrc

@@ -1385,55 +1385,65 @@ This is where the simulation is controlled
 				QuadModel = glm::scale(QuadModel, glm::vec3(10.0f,10.0f,1.0f));
 				QuadModel = glm::translate(QuadModel, glm::vec3(0.0f,0.0f,-5.0f));
 
-				DepthShader->use();
-				DepthShader->setMat4("ViewMatrix", view);
-				DepthShader->setMat4("ProjectionMatrix", projection);
-				glDrawBuffer(GL_NONE);
-				DepthShader->setMat4("ModelMatrix", CubeModel);
-				renderCube();
-				DepthShader->setMat4("ModelMatrix", QuadModel);
-				renderQuad();
+				for (int i = 0; i < slightCnt; i++){
+					glDepthMask(GL_TRUE);
+					glEnable(GL_DEPTH_TEST);
+					glClear(GL_STENCIL_BUFFER_BIT);
+					spotlight* spot = getSLight(i);
 
-				glEnable(GL_STENCIL_TEST);
+					DepthShader->use();
+					DepthShader->setMat4("ViewMatrix", view);
+					DepthShader->setMat4("ProjectionMatrix", projection);
+					glDrawBuffer(GL_NONE);
+					DepthShader->setMat4("ModelMatrix", CubeModel);
+					renderCube();
+					DepthShader->setMat4("ModelMatrix", QuadModel);
+					renderQuad();
 
-				ShadowVolShader->use();
-				ShadowVolShader->setMat4("ViewMatrix", view);
-				ShadowVolShader->setMat4("ProjectionMatrix", projection);
-				ShadowVolShader->setVec3("LightPos", glm::vec3(5,5,5));
-				glDepthMask(GL_FALSE);
-				glEnable(GL_DEPTH_CLAMP);
-				glDisable(GL_CULL_FACE);
-				glStencilFunc(GL_ALWAYS, 0, 0xFF);
-				glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
-				glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
-				ShadowVolShader->setMat4("ModelMatrix", CubeModel);
-				renderCube();
-				ShadowVolShader->setMat4("ModelMatrix", QuadModel);
-				renderQuad();
-				glDisable(GL_DEPTH_CLAMP);
-				glEnable(GL_CULL_FACE);
+					glEnable(GL_STENCIL_TEST);
 
-				ShadowedShader->use();
-				ShadowedShader->setMat4("ViewMatrix", view);
-				ShadowedShader->setMat4("ProjectionMatrix", projection);
-				ShadowedShader->setVec4("ViewPos", camera);
-				ShadowedShader->setInt("LightType", 0);
-				ShadowedShader->setVec3("SpotLight.position", glm::vec3(5,5,5));
-				ShadowedShader->setFloat("SpotLight.constant", 0.10f);
-				ShadowedShader->setFloat("SpotLight.linear", 0.1f);
-				ShadowedShader->setFloat("SpotLight.exponential", 0.1f);
-				ShadowedShader->setVec3("SpotLight.direc.direction", glm::vec3(0,0,1));
-				ShadowedShader->setVec3("SpotLight.direc.base.color", glm::vec3(0.0f,0.0f,1.0f));
-				glDrawBuffer(GL_BACK);
-				glStencilFunc(GL_EQUAL, 0x0, 0xFF);
-				glStencilOpSeparate(GL_BACK, GL_KEEP, GL_KEEP, GL_KEEP);
-				ShadowedShader->setMat4("ModelMatrix", CubeModel);
-				renderCube();
-				ShadowedShader->setMat4("ModelMatrix", QuadModel);
-				renderQuad();
+					ShadowVolShader->use();
+					ShadowVolShader->setMat4("ViewMatrix", view);
+					ShadowVolShader->setMat4("ProjectionMatrix", projection);
+					ShadowVolShader->setVec3("LightPos", (glm::vec3)spot->position);
+					glDepthMask(GL_FALSE);
+					glEnable(GL_DEPTH_CLAMP);
+					glDisable(GL_CULL_FACE);
+					glStencilFunc(GL_ALWAYS, 0, 0xFF);
+					glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
+					glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
+					ShadowVolShader->setMat4("ModelMatrix", CubeModel);
+					renderCube();
+					ShadowVolShader->setMat4("ModelMatrix", QuadModel);
+					renderQuad();
+					glDisable(GL_DEPTH_CLAMP);
+					glEnable(GL_CULL_FACE);
 
-				glDisable(GL_STENCIL_TEST);
+					glEnable(GL_BLEND);
+					glBlendFunc(GL_ONE, GL_ONE);
 
+					ShadowedShader->use();
+					ShadowedShader->setMat4("ViewMatrix", view);
+					ShadowedShader->setMat4("ProjectionMatrix", projection);
+					ShadowedShader->setVec4("ViewPos", camera);
+					ShadowedShader->setInt("LightType", 0);
+					ShadowedShader->setVec3("SpotLight.position", (glm::vec3)spot->position);
+					ShadowedShader->setFloat("SpotLight.constant", spot->constant);
+					ShadowedShader->setFloat("SpotLight.linear", spot->linear);
+					ShadowedShader->setFloat("SpotLight.exponential", spot->exponential);
+					ShadowedShader->setVec3("SpotLight.direc.direction", (glm::vec3)spot->direc.direction);
+					ShadowedShader->setVec3("SpotLight.direc.base.color", (glm::vec3)spot->direc.base.color);
+					glDrawBuffer(GL_BACK);
+					glStencilFunc(GL_EQUAL, 0x0, 0xFF);
+					glStencilOpSeparate(GL_BACK, GL_KEEP, GL_KEEP, GL_KEEP);
+					ShadowedShader->setMat4("ModelMatrix", CubeModel);
+					renderCube();
+					ShadowedShader->setMat4("ModelMatrix", QuadModel);
+					renderQuad();
+
+					glDisable(GL_BLEND);
+					glDisable(GL_STENCIL_TEST);
+				}
 
 		        	glUseProgram(0);
 				glFlush();

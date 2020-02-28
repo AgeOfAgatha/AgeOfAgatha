@@ -77,7 +77,7 @@ class world{
 			//rendering
 				void renderCube();
 				void renderQuad();
-			
+
 	public:
 		/*--------------------------------------------//
 		Constructors
