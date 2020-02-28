@@ -1,2 +1,5 @@
-bin/*.o
+binl/*.o
+binw/*.o
+run.pe
 run.exe
+*.swp

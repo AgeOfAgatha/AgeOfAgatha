@@ -44,7 +44,7 @@ run: run$(EXTL)
 	@MESA_GL_VERSION_OVERRIDE=4.3 ./run$(EXTL)
 
 clean-all:
-	@echo Cleaning...
+	@echo -ne Cleaning...'\n\t'
 	@$(MAKE) clean --no-print-directory
 	@echo -e '\t'Cleaning object files in binl...
 	@rm ./binl/*.o -f 2>/dev/null
