@@ -101,7 +101,7 @@ Shader Class
             ID = glCreateProgram();
 
             // Load binary from file
-            std::ifstream inputStream(std::string(name) + std::string(".bin"), std::ios::binary);
+            std::ifstream inputStream((std::string(name) + std::string(".bin")).c_str(), std::ios::binary);
             std::istreambuf_iterator<char> startIt(inputStream), endIt;
             std::vector<char> buffer(startIt, endIt);  // Load file
             inputStream.close();
@@ -191,7 +191,7 @@ Shader Class
 
 	                //Write the format to a file
         	        std::ofstream formatfile;
-                	formatfile.open (std::string(name) + std::string(".format"));
+                	formatfile.open ((std::string(name) + std::string(".format")).c_str());
 	                formatfile << format;
         	        formatfile.close();
 		}
