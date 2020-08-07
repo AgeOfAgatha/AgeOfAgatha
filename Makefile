@@ -1,7 +1,7 @@
 CCW32 = i686-w64-mingw32-g++
 CCW64 = x86_64-w64-mingw32-g++
 CCL = g++
-CFLAGS = -std=c++14 -w -g -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE -I/usr/include -I/usr/include/x86_64-linux-gnu -I$(shell pwd)/deps  -static-libgcc -static
+CFLAGS = -std=c++14 -w -g -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE
 LIBSW32 = -L/usr/lib/x86_64-linux-gnu/ -lopengl32 -lglu32 -lglut32
 LIBSW64 = -L/usr/lib/x86_64-linux-gnu/ -lopengl32 -lglu32 ./freeglut.dll
 LIBSL = -lGL -lGLU -lglut
@@ -66,6 +66,8 @@ clean-all:
 	@rm ./binw32/*.o -f 2>/dev/null
 	@echo -e '\t'Cleaning object files in binw64...
 	@rm ./binw64/*.o -f 2>/dev/null
+	@echo -e '\t'Cleaning executables in root...
+	@rm ./run.* -f 2>/dev/null
 	@echo Done cleaning
 
 clean:

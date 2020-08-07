@@ -1,6 +1,4 @@
 binl/*.o
 binw32/*.o
 binw64/*.o
-*.pe
-*.exe
-*.swp
+run.*
