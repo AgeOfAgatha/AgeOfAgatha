@@ -93,12 +93,14 @@ class world{
 		/*--------------------------------------------//
 		Functions
 		//--------------------------------------------*/
+
 			//regular objects
 				bool loadObj(char* objPath, char* mtlPath, mesh** parent);
 				void addMesh(mesh* &obj);
 				void remMesh(mesh* &obj);
 				mesh* getObject(int i);
 				int getObjectCount();
+				void objectSort(glm::vec4 camera);
 			//gravity objects
 				void addGravObj(mesh* &obj);
 				void remGravObj(mesh* &obj);

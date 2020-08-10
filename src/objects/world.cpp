@@ -1371,6 +1371,32 @@ This is where the simulation is controlled
 			    glBindVertexArray(0);
 			}
 
+		/*-------------------------------------------//
+		Sorting objects by distance to viewer using 
+		insertion sort
+		//-------------------------------------------*/
+		void world::objectSort(glm::vec4 camera){
+			int j, di, dj;
+			mesh* key;
+			
+			for(int i = 1; i < objCnt; i++){
+				key = objects[i];
+				di = (vec3(camera.x, camera.y, camera.z) - key->getPosition()).length();
+				j = i -1;
+				dj = (vec3(camera.x, camera.y, camera.z) - objects[j]->getPosition()).length();
+
+				while(j >= 0 && di < dj){
+					objects[j+1] = objects[j];
+					j = j - 1;
+					
+				}
+				objects[j + 1] = key;
+			}
+
+		
+		}
+
+			
 		/*--------------------------------------------//
 		Overall Draw function
 		//--------------------------------------------*/
@@ -1380,10 +1406,7 @@ This is where the simulation is controlled
 				glEnable(GL_DEPTH_TEST);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-				glm::mat4 CubeModel = glm::mat4(1.0);
-				glm::mat4 QuadModel = glm::mat4(1.0);
-				QuadModel = glm::scale(QuadModel, glm::vec3(10.0f,10.0f,1.0f));
-				QuadModel = glm::translate(QuadModel, glm::vec3(0.0f,0.0f,-5.0f));
+				objectSort(camera);
 
 				for (int i = 0; i < slightCnt; i++){
 					glDepthMask(GL_TRUE);
@@ -1395,10 +1418,12 @@ This is where the simulation is controlled
 					DepthShader->setMat4("ViewMatrix", view);
 					DepthShader->setMat4("ProjectionMatrix", projection);
 					glDrawBuffer(GL_NONE);
-					DepthShader->setMat4("ModelMatrix", CubeModel);
-					renderCube();
-					DepthShader->setMat4("ModelMatrix", QuadModel);
-					renderQuad();
+					for(int j =0; j < this->getObjectCount(); j++){
+						mesh* cube = getObject(j);
+						cube->draw(DepthShader);
+					}
+					
+					
 
 					glEnable(GL_STENCIL_TEST);
 
@@ -1412,10 +1437,11 @@ This is where the simulation is controlled
 					glStencilFunc(GL_ALWAYS, 0, 0xFF);
 					glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
 					glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
-					ShadowVolShader->setMat4("ModelMatrix", CubeModel);
-					renderCube();
-					ShadowVolShader->setMat4("ModelMatrix", QuadModel);
-					renderQuad();
+					for(int j =0; j < this->getObjectCount(); j++){
+						mesh* cube = getObject(j);
+						cube->draw(ShadowVolShader);
+					}				
+					
 					glDisable(GL_DEPTH_CLAMP);
 					glEnable(GL_CULL_FACE);
 
@@ -1436,10 +1462,11 @@ This is where the simulation is controlled
 					glDrawBuffer(GL_BACK);
 					glStencilFunc(GL_EQUAL, 0x0, 0xFF);
 					glStencilOpSeparate(GL_BACK, GL_KEEP, GL_KEEP, GL_KEEP);
-					ShadowedShader->setMat4("ModelMatrix", CubeModel);
-					renderCube();
-					ShadowedShader->setMat4("ModelMatrix", QuadModel);
-					renderQuad();
+					for(int j =0; j < this->getObjectCount(); j++){
+						mesh* cube = getObject(j);
+						cube->draw(ShadowedShader);
+					}				
+										
 
 					glDisable(GL_BLEND);
 					glDisable(GL_STENCIL_TEST);

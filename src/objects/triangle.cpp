@@ -87,31 +87,31 @@ Smallest object that can be drawn
 
 		    //position
 		    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-			glBufferData(GL_ARRAY_BUFFER, 3*4*sizeof(double), vert, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, 3*4*sizeof(double), vert, GL_STREAM_DRAW);
 			glVertexAttribPointer((GLuint)0, (GLuint)4, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
 		    glEnableVertexAttribArray((GLuint)0);
 
 		    //normal
 		    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-			glBufferData(GL_ARRAY_BUFFER, 3*3*sizeof(double), norm, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, 3*3*sizeof(double), norm, GL_STREAM_DRAW);
 			glVertexAttribPointer((GLuint)1, (GLuint)3, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
 		    glEnableVertexAttribArray((GLuint)1);
 
 		    //color
 		    glBindBuffer(GL_ARRAY_BUFFER, VBO[2]);
-			glBufferData(GL_ARRAY_BUFFER, 3*4*sizeof(double), col, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, 3*4*sizeof(double), col, GL_STREAM_DRAW);
 			glVertexAttribPointer((GLuint)2, (GLuint)4, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
 		    glEnableVertexAttribArray((GLuint)2);
 
 		    //texture coordinate
 		    glBindBuffer(GL_ARRAY_BUFFER, VBO[3]);
-			glBufferData(GL_ARRAY_BUFFER, 3*2*sizeof(double), st, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, 3*2*sizeof(double), st, GL_STREAM_DRAW);
 			glVertexAttribPointer((GLuint)3, (GLuint)2, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
 		    glEnableVertexAttribArray((GLuint)3);
 
 		    //texture blend
 		    glBindBuffer(GL_ARRAY_BUFFER, VBO[4]);
-			glBufferData(GL_ARRAY_BUFFER, 3*1*sizeof(double), blend, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, 3*1*sizeof(double), blend, GL_STREAM_DRAW);
 			glVertexAttribPointer((GLuint)4, (GLuint)1, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
 		    glEnableVertexAttribArray((GLuint)4);
 		};
@@ -174,31 +174,31 @@ Smallest object that can be drawn
 
 		    //position
 		    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-			glBufferData(GL_ARRAY_BUFFER, 3*4*sizeof(double), vert, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, 3*4*sizeof(double), vert, GL_STREAM_DRAW);
 			glVertexAttribPointer((GLuint)0, (GLuint)4, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
 		    glEnableVertexAttribArray((GLuint)0);
 
 		    //normal
 		    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-			glBufferData(GL_ARRAY_BUFFER, 3*3*sizeof(double), norm, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, 3*3*sizeof(double), norm, GL_STREAM_DRAW);
 			glVertexAttribPointer((GLuint)1, (GLuint)3, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
 		    glEnableVertexAttribArray((GLuint)1);
 
 		    //color
 		    glBindBuffer(GL_ARRAY_BUFFER, VBO[2]);
-			glBufferData(GL_ARRAY_BUFFER, 3*4*sizeof(double), col, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, 3*4*sizeof(double), col, GL_STREAM_DRAW);
 			glVertexAttribPointer((GLuint)2, (GLuint)4, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
 		    glEnableVertexAttribArray((GLuint)2);
 
 		    //texture coordinate
 		    glBindBuffer(GL_ARRAY_BUFFER, VBO[3]);
-			glBufferData(GL_ARRAY_BUFFER, 3*2*sizeof(double), st, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, 3*2*sizeof(double), st, GL_STREAM_DRAW);
 			glVertexAttribPointer((GLuint)3, (GLuint)2, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
 		    glEnableVertexAttribArray((GLuint)3);
 
 		    //texture blend
 		    glBindBuffer(GL_ARRAY_BUFFER, VBO[4]);
-			glBufferData(GL_ARRAY_BUFFER, 3*1*sizeof(double), blend, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, 3*1*sizeof(double), blend, GL_STREAM_DRAW);
 			glVertexAttribPointer((GLuint)4, (GLuint)1, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
 		    glEnableVertexAttribArray((GLuint)4);
 		};

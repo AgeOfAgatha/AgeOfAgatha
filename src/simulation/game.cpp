@@ -31,9 +31,9 @@ and the ui interface.
 			display->add(frame);
 
 			//load object
-			for (int i = -1; i < 2; i++){
-				for (int j = -1; j < 2; j++){
-					for (int k = -1; k < 2; k++){
+			for (int i = -1; i < 1; i++){
+				for (int j = -1; j < 1; j++){
+					for (int k = -1; k < 1; k++){
 						mesh* parent;
 						worldspace->loadObj("models/cube.obj", "models/cube.mtl", &parent);
 						parent->setPosition(vec3(3*(i),3*(j),3*(k)));
@@ -100,7 +100,7 @@ and the ui interface.
 			glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f );
 			glm::quat quat = glm::quat(vec3(viewerAltitude, viewerAzimuth, 0.0));
 			glm::mat4 looking = toMat4(quat);
-			glm::vec4 camera = looking * glm::vec4(position.x + 0.0f, position.y + 0.0f, position.z + 1.0f*viewerDistance, 1.0f);;
+			glm::vec4 camera = looking * glm::vec4(position.x + 0.0f, position.y + 0.0f, position.z + 1.0f*viewerDistance, 1.0f);
 
 			//Create project matrix
 			glm::mat4 projection;
