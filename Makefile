@@ -55,6 +55,7 @@ run$(EXTL): binl/*.o
 	@$(CCL) $(CFLAGS) $^ -o $@ $(LIBSL)
 
 run: run$(EXTL)
+	#export MESA_GL_VERSION_OVERRIDE=4.3
 	@MESA_GL_VERSION_OVERRIDE=4.3 ./run$(EXTL)
 
 clean-all:

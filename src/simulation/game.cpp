@@ -43,28 +43,28 @@ and the ui interface.
 
 			//intialize lighting
 				spotlight* spot1 = new spotlight();
-				spot1->position = vec3(5.0f, 5.0f, 5.0f);
-				spot1->direc.direction = vec3(0.0f, 0.0f, 1.0f);
-				spot1->direc.base.color = vec3(1.0f, 0.0f, 0.0f);
-				spot1->constant = 0.1f;
-				spot1->linear = 0.1f;
-				spot1->exponential = 0.1f;
+					spot1->position = vec3(5.0f, 5.0f, 5.0f);
+					spot1->direc.direction = vec3(0.0f, 0.0f, 1.0f);
+					spot1->direc.base.color = vec3(1.0f, 0.0f, 0.0f);
+					spot1->constant = 0.1f;
+					spot1->linear = 0.1f;
+					spot1->exponential = 0.1f;
 
 				spotlight* spot2 = new spotlight();
-				spot2->position = vec3(-5.0f, 5.0f, 5.0f);
-				spot2->direc.direction = vec3(0.0f, 0.0f, 1.0f);
-				spot2->direc.base.color = vec3(0.0f, 1.0f, 0.0f);
-				spot2->constant = 0.1f;
-				spot2->linear = 0.1f;
-				spot2->exponential = 0.1f;
+					spot2->position = vec3(-5.0f, 5.0f, 5.0f);
+					spot2->direc.direction = vec3(0.0f, 0.0f, 1.0f);
+					spot2->direc.base.color = vec3(0.0f, 1.0f, 0.0f);
+					spot2->constant = 0.1f;
+					spot2->linear = 0.1f;
+					spot2->exponential = 0.1f;
 
 				spotlight* spot3 = new spotlight();
-                                spot3->position = vec3(0.0f, -5.0f, 5.0f);
-                                spot3->direc.direction = vec3(0.0f, 0.0f, 1.0f);
-                                spot3->direc.base.color = vec3(0.0f, 0.0f, 1.0f);
-                                spot3->constant = 0.1f;
-                                spot3->linear = 0.1f;
-                                spot3->exponential = 0.1f;
+					spot3->position = vec3(0.0f, -5.0f, 5.0f);
+                    spot3->direc.direction = vec3(0.0f, 0.0f, 1.0f);
+                    spot3->direc.base.color = vec3(0.0f, 0.0f, 1.0f);
+                    spot3->constant = 0.1f;
+                    spot3->linear = 0.1f;
+                    spot3->exponential = 0.1f;
 
 			//load lighting into world
 				worldspace->addSLight(spot1);
