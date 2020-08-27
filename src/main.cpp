@@ -116,14 +116,15 @@ Error Message Callback for opengl
 			}
 		}
 		//print error message if high enough priority
-		if (strcmp(cseverity, "NOTIFICATION") != 0)
+		if (strcmp(cseverity, "NOTIFICATION") != 0){
 			fprintf(stderr, "GL Error Callback:\tsource = %s,\ttype = %s,\tid = 0x%x\tseverity = %s,\n\tmessage:\t%s\n\n", csource, ctype, id, cseverity, message );
+		}
 	}
 
 /*--------------------------------------------//
 GLUT functions - passes down class stack
 //--------------------------------------------*/
-	void Draw(){app->PreDraw(); app->Draw(); app->PostDraw(); glutSwapBuffers(); glFlush();}
+	void Draw(){app->PreDraw(); app->Draw(); app->PostDraw(); glFinish(); glutSwapBuffers(); glutPostRedisplay();}
 	void Update(int value){value = app->Update(value); glutTimerFunc(TIMER, Update, value);}
 	void KeypressASCII(unsigned char pressedKey, int mouseXPosition, int mouseYPosition){app->KeypressASCII(pressedKey,mouseXPosition,mouseYPosition);}
 	void KeypressNonASCII(int pressedKey, int mouseXPosition, int mouseYPosition){app->KeypressNonASCII(pressedKey,mouseXPosition,mouseYPosition);}
@@ -162,7 +163,7 @@ Main - Entry point for program
 		glDepthFunc(GL_LEQUAL);
 		glEnable(GL_DEPTH_TEST);
 
-		app = new game();
+		app = new game(window);
 
 		glutTimerFunc(TIMER, Update, 0);
 		glutMouseFunc(HandleButton);
@@ -180,7 +181,8 @@ Main - Entry point for program
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 		glDebugMessageCallback(MessageCallback, 0);
 
-		cout << "OpenGL initialized: OpenGL version: " << glGetString(GL_VERSION) << " GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << endl;
+		//debug message
+		//cout << "OpenGL initialized: OpenGL version: " << glGetString(GL_VERSION) << " GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << endl;
 
 		//start the game
 		glutMainLoop();

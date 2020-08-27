@@ -37,7 +37,6 @@ This is where the simulation is controlled
 					frictionConst = 100;
 					deformConst = 0.1;
 
-				BufferInit();
 				ShaderInit();
 			};
 
@@ -68,105 +67,10 @@ This is where the simulation is controlled
 	ShaderInit - Initialize shaders
 	//--------------------------------------------*/
 		void world::ShaderInit(void){
-			DepthShader = new Shader("depth","src/shaders/depth.vertex", "src/shaders/depth.fragment", NULL);
-			ShadowVolShader = new Shader("shadowvol","src/shaders/shadowvol.vertex", "src/shaders/shadowvol.fragment", "src/shaders/shadowvol.geometry");
-			ShadowedShader = new Shader("shadowedshader","src/shaders/basic.vertex", "src/shaders/basic.fragment", NULL);
-
-
-			GeometryShader = new Shader("geometry","src/shaders/geometry_pass.vertex", "src/shaders/geometry_pass.fragment", NULL);
-			GeometryShader->use();
-			GeometryShader->setInt("texture1set", 0);
-			GeometryShader->setInt("texture2set", 0);
-
-			StencilShader = new Shader("stencil","src/shaders/null_pass.vertex", "src/shaders/null_pass.fragment", NULL);
-
-			LightShader = new Shader("light","src/shaders/light_pass.vertex", "src/shaders/light_pass.fragment", NULL);
-			LightShader->use();
-			LightShader->setInt("PositionMap", gPosition);
-			LightShader->setInt("ColorMap", gDiffuse);
-			LightShader->setInt("NormalMap", gNormal);
-			LightShader->setFloat("SpecularPower", 64);
-			LightShader->setFloat("MatSpecularIntensity", 0.3);
-
-			TransparencyShader = new Shader("transparency","src/shaders/transparency_pass.vertex", "src/shaders/transparency_pass.fragment", NULL);
-			TransparencyShader->use();
-			TransparencyShader->setInt("ColorMap", tDiffuse);
-			glUseProgram(0);
-		}
-
-	/*--------------------------------------------//
-	BufferInit - Initialize buffers
-	//--------------------------------------------*/
-		void world::BufferInit(void){
-			// configure g-buffer framebuffer
-		    // ------------------------------
-			    glGenFramebuffers(1, &gBuffer);
-			    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, gBuffer);
-			    // position color buffer
-			    glGenTextures(1, &gPosition);
-			    glBindTexture(GL_TEXTURE_2D, gPosition);
-			    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, BUFFER_RES_X, BUFFER_RES_Y, 0, GL_RGB, GL_FLOAT, 0);
-			    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition, 0);
-			    // normal color buffer
-			    glGenTextures(1, &gNormal);
-			    glBindTexture(GL_TEXTURE_2D, gNormal);
-			    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, BUFFER_RES_X, BUFFER_RES_Y, 0, GL_RGB, GL_FLOAT, 0);
-			    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
-			    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
-			    // diffuse color buffer
-			    glGenTextures(1, &gDiffuse);
-			    glBindTexture(GL_TEXTURE_2D, gDiffuse);
-			    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, BUFFER_RES_X, BUFFER_RES_Y, 0, GL_RGB, GL_FLOAT, 0);
-			    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
-			    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gDiffuse, 0);
-			    // final result buffer
-			    glGenTextures(1, &gResult);
-			    glBindTexture(GL_TEXTURE_2D, gResult);
-			    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, BUFFER_RES_X, BUFFER_RES_Y, 0, GL_RGB, GL_FLOAT, 0);
-			    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
-			    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, gResult, 0);
-			    // depth color buffer
-				glGenRenderbuffers(1, &gDepth);
-				glBindRenderbuffer(GL_RENDERBUFFER, gDepth);
-				glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, BUFFER_RES_X, BUFFER_RES_Y);
-				glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepth);
-			    // finally check if framebuffer is complete
-			    if (glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-			        std::cout << "Framebuffer not complete!" << std::endl;
-			    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-
-
-		    // configure t-buffer framebuffer
-		    // ------------------------------
-				glGenFramebuffers(1, &tBuffer);
-				glBindFramebuffer(GL_FRAMEBUFFER, tBuffer);
-				// position color buffer
-				glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, gPosition, 0);
-				// normal color buffer
-				glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, gNormal, 0);
-				// diffuse color buffer
-				glGenTextures(1, &tDiffuse);
-				glBindTexture(GL_TEXTURE_2D, tDiffuse);
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, BUFFER_RES_X, BUFFER_RES_Y, 0, GL_RGB, GL_FLOAT, 0);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
-				glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, tDiffuse, 0);
-				// depth color buffer
-				glBindRenderbuffer(GL_RENDERBUFFER, gDepth);
-				glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, BUFFER_RES_X, BUFFER_RES_Y);
-				glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gDepth);
-				// final result buffer
-				glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, gResult, 0);
-
-				// finally check if framebuffer is complete
-				if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-					std::cout << "Framebuffer not complete!" << std::endl;
-				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			DepthSpotShader = new Shader("depth","src/shaders/depth.vertex", "src/shaders/spotdepth.fragment", "src/shaders/spotdepth.geometry");
+			DepthDirecShader = new Shader("depth","src/shaders/depth.vertex", "src/shaders/direcdepth.fragment", NULL);
+			ShadowShader = new Shader("depth","src/shaders/shadow.vertex", "src/shaders/shadow.fragment", NULL);
+			DepthDebugShader = new Shader("depth","src/shaders/debug.vertex", "src/shaders/debug.fragment", NULL);
 		}
 
 	/*--------------------------------------------//
@@ -955,321 +859,72 @@ This is where the simulation is controlled
 	lighting is broken up into passes to simplify
 	overall process
 	//--------------------------------------------*/
-		/*--------------------------------------------//
-		Renders a 1x1 cube
-		//--------------------------------------------*/
-			void world::renderCube(){
+		// renderCube() renders a 1x1 3D cube in NDC.
+		// ------------------------------------------
+			void world::renderCube()
+			{
 			    // initialize (if necessary)
-			    if (cubeVAO == 0){
-			    	double vert[36][4] = {
-						// back face
-			            {-1.0f, -1.0f, -1.0f, 1.0f}, // bottom-left
-			            { 1.0f,  1.0f, -1.0f, 1.0f}, // top-right
-			            { 1.0f, -1.0f, -1.0f, 1.0f}, // bottom-right
-			            { 1.0f,  1.0f, -1.0f, 1.0f}, // top-right
-			            {-1.0f, -1.0f, -1.0f, 1.0f}, // bottom-left
-			            {-1.0f,  1.0f, -1.0f, 1.0f}, // top-left
+			    if (cubeVAO == 0)
+			    {
+			        float vertices[] = {
+			            // back face
+			            -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+			             1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+			             1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f, // bottom-right         
+			             1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+			            -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+			            -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f, // top-left
 			            // front face
-			            {-1.0f, -1.0f,  1.0f, 1.0f}, // bottom-left
-			            { 1.0f, -1.0f,  1.0f, 1.0f}, // bottom-right
-			            { 1.0f,  1.0f,  1.0f, 1.0f}, // top-right
-			            { 1.0f,  1.0f,  1.0f, 1.0f}, // top-right
-			            {-1.0f,  1.0f,  1.0f, 1.0f}, // top-left
-			            {-1.0f, -1.0f,  1.0f, 1.0f}, // bottom-left
+			            -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+			             1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, // bottom-right
+			             1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+			             1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+			            -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, // top-left
+			            -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
 			            // left face
-			            {-1.0f,  1.0f,  1.0f, 1.0f}, // top-right
-			            {-1.0f,  1.0f, -1.0f, 1.0f}, // top-left
-			            {-1.0f, -1.0f, -1.0f, 1.0f}, // bottom-left
-			            {-1.0f, -1.0f, -1.0f, 1.0f}, // bottom-left
-			            {-1.0f, -1.0f,  1.0f, 1.0f}, // bottom-right
-			            {-1.0f,  1.0f,  1.0f, 1.0f}, // top-right
+			            -1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+			            -1.0f,  1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-left
+			            -1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+			            -1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+			            -1.0f, -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+			            -1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
 			            // right face
-			            { 1.0f,  1.0f,  1.0f, 1.0f}, // top-left
-			            { 1.0f, -1.0f, -1.0f, 1.0f}, // bottom-right
-			            { 1.0f,  1.0f, -1.0f, 1.0f}, // top-right
-			            { 1.0f, -1.0f, -1.0f, 1.0f}, // bottom-right
-			            { 1.0f,  1.0f,  1.0f, 1.0f}, // top-left
-			            { 1.0f, -1.0f,  1.0f, 1.0f}, // bottom-left
+			             1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+			             1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+			             1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-right         
+			             1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+			             1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+			             1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-left     
 			            // bottom face
-			            {-1.0f, -1.0f, -1.0f, 1.0f}, // top-right
-			            { 1.0f, -1.0f, -1.0f, 1.0f}, // top-left
-			            { 1.0f, -1.0f,  1.0f, 1.0f}, // bottom-left
-			            { 1.0f, -1.0f,  1.0f, 1.0f}, // bottom-left
-			            {-1.0f, -1.0f,  1.0f, 1.0f}, // bottom-right
-			            {-1.0f, -1.0f, -1.0f, 1.0f}, // top-right
+			            -1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+			             1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f, // top-left
+			             1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+			             1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+			            -1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+			            -1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
 			            // top face
-			            {-1.0f,  1.0f, -1.0f, 1.0f}, // top-left
-			            { 1.0f,  1.0f , 1.0f, 1.0f}, // bottom-right
-			            { 1.0f,  1.0f, -1.0f, 1.0f}, // top-right
-			            { 1.0f,  1.0f,  1.0f, 1.0f}, // bottom-right
-			            {-1.0f,  1.0f, -1.0f, 1.0f}, // top-left
-			            {-1.0f,  1.0f,  1.0f, 1.0f}  // bottom-left
-					};
-					//normal array
-					double norm[36][3] = {
-						// back face
-			            { 0.0f,  0.0f, -1.0f}, // bottom-left
-			            { 0.0f,  0.0f, -1.0f}, // top-right
-			            { 0.0f,  0.0f, -1.0f}, // bottom-right         
-			            { 0.0f,  0.0f, -1.0f}, // top-right
-			            { 0.0f,  0.0f, -1.0f}, // bottom-left
-			            { 0.0f,  0.0f, -1.0f}, // top-left
-			            // front face
-			            { 0.0f,  0.0f,  1.0f}, // bottom-left
-			            { 0.0f,  0.0f,  1.0f}, // bottom-right
-			            { 0.0f,  0.0f,  1.0f}, // top-right
-			            { 0.0f,  0.0f,  1.0f}, // top-right
-			            { 0.0f,  0.0f,  1.0f}, // top-left
-			            { 0.0f,  0.0f,  1.0f}, // bottom-left
-			            // left face
-			            {-1.0f,  0.0f,  0.0f}, // top-right
-			            {-1.0f,  0.0f,  0.0f}, // top-left
-			            {-1.0f,  0.0f,  0.0f}, // bottom-left
-			            {-1.0f,  0.0f,  0.0f}, // bottom-left
-			            {-1.0f,  0.0f,  0.0f}, // bottom-right
-			            {-1.0f,  0.0f,  0.0f}, // top-right
-			            // right face
-			            { 1.0f,  0.0f,  0.0f}, // top-left
-			            { 1.0f,  0.0f,  0.0f}, // bottom-right
-			            { 1.0f,  0.0f,  0.0f}, // top-right         
-			            { 1.0f,  0.0f,  0.0f}, // bottom-right
-			            { 1.0f,  0.0f,  0.0f}, // top-left
-			            { 1.0f,  0.0f,  0.0f}, // bottom-left     
-			            // bottom face
-			            { 0.0f, -1.0f,  0.0f}, // top-right
-			            { 0.0f, -1.0f,  0.0f}, // top-left
-			            { 0.0f, -1.0f,  0.0f}, // bottom-left
-			            { 0.0f, -1.0f,  0.0f}, // bottom-left
-			            { 0.0f, -1.0f,  0.0f}, // bottom-right
-			            { 0.0f, -1.0f,  0.0f}, // top-right
-			            // top face
-			            { 0.0f,  1.0f,  0.0f}, // top-left
-			            { 0.0f,  1.0f,  0.0f}, // bottom-right
-			            { 0.0f,  1.0f,  0.0f}, // top-right     
-			            { 0.0f,  1.0f,  0.0f}, // bottom-right
-			            { 0.0f,  1.0f,  0.0f}, // top-left
-			            { 0.0f,  1.0f,  0.0f}  // bottom-left   
-					};
-					//color array
-					double col[36][4]  = {
-						// back face
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-left
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-right         
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-left
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // top-left
-			            // front face
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-left
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-right
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // top-left
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-left
-			            // left face
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // top-left
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-left
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-left
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-right
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right
-			            // right face
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // top-left
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-right
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right         
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-right
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // top-left
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-left     
-			            // bottom face
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // top-left
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-left
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-left
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-right
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right
-			            // top face
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // top-left
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-right
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right     
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-right
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // top-left
-			            {1.0f, 1.0f, 1.0f, 1.0f}  // bottom-left 
-					};
-					//texture coordinate array
-					double st[36][2]  = {
-						// back face
-			            {0.0f, 0.0f}, // bottom-left
-			            {1.0f, 1.0f}, // top-right
-			            {1.0f, 0.0f}, // bottom-right         
-			            {1.0f, 1.0f}, // top-right
-			            {0.0f, 0.0f}, // bottom-left
-			            {0.0f, 1.0f}, // top-left
-			            // front face
-			            {0.0f, 0.0f}, // bottom-left
-			            {1.0f, 0.0f}, // bottom-right
-			            {1.0f, 1.0f}, // top-right
-			            {1.0f, 1.0f}, // top-right
-			            {0.0f, 1.0f}, // top-left
-			            {0.0f, 0.0f}, // bottom-left
-			            // left face
-			            {1.0f, 0.0f}, // top-right
-			            {1.0f, 1.0f}, // top-left
-			            {0.0f, 1.0f}, // bottom-left
-			            {0.0f, 1.0f}, // bottom-left
-			            {0.0f, 0.0f}, // bottom-right
-			            {1.0f, 0.0f}, // top-right
-			            // right face
-			            {1.0f, 0.0f}, // top-left
-			            {0.0f, 1.0f}, // bottom-right
-			            {1.0f, 1.0f}, // top-right         
-			            {0.0f, 1.0f}, // bottom-right
-			            {1.0f, 0.0f}, // top-left
-			            {0.0f, 0.0f}, // bottom-left     
-			            // bottom face
-			            {0.0f, 1.0f}, // top-right
-			            {1.0f, 1.0f}, // top-left
-			            {1.0f, 0.0f}, // bottom-left
-			            {1.0f, 0.0f}, // bottom-left
-			            {0.0f, 0.0f}, // bottom-right
-			            {0.0f, 1.0f}, // top-right
-			            // top face
-			            {0.0f, 1.0f}, // top-left
-			            {1.0f, 0.0f}, // bottom-right
-			            {1.0f, 1.0f}, // top-right     
-			            {1.0f, 0.0f}, // bottom-right
-			            {0.0f, 1.0f}, // top-left
-			            {0.0f, 0.0f}  // bottom-left 
-					};
-					//texture blending array
-					double blend[36][1]  = {
-						// back face
-			            {1.0f}, // bottom-left
-			            {1.0f}, // top-right
-			            {1.0f}, // bottom-right         
-			            {1.0f}, // top-right
-			            {1.0f}, // bottom-left
-			            {1.0f}, // top-left
-			            // front face
-			            {1.0f}, // bottom-left
-			            {1.0f}, // bottom-right
-			            {1.0f}, // top-right
-			            {1.0f}, // top-right
-			            {1.0f}, // top-left
-			            {1.0f}, // bottom-left
-			            // left face
-			            {1.0f}, // top-right
-			            {1.0f}, // top-left
-			            {1.0f}, // bottom-left
-			            {1.0f}, // bottom-left
-			            {1.0f}, // bottom-right
-			            {1.0f}, // top-right
-			            // right face
-			            {1.0f}, // top-left
-			            {1.0f}, // bottom-right
-			            {1.0f}, // top-right         
-			            {1.0f}, // bottom-right
-			            {1.0f}, // top-left
-			            {1.0f}, // bottom-left     
-			            // bottom face
-			            {1.0f}, // top-right
-			            {1.0f}, // top-left
-			            {1.0f}, // bottom-left
-			            {1.0f}, // bottom-left
-			            {1.0f}, // bottom-right
-			            {1.0f}, // top-right
-			            // top face
-			            {1.0f}, // top-left
-			            {1.0f}, // bottom-right
-			            {1.0f}, // top-right     
-			            {1.0f}, // bottom-right
-			            {1.0f}, // top-left
-			            {1.0f}  // bottom-left 
-					};
-					//Vertex Transparency array
-					double trans[36][1]  = {
-						// back face
-			            {0.2f}, // bottom-left
-			            {0.2f}, // top-right
-			            {0.2f}, // bottom-right         
-			            {0.2f}, // top-right
-			            {0.2f}, // bottom-left
-			            {0.2f}, // top-left
-			            // front face
-			            {0.2f}, // bottom-left
-			            {0.2f}, // bottom-right
-			            {0.2f}, // top-right
-			            {0.2f}, // top-right
-			            {0.2f}, // top-left
-			            {0.2f}, // bottom-left
-			            // left face
-			            {0.2f}, // top-right
-			            {0.2f}, // top-left
-			            {0.2f}, // bottom-left
-			            {0.2f}, // bottom-left
-			            {0.2f}, // bottom-right
-			            {0.2f}, // top-right
-			            // right face
-			            {0.2f}, // top-left
-			            {0.2f}, // bottom-right
-			            {0.2f}, // top-right         
-			            {0.2f}, // bottom-right
-			            {0.2f}, // top-left
-			            {0.2f}, // bottom-left     
-			            // bottom face
-			            {0.2f}, // top-right
-			            {0.2f}, // top-left
-			            {0.2f}, // bottom-left
-			            {0.2f}, // bottom-left
-			            {0.2f}, // bottom-right
-			            {0.2f}, // top-right
-			            // top face
-			            {0.2f}, // top-left
-			            {0.2f}, // bottom-right
-			            {0.2f}, // top-right     
-			            {0.2f}, // bottom-right
-			            {0.2f}, // top-left
-			            {0.2f}  // bottom-left 
-					};
-
-				    glGenVertexArrays(1, &cubeVAO);
-				    glBindVertexArray(cubeVAO);
-				    glGenBuffers(6, cubeVBO);
-
-				    //position
-				    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO[0]);
-					glBufferData(GL_ARRAY_BUFFER, 36*4*sizeof(double), vert, GL_STATIC_DRAW);
-					glVertexAttribPointer((GLuint)0, (GLuint)4, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
-				    glEnableVertexAttribArray((GLuint)0);
-
-				    //normal
-				    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO[1]);
-					glBufferData(GL_ARRAY_BUFFER, 36*3*sizeof(double), norm, GL_STATIC_DRAW);
-					glVertexAttribPointer((GLuint)1, (GLuint)3, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
-				    glEnableVertexAttribArray((GLuint)1);
-
-				    //color
-				    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO[2]);
-					glBufferData(GL_ARRAY_BUFFER, 36*4*sizeof(double), col, GL_STATIC_DRAW);
-					glVertexAttribPointer((GLuint)2, (GLuint)4, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
-				    glEnableVertexAttribArray((GLuint)2);
-
-				    //texture coordinate
-				    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO[3]);
-					glBufferData(GL_ARRAY_BUFFER, 36*2*sizeof(double), st, GL_STATIC_DRAW);
-					glVertexAttribPointer((GLuint)3, (GLuint)2, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
-				    glEnableVertexAttribArray((GLuint)3);
-
-				    //texture blend
-				    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO[4]);
-					glBufferData(GL_ARRAY_BUFFER, 36*1*sizeof(double), blend, GL_STATIC_DRAW);
-					glVertexAttribPointer((GLuint)4, (GLuint)1, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
-				    glEnableVertexAttribArray((GLuint)4);
-
-				    //transparency
-				    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO[5]);
-					glBufferData(GL_ARRAY_BUFFER, 36*1*sizeof(double), trans, GL_STATIC_DRAW);
-					glVertexAttribPointer((GLuint)5, (GLuint)1, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
-				    glEnableVertexAttribArray((GLuint)5);
+			            -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+			             1.0f,  1.0f , 1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+			             1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, // top-right     
+			             1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+			            -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+			            -1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left        
+			        };
+			        glGenVertexArrays(1, &cubeVAO);
+			        glGenBuffers(1, &cubeVBO);
+			        // fill buffer
+			        glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+			        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+			        // link vertex attributes
+			        glBindVertexArray(cubeVAO);
+			        glEnableVertexAttribArray(0);
+			        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+			        glEnableVertexAttribArray(1);
+			        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+			        glEnableVertexAttribArray(2);
+			        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+			        glBindBuffer(GL_ARRAY_BUFFER, 0);
+			        glBindVertexArray(0);
 			    }
 			    // render Cube
 			    glBindVertexArray(cubeVAO);
@@ -1277,202 +932,168 @@ This is where the simulation is controlled
 			    glBindVertexArray(0);
 			}
 
-		/*--------------------------------------------//
-		Renders a 1x1 quad
-		//--------------------------------------------*/
-			void world::renderQuad(){
-			    if (quadVAO == 0){
-			        double vert[6][4] = {
-			            // front face
-			            {-1.0f, -1.0f,  0.0f, 1.0f}, // bottom-left
-			            { 1.0f, -1.0f,  0.0f, 1.0f}, // bottom-right
-			            { 1.0f,  1.0f,  0.0f, 1.0f}, // top-right
-			            { 1.0f,  1.0f,  0.0f, 1.0f}, // top-right
-			            {-1.0f,  1.0f,  0.0f, 1.0f}, // top-left
-			            {-1.0f, -1.0f,  0.0f, 1.0f}, // bottom-left  
-					};
-					//normal array
-					double norm[6][3] = {
-			            // front face
-			            { 0.0f,  0.0f,  1.0f}, // bottom-left
-			            { 0.0f,  0.0f,  1.0f}, // bottom-right
-			            { 0.0f,  0.0f,  1.0f}, // top-right
-			            { 0.0f,  0.0f,  1.0f}, // top-right
-			            { 0.0f,  0.0f,  1.0f}, // top-left
-			            { 0.0f,  0.0f,  1.0f}, // bottom-left 
-					};
-					//color array
-					double col[6][4]  = {
-			            // front face
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-left
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-right
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // top-left
-			            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-left
-					};
-					//texture coordinate array
-					double st[6][2]  = {
-			            // front face
-			            {0.0f, 0.0f}, // bottom-left
-			            {1.0f, 0.0f}, // bottom-right
-			            {1.0f, 1.0f}, // top-right
-			            {1.0f, 1.0f}, // top-right
-			            {0.0f, 1.0f}, // top-left
-			            {0.0f, 0.0f}, // bottom-left
-					};
-					//texture blending array
-					double blend[6][1]  = {
-			            // front face
-			            {1.0f}, // bottom-left
-			            {1.0f}, // bottom-right
-			            {1.0f}, // top-right
-			            {1.0f}, // top-right
-			            {1.0f}, // top-left
-			            {1.0f}, // bottom-left
-					};
-
-				    glGenVertexArrays(1, &quadVAO);
-				    glBindVertexArray(quadVAO);
-				    glGenBuffers(5, quadVBO);
-
-				    //position
-				    glBindBuffer(GL_ARRAY_BUFFER, quadVBO[0]);
-					glBufferData(GL_ARRAY_BUFFER, 6*4*sizeof(double), vert, GL_STATIC_DRAW);
-					glVertexAttribPointer((GLuint)0, (GLuint)4, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
-				    glEnableVertexAttribArray((GLuint)0);
-
-				    //normal
-				    glBindBuffer(GL_ARRAY_BUFFER, quadVBO[1]);
-					glBufferData(GL_ARRAY_BUFFER, 6*3*sizeof(double), norm, GL_STATIC_DRAW);
-					glVertexAttribPointer((GLuint)1, (GLuint)3, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
-				    glEnableVertexAttribArray((GLuint)1);
-
-				    //color
-				    glBindBuffer(GL_ARRAY_BUFFER, quadVBO[2]);
-					glBufferData(GL_ARRAY_BUFFER, 6*4*sizeof(double), col, GL_STATIC_DRAW);
-					glVertexAttribPointer((GLuint)2, (GLuint)4, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
-				    glEnableVertexAttribArray((GLuint)2);
-
-				    //texture coordinate
-				    glBindBuffer(GL_ARRAY_BUFFER, quadVBO[3]);
-					glBufferData(GL_ARRAY_BUFFER, 6*2*sizeof(double), st, GL_STATIC_DRAW);
-					glVertexAttribPointer((GLuint)3, (GLuint)2, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
-				    glEnableVertexAttribArray((GLuint)3);
-
-				    //texture blend
-				    glBindBuffer(GL_ARRAY_BUFFER, quadVBO[4]);
-					glBufferData(GL_ARRAY_BUFFER, 6*1*sizeof(double), blend, GL_STATIC_DRAW);
-					glVertexAttribPointer((GLuint)4, (GLuint)1, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
-				    glEnableVertexAttribArray((GLuint)4);
+		// renderQuad() renders a 1x1 XY quad in NDC
+		// -----------------------------------------
+			void world::renderQuad()
+			{
+			    if (quadVAO == 0)
+			    {
+			        float quadVertices[] = {
+			            // positions        // texture Coords
+			            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+			            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+			             1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+			             1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+			        };
+			        // setup plane VAO
+			        glGenVertexArrays(1, &quadVAO);
+			        glGenBuffers(1, &quadVBO);
+			        glBindVertexArray(quadVAO);
+			        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+			        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+			        glEnableVertexAttribArray(0);
+			        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+			        glEnableVertexAttribArray(1);
+			        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 			    }
 			    glBindVertexArray(quadVAO);
-			    glDrawArrays(GL_TRIANGLES, 0, 6);
+			    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 			    glBindVertexArray(0);
 			}
 
+	
 		/*-------------------------------------------//
 		Sorting objects by distance to viewer using 
 		insertion sort
 		//-------------------------------------------*/
-		void world::objectSort(glm::vec4 camera){
-			int j, di, dj;
-			mesh* key;
+			void world::objectSort(glm::vec4 camera){
+				int j, di, dj;
+				mesh* key;
 			
-			for(int i = 1; i < objCnt; i++){
-				key = objects[i];
-				di = (vec3(camera.x, camera.y, camera.z) - key->getPosition()).length();
-				j = i -1;
-				dj = (vec3(camera.x, camera.y, camera.z) - objects[j]->getPosition()).length();
+				for(int i = 1; i < objCnt; i++){
+					key = objects[i];
+					di = (vec3(camera.x, camera.y, camera.z) - key->getPosition()).length();
+					j = i -1;
+					dj = (vec3(camera.x, camera.y, camera.z) - objects[j]->getPosition()).length();
 
-				while(j >= 0 && di < dj){
-					objects[j+1] = objects[j];
-					j = j - 1;
+					while(j >= 0 && di < dj){
+						objects[j+1] = objects[j];
+						j = j - 1;
 					
+					}
+					objects[j + 1] = key;
 				}
-				objects[j + 1] = key;
 			}
-
-		
-		}
 
 			
 		/*--------------------------------------------//
 		Overall Draw function
 		//--------------------------------------------*/
 			void world::draw(glm::mat4 projection, glm::mat4 view, glm::vec4 camera, GLint currWindowSize[2]){
-		        glUseProgram(0);
-				glDepthMask(GL_TRUE);
 				glEnable(GL_DEPTH_TEST);
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+				glEnable(GL_NORMALIZE);
+				glEnable(GL_CULL_FACE);
+				glDepthFunc(GL_LEQUAL);
+				glDepthMask(GL_TRUE);
+				glClearDepth(1.0f);
+
+				glMatrixMode(GL_MODELVIEW);
+				glLoadIdentity();
+				glShadeModel(GL_SMOOTH);
+				glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
 				objectSort(camera);
 
+				
+				glCullFace(GL_FRONT);//Draw back faces into the shadow map
+				glShadeModel(GL_FLAT);//Disable color writes, and use flat shading for speed
+				glColorMask(0, 0, 0, 0);
+
+				//Use viewport the same size as the shadow map
+				glViewport(0, 0, SHADOW_HEIGHT, SHADOW_WIDTH);
+				//Draw the scene
+				DepthSpotShader->use();
 				for (int i = 0; i < slightCnt; i++){
-					glDepthMask(GL_TRUE);
-					glEnable(GL_DEPTH_TEST);
-					glClear(GL_STENCIL_BUFFER_BIT);
+					glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 					spotlight* spot = getSLight(i);
-
-					DepthShader->use();
-					DepthShader->setMat4("ViewMatrix", view);
-					DepthShader->setMat4("ProjectionMatrix", projection);
-					glDrawBuffer(GL_NONE);
+					spot->drawTex(DepthSpotShader);
+					
 					for(int j =0; j < this->getObjectCount(); j++){
 						mesh* cube = getObject(j);
-						cube->draw(DepthShader);
+						cube->draw(DepthSpotShader);
 					}
-					
-					
-
-					glEnable(GL_STENCIL_TEST);
-
-					ShadowVolShader->use();
-					ShadowVolShader->setMat4("ViewMatrix", view);
-					ShadowVolShader->setMat4("ProjectionMatrix", projection);
-					ShadowVolShader->setVec3("LightPos", (glm::vec3)spot->position);
-					glDepthMask(GL_FALSE);
-					glEnable(GL_DEPTH_CLAMP);
-					glDisable(GL_CULL_FACE);
-					glStencilFunc(GL_ALWAYS, 0, 0xFF);
-					glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
-					glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
-					for(int j =0; j < this->getObjectCount(); j++){
-						mesh* cube = getObject(j);
-						cube->draw(ShadowVolShader);
-					}				
-					
-					glDisable(GL_DEPTH_CLAMP);
-					glEnable(GL_CULL_FACE);
-
-					glEnable(GL_BLEND);
-					glBlendFunc(GL_ONE, GL_ONE);
-
-					ShadowedShader->use();
-					ShadowedShader->setMat4("ViewMatrix", view);
-					ShadowedShader->setMat4("ProjectionMatrix", projection);
-					ShadowedShader->setVec4("ViewPos", camera);
-					ShadowedShader->setInt("LightType", 0);
-					ShadowedShader->setVec3("SpotLight.position", (glm::vec3)spot->position);
-					ShadowedShader->setFloat("SpotLight.constant", spot->constant);
-					ShadowedShader->setFloat("SpotLight.linear", spot->linear);
-					ShadowedShader->setFloat("SpotLight.exponential", spot->exponential);
-					ShadowedShader->setVec3("SpotLight.direc.direction", (glm::vec3)spot->direc.direction);
-					ShadowedShader->setVec3("SpotLight.direc.base.color", (glm::vec3)spot->direc.base.color);
-					glDrawBuffer(GL_BACK);
-					glStencilFunc(GL_EQUAL, 0x0, 0xFF);
-					glStencilOpSeparate(GL_BACK, GL_KEEP, GL_KEEP, GL_KEEP);
-					for(int j =0; j < this->getObjectCount(); j++){
-						mesh* cube = getObject(j);
-						cube->draw(ShadowedShader);
-					}				
-										
-
-					glDisable(GL_BLEND);
-					glDisable(GL_STENCIL_TEST);
+					spot->copyTex();
 				}
+		        glUseProgram(0);
+		        DepthDirecShader->use();
+				for (int i = 0; i < dlightCnt; i++){
+					glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+					direclight* direc = getDLight(i);
+					direc->drawTex(DepthDirecShader);
+					
+					for(int j =0; j < this->getObjectCount(); j++){
+						mesh* cube = getObject(j);
+						cube->draw(DepthDirecShader);
+					}
+					direc->copyTex();
+				}
+		        glUseProgram(0);
 
-		        	glUseProgram(0);
-				glFlush();
+
+
+		        
+				//restore states
+				glCullFace(GL_BACK);
+				glShadeModel(GL_SMOOTH);
+				glColorMask(1, 1, 1, 1);
+				glViewport(0, 0, currWindowSize[0], currWindowSize[1]);
+
+				glMatrixMode(GL_PROJECTION);
+				glLoadMatrixf((GLfloat*)&projection[0][0]);
+	
+				glMatrixMode(GL_MODELVIEW);
+				glLoadMatrixf((GLfloat*)&view[0][0]);
+
+				glLightfv(GL_LIGHT1, GL_POSITION, (GLfloat*)&glm::vec4(0.0, 0.0, 5.0, 1.0)[0]);
+				glLightfv(GL_LIGHT1, GL_AMBIENT, (GLfloat*)&glm::vec4(0.0, 0.0, 0.0, 1.0)[0]);
+				glLightfv(GL_LIGHT1, GL_DIFFUSE, (GLfloat*)&glm::vec4(0.0, 0.0, 0.0, 1.0)[0]);
+				glLightfv(GL_LIGHT1, GL_SPECULAR, (GLfloat*)&glm::vec4(0.0, 0.0, 0.0, 1.0)[0]);
+				glEnable(GL_LIGHT1);
+				glEnable(GL_LIGHTING);
+
+
+				//2nd pass - Draw from camera's point of view
+				glClear(GL_DEPTH_BUFFER_BIT);
+
+				//Draw the scene
+				ShadowShader->use();
+				ShadowShader->setFloat("Far_Plane", FRUSTUM_FAR_PLANE);
+				ShadowShader->setInt("Shadows", 1);
+				ShadowShader->setMat4("ViewMatrix", view);
+				ShadowShader->setMat4("ProjectionMatrix", projection);
+				ShadowShader->setVec4("ViewPos", camera);
+				ShadowShader->setInt("LightType", 0);
+
+				for (int i = 0; i < slightCnt; i++){
+					glEnable(GL_TEXTURE_2D);
+					spotlight* spot = getSLight(i);
+					spot->bindTex(ShadowShader);
+					
+					for(int j =0; j < this->getObjectCount(); j++){
+						mesh* cube = getObject(j);
+						cube->draw(ShadowShader);
+					}
+				}
+				for (int i = 0; i < dlightCnt; i++){
+					glEnable(GL_TEXTURE_2D);
+					direclight* direc = getDLight(i);
+					direc->bindTex(ShadowShader);
+					
+					for(int j =0; j < this->getObjectCount(); j++){
+						mesh* cube = getObject(j);
+						cube->draw(ShadowShader);
+					}
+				}
+		        glUseProgram(0);
 			};
 #endif

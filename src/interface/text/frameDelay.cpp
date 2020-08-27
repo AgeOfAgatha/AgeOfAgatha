@@ -89,7 +89,6 @@ left hand corner of the window
 			static time_t lastime = 0;
 			static int fps = 0;
 
-
 			// Update frames-per-second
 			curtime = clock();
 			latency = (latency + (double)(curtime - lastime)/CLOCKS_PER_SEC) / 2;
@@ -97,17 +96,34 @@ left hand corner of the window
 				fps = 60 / latency;
 			lastime = curtime;
 
-			char format[MAX_CHARACTERS_TEXT];
-			memset(format, '\0', sizeof(format));
-			sprintf (format, "%0.0lfms\n%d FPS", latency,fps);
+			//Print fps
+			static char fpsString[32];
+			memset(fpsString, '\0', sizeof(fpsString));
+			sprintf(fpsString, "%0.0lfms\n%d FPS", latency,fps);
 
-			//display
-/*			glTranslatef(pos[0], pos[1], pos[2]);
-			glRasterPos3f(0.0, 0.0, 0.0);
-			glColor3f(color[0], color[1], color[2]);
-			int len = strlen(format);
-			for (int i = 0; i < len; i++) {
-			    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, format[i]);
-			}*/
+			//Set matrices for ortho
+			glMatrixMode(GL_PROJECTION);
+			glPushMatrix();
+			glLoadIdentity();
+			gluOrtho2D(-1.0f, 1.0f, -1.0f, 1.0f);
+
+			glMatrixMode(GL_MODELVIEW);
+			glPushMatrix();
+			glLoadIdentity();
+
+			//Print text
+			glRasterPos2f(-1.0f, 0.9f);
+			for(unsigned int i=0; i<strlen(fpsString); ++i)
+			glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, fpsString[i]);
+
+			//reset matrices
+			glMatrixMode(GL_PROJECTION);
+			glPopMatrix();
+			glMatrixMode(GL_MODELVIEW);
+			glPopMatrix();
+
+			glFinish();
+			glutSwapBuffers();
+			glutPostRedisplay();
 		}
 #endif

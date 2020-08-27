@@ -13,6 +13,7 @@ Includes
 	#include "../../deps/glm/glm.hpp"
 
 	#include "../common/vector.h"
+	#include "../common/Maths.h"
 	#include "../common/sorting.h"
 	#include "../shaders/shader.h"
 	#include "light/spotlight.h"
@@ -52,31 +53,23 @@ class world{
 			mesh** gravObj;
 
 			//init shaders and buffers
-			Shader *GeometryShader, *StencilShader, *LightShader, *TransparencyShader;
-			unsigned int gPosition, gNormal, gDiffuse, gDepth, gResult, gBuffer;
-			unsigned int tDiffuse, tBuffer;
-
-			Shader *DepthShader, *ShadowVolShader, *ShadowedShader;
-
+			Shader *DepthSpotShader, *DepthDirecShader, *ShadowShader, *DepthDebugShader;
+			
 			//init primatives
 			unsigned int cubeVAO = 0;
-			unsigned int cubeVBO[6] = {0,0,0,0,0,0};
+			unsigned int cubeVBO = 0;
 
 			unsigned int quadVAO = 0;
-			unsigned int quadVBO[5] = {0,0,0,0,0};
+			unsigned int quadVBO;
 
 		/*--------------------------------------------//
 		Functions
 		//--------------------------------------------*/
 			//initialization
 				void ShaderInit();
-				void BufferInit();
 			//misc
 				bool implicitTest(vec3 pos1, vec3 pos2, double radi1, double radi2, vec3 vel1, vec3 vel2);
 				bool isAwake(mesh* &obj);
-			//rendering
-				void renderCube();
-				void renderQuad();
 
 	public:
 		/*--------------------------------------------//
@@ -124,6 +117,8 @@ class world{
 				int getTimeStep();
 			//rendering
 				void draw(glm::mat4 projection, glm::mat4 view, glm::vec4 camera, GLint currWindowSize[2]);
+				void renderCube();
+				void renderQuad();
 			//Physics
 				void update();
 				void applyGravity(mesh* &obj);
