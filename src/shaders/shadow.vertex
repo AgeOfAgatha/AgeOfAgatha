@@ -12,12 +12,13 @@ out VERTEXOUT{
 	vec3 Normal;
 	vec2 TexCoord;
 	float Blend;
+	vec4 LightFragPos;
 }vertexout;
 
 uniform mat4 ModelMatrix;
 uniform mat4 ViewMatrix;
 uniform mat4 ProjectionMatrix;
-uniform bool reverse_normals;
+uniform mat4 LightSpaceMatrix;
 
 void main(){
     gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * position;
@@ -27,9 +28,7 @@ void main(){
 	
 	vertexout.TexCoord = TexCoord;
 	vertexout.Blend = Blend;
+	vertexout.Normal = mat3(transpose(inverse(ModelMatrix))) * normal;
 	
-    if(reverse_normals) // a slight hack to make sure the outer large cube displays lighting from the 'inside' instead of the default 'outside'.
-        vertexout.Normal = mat3(transpose(inverse(ModelMatrix))) * (-1.0 * normal);
-    else
-        vertexout.Normal = mat3(transpose(inverse(ModelMatrix))) * normal;
+    vertexout.LightFragPos = LightSpaceMatrix * ModelMatrix * position;
 }

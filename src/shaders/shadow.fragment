@@ -8,6 +8,7 @@ in VERTEXOUT{
     vec3 Normal;
     vec2 TexCoord;
     float Blend;
+    vec4 LightFragPos;
 }fragmentin;
 
 struct light{
@@ -36,7 +37,7 @@ uniform direclight DirecLight;
 uniform spotlight SpotLight;
 
 uniform int LightType;
-uniform samplerCube DepthMap;
+uniform sampler2D DepthMap;
 
 uniform vec4 ViewPos;
 
@@ -53,19 +54,28 @@ vec3 gridSamplingDisk[20] = vec3[](
    vec3(0, 1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0, 1, -1)
 );
 
-float ShadowCalculation(vec3 FragToLight, float DiskRadius){
-    float currentDepth = length(FragToLight);
+float ShadowCalculation(vec3 lightDir)
+{
+    vec3 projCoords = fragmentin.LightFragPos.xyz / fragmentin.LightFragPos.w;
+    projCoords = projCoords * 0.5 + 0.5;
+    float closestDepth = texture(DepthMap, projCoords.xy).r; 
+    float currentDepth = projCoords.z;
+    vec3 normal = normalize(fragmentin.Normal);
+    float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
     float shadow = 0.0;
-    float bias = 0.15;
-    int samples = 20;
-    float viewDistance = length(ViewPos - vec4(fragmentin.FragPos, 1.0));
-    for(int i = 0; i < samples; ++i){
-        float closestDepth = texture(DepthMap, FragToLight + gridSamplingDisk[i] * DiskRadius).r;
-        closestDepth *= Far_Plane;
-        if(currentDepth - bias > closestDepth)
-            shadow += 1.0;
+    vec2 texelSize = 1.0 / textureSize(DepthMap, 0);
+    for(int x = -1; x <= 1; ++x)
+    {
+        for(int y = -1; y <= 1; ++y)
+        {
+            float pcfDepth = texture(DepthMap, projCoords.xy + vec2(x, y) * texelSize).r; 
+            shadow += currentDepth - bias > pcfDepth  ? 1.0 : 0.0;        
+        }    
     }
-    shadow /= float(samples);
+    shadow /= 9.0;
+    
+    if(projCoords.z > 1.0)
+        shadow = 0.0;
         
     return shadow;
 }
@@ -84,7 +94,7 @@ vec3 CalcLightInternal(vec3 LightDirection, float Attenuation, vec3 Color, vec3 
 			FragDiff = FragDiff * mix(texture(texture1, fragmentin.TexCoord), texture(texture2, fragmentin.TexCoord), fragmentin.Blend).xyz;
 		}
 	}
-	float Shadow = Shadows ? ShadowCalculation(FragToLight, DiskRadius) : 0.0;   
+	float Shadow = Shadows ? ShadowCalculation(normalize(LightDirection)) : 0.0;   
 
     //Diffuse
 	vec3 Diffuse = max(dot(fragmentin.Normal, LightDirection), 0.0) * Color;

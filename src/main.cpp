@@ -124,7 +124,7 @@ Error Message Callback for opengl
 /*--------------------------------------------//
 GLUT functions - passes down class stack
 //--------------------------------------------*/
-	void Draw(){app->PreDraw(); app->Draw(); app->PostDraw(); glFinish(); glutSwapBuffers(); glutPostRedisplay();}
+	void Draw(){app->PreDraw(); app->Draw(); app->PostDraw(); glFinish(); glutSwapBuffers();}
 	void Update(int value){value = app->Update(value); glutTimerFunc(TIMER, Update, value);}
 	void KeypressASCII(unsigned char pressedKey, int mouseXPosition, int mouseYPosition){app->KeypressASCII(pressedKey,mouseXPosition,mouseYPosition);}
 	void KeypressNonASCII(int pressedKey, int mouseXPosition, int mouseYPosition){app->KeypressNonASCII(pressedKey,mouseXPosition,mouseYPosition);}

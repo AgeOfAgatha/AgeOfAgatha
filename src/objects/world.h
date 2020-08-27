@@ -13,7 +13,6 @@ Includes
 	#include "../../deps/glm/glm.hpp"
 
 	#include "../common/vector.h"
-	#include "../common/Maths.h"
 	#include "../common/sorting.h"
 	#include "../shaders/shader.h"
 	#include "light/spotlight.h"

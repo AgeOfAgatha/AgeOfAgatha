@@ -995,17 +995,13 @@ This is where the simulation is controlled
 				glEnable(GL_CULL_FACE);
 				glDepthFunc(GL_LEQUAL);
 				glDepthMask(GL_TRUE);
-				glClearDepth(1.0f);
 
 				glMatrixMode(GL_MODELVIEW);
 				glLoadIdentity();
-				glShadeModel(GL_SMOOTH);
-				glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
 				objectSort(camera);
 
 				
-				glCullFace(GL_FRONT);//Draw back faces into the shadow map
 				glShadeModel(GL_FLAT);//Disable color writes, and use flat shading for speed
 				glColorMask(0, 0, 0, 0);
 
@@ -1043,7 +1039,6 @@ This is where the simulation is controlled
 
 		        
 				//restore states
-				glCullFace(GL_BACK);
 				glShadeModel(GL_SMOOTH);
 				glColorMask(1, 1, 1, 1);
 				glViewport(0, 0, currWindowSize[0], currWindowSize[1]);

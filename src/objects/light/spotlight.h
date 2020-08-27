@@ -24,13 +24,15 @@ Spot Light Class
                 void initTex(){
                     //Create the shadow map texture
                     glGenTextures(1, &depthMap);
-                    glBindTexture(GL_TEXTURE_2D, depthMap);
-                    glTexImage2D(   GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0,
-                                    GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
-                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+                    glBindTexture(GL_TEXTURE_CUBE_MAP, depthMap);
+				    for (unsigned int i = 0; i < 6; ++i)
+	                    glTexImage2D(   GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0,
+	                                    GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+				    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+				    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+				    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+				    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+				    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
                 };
                 
         public: 
@@ -103,7 +105,8 @@ Spot Light Class
             	}
             	void copyTex(){
 					//Read the depth buffer into the shadow map texture
-					glBindTexture(GL_TEXTURE_2D, depthMap);
+ 					glActiveTexture(GL_TEXTURE0 + depthMap);
+					glBindTexture(GL_TEXTURE_CUBE_MAP, depthMap);
 					glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, SHADOW_HEIGHT, SHADOW_WIDTH);
             	}
             	void bindTex(Shader* shad){
@@ -115,10 +118,12 @@ Spot Light Class
  					shad->setFloat("SpotLight.exponential", exponential);
  					shad->setVec3("SpotLight.direc.direction", (glm::vec3)direction);
  					shad->setVec3("SpotLight.direc.base.color", (glm::vec3)base.color);
+					glm::mat4 lightSpaceMatrix = lightProjectionMatrix * lightViewMatrix;
+					shad->setMat4("LightSpaceMatrix", lightSpaceMatrix);
  	
  					//Bind & enable shadow map texture
  					glActiveTexture(GL_TEXTURE0 + depthMap);
             		glBindTexture(GL_TEXTURE_CUBE_MAP, depthMap);
             	};
     };
-	#endif
+#endif
