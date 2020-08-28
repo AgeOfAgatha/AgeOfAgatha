@@ -2,8 +2,8 @@ CCW32 = i686-w64-mingw32-g++
 CCW64 = x86_64-w64-mingw32-g++
 CCL = g++
 CFLAGS = -std=c++14 -w -g -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -D_LARGEFILE_SOURCE
-LIBSW32 = -L/usr/lib/x86_64-linux-gnu/ -lopengl32 -lglu32 -lglut32
-LIBSW64 = -L/usr/lib/x86_64-linux-gnu/ -lopengl32 -lglu32 ./freeglut.dll
+LIBSW32 = -lopengl32 -lglu32 -lglut32 -lglut
+LIBSW64 = -lopengl32 -lglu32 binw64/freeglut.dll
 LIBSL = -lGL -lGLU -lglut
 EXTW32 = .x32.exe
 EXTW64 = .x64.exe
@@ -75,3 +75,7 @@ clean:
 	@echo Cleaning shader files in root...
 	@rm ./*.bin -f 2>/dev/null
 	@rm ./*.format -f 2>/dev/null
+
+fix:
+	@echo Replacing spaces with tabs
+	@./fix.sh

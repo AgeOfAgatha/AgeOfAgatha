@@ -5,13 +5,13 @@ all: main
 #Build groups
 #########################
 shaders: shader.o
-dependencies: glew.o
-common: dependencies angles.o vector.o line.o plane.o sorting.o quaternion.o ../src/globals.h
-objects: dependencies common actors texture.o vertex.o triangle.o mesh.o world.o
-actors: dependencies common bone.o joint.o boneVertex.o skeleton.o
+dependencies: glee.o glew.o
+common: dependencies angles.o vector.o line.o plane.o sorting.o quaternion.o COLOR.o MATRIX4X4.o PLANE.o VECTOR2D.o VECTOR3D.o VECTOR4D.o scene.o timer.o fps_counter.o ../src/globals.h
+objects: dependencies common actors texture.o #vertex.o triangle.o mesh.o #world.o
+actors: dependencies common #bone.o joint.o boneVertex.o skeleton.o
 interface: common dependencies interface_text element.o interface.o
 interface_text: common dependencies frameDelay.o
-simulation: dependencies common objects interface shaders game.o
+simulation: dependencies common objects interface shaders #game.o
 main: common simulation dependencies main.o
 
 #########################
@@ -27,10 +27,50 @@ shader.o: ../src/shaders/shader.cpp ../src/shaders/shader.h
 glew.o: ../deps/GL/glew.c ../deps/GL/glew.h
 	@echo -e '\t\t'Making glew...
 	@$(CC) $(CFLAGS) ../deps/GL/glew.c -o $@
+	
+glee.o: ../deps/GL/GLee.c ../deps/GL/GLee.h
+	@echo -e '\t\t'Making GLee...
+	@$(CC) $(CFLAGS) ../deps/GL/GLee.c -o $@
 
 #########################
 #Common Section
 #########################
+COLOR.o: ../src/common/maths/COLOR.cpp ../src/common/maths/COLOR.h
+	@echo -e '\t\t'Making COLOR...
+	@$(CC) $(CFLAGS) ../src/common/maths/COLOR.cpp -o $@
+	
+MATRIX4X4.o: ../src/common/maths/MATRIX4X4.cpp ../src/common/maths/MATRIX4X4.h
+	@echo -e '\t\t'Making MATRIX4X4...
+	@$(CC) $(CFLAGS) ../src/common/maths/MATRIX4X4.cpp -o $@
+	
+PLANE.o: ../src/common/maths/PLANE.cpp ../src/common/maths/PLANE.h
+	@echo -e '\t\t'Making PLANE...
+	@$(CC) $(CFLAGS) ../src/common/maths/PLANE.cpp -o $@
+	
+VECTOR2D.o: ../src/common/maths/VECTOR2D.cpp ../src/common/maths/VECTOR2D.h
+	@echo -e '\t\t'Making VECTOR2D...
+	@$(CC) $(CFLAGS) ../src/common/maths/VECTOR2D.cpp -o $@
+	
+VECTOR3D.o: ../src/common/maths/VECTOR3D.cpp ../src/common/maths/VECTOR3D.h
+	@echo -e '\t\t'Making VECTOR3D...
+	@$(CC) $(CFLAGS) ../src/common/maths/VECTOR3D.cpp -o $@
+
+VECTOR4D.o: ../src/common/maths/VECTOR4D.cpp ../src/common/maths/VECTOR4D.h
+	@echo -e '\t\t'Making VECTOR4D...
+	@$(CC) $(CFLAGS) ../src/common/maths/VECTOR4D.cpp -o $@
+
+scene.o: ../src/common/timer.cpp ../src/common/scene.h
+	@echo -e '\t\t'Making scene...
+	@$(CC) $(CFLAGS) ../src/common/scene.cpp -o $@
+	
+timer.o: ../src/common/timer.cpp ../src/common/timer.h
+	@echo -e '\t\t'Making timer...
+	@$(CC) $(CFLAGS) ../src/common/timer.cpp -o $@
+	
+fps_counter.o: ../src/common/fps_counter.cpp ../src/common/fps_counter.h
+	@echo -e '\t\t'Making fps counter...
+	@$(CC) $(CFLAGS) ../src/common/fps_counter.cpp -o $@
+
 angles.o: ../src/common/angles.cpp ../src/common/angles.h
 	@echo -e '\t\t'Making angles...
 	@$(CC) $(CFLAGS) ../src/common/angles.cpp -o $@
