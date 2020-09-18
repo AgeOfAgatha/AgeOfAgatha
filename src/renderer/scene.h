@@ -11,6 +11,7 @@
 
 #ifndef SCENE_H
 #define SCENE_H
+#define GLUT_DISABLE_ATEXIT_HACK
 
 void DrawScene(float angle);
 

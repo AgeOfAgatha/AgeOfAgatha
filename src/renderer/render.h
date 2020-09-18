@@ -15,7 +15,7 @@ Includes
 	#ifdef RENDERER_CPP
 		#define GLUT_DISABLE_ATEXIT_HACK
 		#define GLX_GLXEXT_LEGACY
-		#include "GLee/GLee.h"	//GL header file, including extensions
+		#include <GL/GLee.h>	//GL header file, including extensions
 		#include <GL/glut.h>
 	#endif
 

@@ -14,7 +14,7 @@ actors: dependencies common bone.o joint.o boneVertex.o skeleton.o
 interface: common dependencies interface_text element.o interface.o
 interface_text: common dependencies frameDelay.o
 simulation: dependencies common objects interface shaders game.o
-main: common simulation dependencies main.o renderer
+main: common simulation dependencies renderer main.o
 
 #########################
 #Renderer Section
@@ -31,9 +31,9 @@ scene.o: ../../src/renderer/scene.cpp ../../src/renderer/scene.h
 	@echo -e '\t\t'Making scene...
 	@$(CC) $(CFLAGS) ../../src/renderer/scene.cpp -o $@
 
-GLee.o: ../../deps/GLee/GLee.c ../../deps/GLee/GLee.h
+GLee.o: ../../deps/GL/GLee.c ../../deps/GL/GLee.h
 	@echo -e '\t\t'Making GLee...
-	@$(CC) $(CFLAGS) ../../deps/GLee/GLee.c -o $@
+	@$(CC) $(CFLAGS) ../../deps/GL/GLee.c -o $@
 
 ARB_multitexture_extension.o: ../../src/renderer/Extensions/ARB_multitexture_extension.cpp ../../src/renderer/Extensions/ARB_multitexture_extension.h
 	@echo -e '\t\t'Making ARB_multitexture_extension...

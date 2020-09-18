@@ -1,7 +1,7 @@
-binl/*.o
-binm/*.o
-binw32/*.o
-binw64/*.o
+bin/binl/*.o
+bin/binm/*.o
+bin/binw32/*.o
+bin/binw64/*.o
 release/lin/*
 release/mac/*
 release/w32/*

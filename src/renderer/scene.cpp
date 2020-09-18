@@ -8,6 +8,7 @@
 //	Distributed under the New BSD Licence. (See accompanying file License.txt or copy at
 //	http://www.paulsprojects.net/NewBSDLicense.txt)
 //////////////////////////////////////////////////////////////////////////////////////////	
+#define GLUT_DISABLE_ATEXIT_HACK
 #include <stdio.h>
 #include <GL/glut.h>
 #include "Maths/Maths.h"

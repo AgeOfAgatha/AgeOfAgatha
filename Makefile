@@ -19,29 +19,29 @@ ifeq ($(OS),Windows_NT)
     CFLAGSW += -D WIN32
     ifeq ($(PROCESSOR_ARCHITEW6432),AMD64)
         CFLAGSW += -D AMD64
-   		DISTRO = w64
+   		DISTRO = windows64
     else
         ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
             CFLAGSW += -D AMD64
-   			DISTRO = w64
+   			DISTRO = windows64
         endif
         ifeq ($(PROCESSOR_ARCHITECTURE),x86)
             CFLAGSW += -D IA32
-   			DISTRO = w32
+   			DISTRO = windows32
         endif
     endif
 else
     UNAME_S := $(shell uname -s)
     ifeq ($(UNAME_S),Linux)
         CFLAGSL += -D LINUX
-   		DISTRO = lin
+   		DISTRO = linux
     endif
     ifeq ($(UNAME_S),Darwin)
         CFLAGSL += -D OSX
    		DISTRO = mac
     endif
     ifeq ($(UNAME), Solaris)
-   		DISTRO = sol
+   		DISTRO = solaris
     endif
     UNAME_P := $(shell uname -p)
     ifeq ($(UNAME_P),x86_64)
@@ -55,27 +55,27 @@ else
     endif
 endif
 
-.PHONY: main all help fix linux mac windows32 windows64 run c cl  clean clean-all clean-lin clean-mac clean-w32 clean-w64 clean-lin-shaders clean-mac-shaders clean-w32-shaders clean-w64-shaders
+.PHONY: main all help fix linux mac solaris windows32 windows64 run c cl clean clean-all clean-linux clean-mac clean-windows32 clean-windows64 clean-linux-shaders clean-mac-shaders clean-windows32-shaders clean-windows64-shaders
 
 #########################
 #assemble for my distro
 #########################
 main:
-	@echo making for $(DISTRO)... && $(MAKE) $(DISTRO) --no-print-directory
+	@echo making for `tput bold`$(DISTRO)`tput sgr0`... && $(MAKE) $(DISTRO) --no-print-directory
 
 #########################
 #assemble for all distros
 #########################
 all:
-	@echo making for linux... && $(MAKE) lin --no-print-directory
-	@echo making for mac... && $(MAKE) mac --no-print-directory
-	@echo making for windows 32 bit... && $(MAKE) w32 --no-print-directory
-	@echo making for windows 64 bit... && $(MAKE) w64 --no-print-directory
+	@echo making for `tput bold`linux`tput sgr0`... && $(MAKE) linux --no-print-directory
+	@echo making for `tput bold`mac`tput sgr0`... && $(MAKE) mac --no-print-directory
+	@echo making for `tput bold`windows 32 bit`tput sgr0`... && $(MAKE) windows32 --no-print-directory
+	@echo making for `tput bold`windows 64 bit`tput sgr0`... && $(MAKE) windows64 --no-print-directory
 
 #########################
 #Assemble OS specific
 #########################
-lin:
+linux:
 	@(echo '\t'Compiling object code... && $(MAKE) -C bin/binl all --no-print-directory && echo '\t'Done Compiling) | grep -vE "(Nothing to be done for|is up to date)"
 	@(echo '\t'Assembling executable... && $(MAKE) release/lin/run$(EXTL) --no-print-directory && echo '\t'Done Assembling) | grep -vE "(Nothing to be done for|is up to date)"
 
@@ -83,11 +83,11 @@ mac:
 	@(echo '\t'Compiling object code... && $(MAKE) -C bin/binm all --no-print-directory && echo '\t'Done Compiling) | grep -vE "(Nothing to be done for|is up to date)"
 	@(echo '\t'Assembling executable... && $(MAKE) release/mac/run$(EXTM) --no-print-directory && echo '\t'Done Assembling) | grep -vE "(Nothing to be done for|is up to date)"
 
-w32:
+windows32:
 	@(echo '\t'Compiling object code... && $(MAKE) -C bin/binw32 all --no-print-directory && echo '\t'Done Compiling) | grep -vE "(Nothing to be done for|is up to date)"
 	@(echo '\t'Assembling executable... && $(MAKE) release/w32/run$(EXTW32) --no-print-directory && echo '\t'Done Assembling) | grep -vE "(Nothing to be done for|is up to date)"
 
-w64:
+windows64:
 	@(echo '\t'Compiling object code... && $(MAKE) -C bin/binw64 all --no-print-directory && echo '\t'Done Compiling) | grep -vE "(Nothing to be done for|is up to date)"
 	@(echo '\t'Assembling executable... && $(MAKE) release/w64/run$(EXTW64) --no-print-directory && echo '\t'Done Assembling) | grep -vE "(Nothing to be done for|is up to date)"
 
@@ -158,48 +158,61 @@ release/w64/run$(EXTW64): bin/binw64/*.o
 #Utility functions
 #########################
 help:
-	@echo Available build targets:
-	@echo -e '\t'all
-	@echo -e '\t'lin
-	@echo -e '\t'mac
-	@echo -e '\t'w32
-	@echo -e '\t'w64
-	@echo -e '\t'release/lin/run$(EXTL)
-	@echo -e '\t'release/mac/run$(EXTM)
-	@echo -e '\t'release/w32/run$(EXTW32)
-	@echo -e '\t'release/w64/run$(EXTW64)
-	@echo -e '\t'run
-	@echo -e '\t'clean
-	@echo -e '\t'clean-all
-	@echo -e '\t'help
-	@echo -e '\t'requires: export MESA_GL_VERSION_OVERRIDE=4.3
+	@echo "Available build targets:\
+\n\t`tput bold`Command;Description`tput sgr0`\
+\n\tmain;Build for detected operating system\
+\n\tall;Build for all operating systems\
+\n\tlinux;Build for linux\
+\n\tmac;Build for mac\
+\n\twindows32;Build for Windows 32 bit\
+\n\twindows64;Build for windows 64 bit\
+\n\trelease/lin/run$(EXTL);Assemble linux executable\
+\n\trelease/mac/run$(EXTM);Assemble mac executable\
+\n\trelease/w32/run$(EXTW32);Assemble Windows 32 bit executable\
+\n\trelease/w64/run$(EXTW64);Assemble Windows 64 bit executable\
+\n\trun;Run for detected operating system\
+\n\tc;Clean shaders for detected operating system\
+\n\tcl;full clean for detected operating system\
+\n\tclean;Clean shaders for all operating systems\
+\n\tclean-all;full clean for all operating systems\
+\n\tclean-linux;full clean for linux\
+\n\tclean-mac;full clean for mac\
+\n\tclean-windows32;full clean for windows 32 bit\
+\n\tclean-windows64;full clean for windows 64 bit\
+\n\tclean-linux-shaders;Clean shaders for linux\
+\n\tclean-mac-shaders;Clean shaders for mac\
+\n\tclean-windows32-shaders;Clean shaders for windows 32 bit\
+\n\tclean-windows64-shaders;Clean shaders for windows 64 bit\
+\n\tfix;Replaces spaces with tabs in source files\
+\n\thelp;Print availabe commands" | column -t -s ';'
+	@echo "`tput bold`requires: export MESA_GL_VERSION_OVERRIDE=4.3`tput sgr0`"
 
 run: release/lin/run$(EXTL)
 	@cd release/lin && MESA_GL_VERSION_OVERRIDE=4.3 ./run$(EXTL)
 
 c:
-	@(echo cleaning $(DISTRO)... && $(MAKE) clean-$(DISTRO)-shaders --no-print-directory && echo Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo cleaning `tput bold`$(DISTRO)`tput sgr0`... && $(MAKE) clean-$(DISTRO)-shaders --no-print-directory && echo Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
 
 cl:
-	@(echo cleaning $(DISTRO) shaders... && $(MAKE) clean-$(DISTRO) --no-print-directory && echo Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo cleaning `tput bold`$(DISTRO)`tput sgr0` shaders... && $(MAKE) clean-$(DISTRO) --no-print-directory && echo Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
 
 clean:
-	@echo -ne Cleaning...'\n\t'
-	@(echo '\t'Cleaning linux shaders... && $(MAKE) clean-lin-shaders --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo '\t'Cleaning mac shaders... && $(MAKE) clean-mac-shaders --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo '\t'Cleaning w32 shaders... && $(MAKE) clean-w32-shaders --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo '\t'Cleaning w64 shaders... && $(MAKE) clean-w64-shaders --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
+	@echo Cleaning...
+	@(echo '\t'Cleaning `tput bold`linux`tput sgr0` shaders... && $(MAKE) clean-linux-shaders --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo '\t'Cleaning `tput bold`mac`tput sgr0` shaders... && $(MAKE) clean-mac-shaders --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo '\t'Cleaning `tput bold`windows32`tput sgr0` shaders... && $(MAKE) clean-windows32-shaders --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo '\t'Cleaning `tput bold`windows64`tput sgr0` shaders... && $(MAKE) clean-windows64-shaders --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
 	@echo Done cleaning
 
 clean-all:
-	@echo -ne Cleaning...'\n\t'
-	@(echo '\t'Cleaning linux... && $(MAKE) clean-lin --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo '\t'Cleaning mac... && $(MAKE) clean-mac --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo '\t'Cleaning w32... && $(MAKE) clean-w32 --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo '\t'Cleaning w64... && $(MAKE) clean-w64 --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
+	@echo Cleaning...
+	@(echo '\t'Cleaning `tput bold`linux`tput sgr0`... && $(MAKE) clean-linux --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo '\t'Cleaning `tput bold`mac`tput sgr0`... && $(MAKE) clean-mac --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo '\t'Cleaning `tput bold`windows32`tput sgr0`... && $(MAKE) clean-windows32 --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo '\t'Cleaning `tput bold`windows64`tput sgr0`... && $(MAKE) clean-windows64 --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
 	@echo Done cleaning
 
-clean-lin:
+clean-linux:
 	@echo -e '\t'Cleaning object files in binl...
 	@rm ./bin/binl/*.o -f 2>/dev/null
 	@echo -e '\t'Cleaning files in release...
@@ -211,19 +224,19 @@ clean-mac:
 	@echo -e '\t'Cleaning files in release...
 	@rm -rf ./release/mac/* -f 2>/dev/null
 
-clean-w32:
+clean-windows32:
 	@echo -e '\t'Cleaning object files in binw32...
 	@rm ./bin/binw32/*.o -f 2>/dev/null
 	@echo -e '\t'Cleaning files in release...
 	@rm -rf ./release/w32/* -f 2>/dev/null
 
-clean-w64:
+clean-windows64:
 	@echo -e '\t'Cleaning object files in binw64...
 	@rm ./bin/binw64/*.o -f 2>/dev/null
 	@echo -e '\t'Cleaning files in release...
 	@rm -rf ./release/w64/* -f 2>/dev/null
 
-clean-lin-shaders:
+clean-linux-shaders:
 	@echo -e '\t'Cleaning shader files in release...
 	@rm ./release/lin/*.bin -f 2>/dev/null
 	@rm ./release/lin/*.format -f 2>/dev/null
@@ -243,7 +256,7 @@ clean-mac-shaders:
 	@cp src/shaders/*.vertex release/mac/shaders
 	@cp src/shaders/*.geometry release/mac/shaders
 
-clean-w32-shaders:
+clean-windows32-shaders:
 	@echo -e '\t'Cleaning shader files in release...
 	@rm ./release/w32/*.bin -f 2>/dev/null
 	@rm ./release/w32/*.format -f 2>/dev/null
@@ -253,7 +266,7 @@ clean-w32-shaders:
 	@cp src/shaders/*.vertex release/w32/shaders
 	@cp src/shaders/*.geometry release/w32/shaders
 
-clean-w64-shaders:
+clean-windows64-shaders:
 	@echo -e '\t'Cleaning shader files in release...
 	@rm ./release/w64/*.bin -f 2>/dev/null
 	@rm ./release/w64/*.format -f 2>/dev/null
