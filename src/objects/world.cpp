@@ -67,10 +67,8 @@ This is where the simulation is controlled
 	ShaderInit - Initialize shaders
 	//--------------------------------------------*/
 		void world::ShaderInit(void){
-			DepthSpotShader = new Shader("depth","src/shaders/depth.vertex", "src/shaders/spotdepth.fragment", "src/shaders/spotdepth.geometry");
-			DepthDirecShader = new Shader("depth","src/shaders/depth.vertex", "src/shaders/direcdepth.fragment", NULL);
-			ShadowShader = new Shader("depth","src/shaders/shadow.vertex", "src/shaders/shadow.fragment", NULL);
-			DepthDebugShader = new Shader("depth","src/shaders/debug.vertex", "src/shaders/debug.fragment", NULL);
+			SimpleShader = new Shader("SimpleShader","shaders/SimpleShader.vertex", "shaders/SimpleShader.fragment", NULL);
+			ShadowShader = new Shader("ShadowShader","shaders/shadowShader.vertex", "shaders/shadowShader.fragment", NULL);
 		}
 
 	/*--------------------------------------------//
@@ -961,7 +959,6 @@ This is where the simulation is controlled
 			    glBindVertexArray(0);
 			}
 
-	
 		/*-------------------------------------------//
 		Sorting objects by distance to viewer using 
 		insertion sort
@@ -984,8 +981,7 @@ This is where the simulation is controlled
 					objects[j + 1] = key;
 				}
 			}
-
-			
+		
 		/*--------------------------------------------//
 		Overall Draw function
 		//--------------------------------------------*/
@@ -995,6 +991,7 @@ This is where the simulation is controlled
 				glEnable(GL_CULL_FACE);
 				glDepthFunc(GL_LEQUAL);
 				glDepthMask(GL_TRUE);
+				glCullFace(GL_FRONT);
 
 				glMatrixMode(GL_MODELVIEW);
 				glLoadIdentity();
@@ -1008,30 +1005,30 @@ This is where the simulation is controlled
 				//Use viewport the same size as the shadow map
 				glViewport(0, 0, SHADOW_HEIGHT, SHADOW_WIDTH);
 				//Draw the scene
-				DepthSpotShader->use();
+				SimpleShader->use();
 				for (int i = 0; i < slightCnt; i++){
-					glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 					spotlight* spot = getSLight(i);
-					spot->drawTex(DepthSpotShader);
+					spot->drawTex(SimpleShader);
+					glClear(GL_DEPTH_BUFFER_BIT);
 					
 					for(int j =0; j < this->getObjectCount(); j++){
 						mesh* cube = getObject(j);
-						cube->draw(DepthSpotShader);
+						cube->draw(SimpleShader);
 					}
-					spot->copyTex();
+                    glBindFramebuffer(GL_FRAMEBUFFER,0);
 				}
 		        glUseProgram(0);
-		        DepthDirecShader->use();
+		        SimpleShader->use();
 				for (int i = 0; i < dlightCnt; i++){
-					glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 					direclight* direc = getDLight(i);
-					direc->drawTex(DepthDirecShader);
+					direc->drawTex(SimpleShader);
+					glClear(GL_DEPTH_BUFFER_BIT);
 					
 					for(int j =0; j < this->getObjectCount(); j++){
 						mesh* cube = getObject(j);
-						cube->draw(DepthDirecShader);
+						cube->draw(SimpleShader);
 					}
-					direc->copyTex();
+                    glBindFramebuffer(GL_FRAMEBUFFER,0);
 				}
 		        glUseProgram(0);
 
@@ -1039,6 +1036,7 @@ This is where the simulation is controlled
 
 		        
 				//restore states
+				glDisable(GL_CULL_FACE);
 				glShadeModel(GL_SMOOTH);
 				glColorMask(1, 1, 1, 1);
 				glViewport(0, 0, currWindowSize[0], currWindowSize[1]);
@@ -1049,40 +1047,30 @@ This is where the simulation is controlled
 				glMatrixMode(GL_MODELVIEW);
 				glLoadMatrixf((GLfloat*)&view[0][0]);
 
-				glLightfv(GL_LIGHT1, GL_POSITION, (GLfloat*)&glm::vec4(0.0, 0.0, 5.0, 1.0)[0]);
-				glLightfv(GL_LIGHT1, GL_AMBIENT, (GLfloat*)&glm::vec4(0.0, 0.0, 0.0, 1.0)[0]);
-				glLightfv(GL_LIGHT1, GL_DIFFUSE, (GLfloat*)&glm::vec4(0.0, 0.0, 0.0, 1.0)[0]);
-				glLightfv(GL_LIGHT1, GL_SPECULAR, (GLfloat*)&glm::vec4(0.0, 0.0, 0.0, 1.0)[0]);
-				glEnable(GL_LIGHT1);
-				glEnable(GL_LIGHTING);
-
-
 				//2nd pass - Draw from camera's point of view
-				glClear(GL_DEPTH_BUFFER_BIT);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 				//Draw the scene
 				ShadowShader->use();
-				ShadowShader->setFloat("Far_Plane", FRUSTUM_FAR_PLANE);
-				ShadowShader->setInt("Shadows", 1);
 				ShadowShader->setMat4("ViewMatrix", view);
 				ShadowShader->setMat4("ProjectionMatrix", projection);
 				ShadowShader->setVec4("ViewPos", camera);
-				ShadowShader->setInt("LightType", 0);
 
-				for (int i = 0; i < slightCnt; i++){
-					glEnable(GL_TEXTURE_2D);
-					spotlight* spot = getSLight(i);
-					spot->bindTex(ShadowShader);
+				glEnable(GL_TEXTURE_2D);
+				ShadowShader->setInt("LightType", 1);
+				for (int i = 0; i < dlightCnt; i++){
+					direclight* direc = getDLight(i);
+					direc->bindTex(ShadowShader);
 					
 					for(int j =0; j < this->getObjectCount(); j++){
 						mesh* cube = getObject(j);
 						cube->draw(ShadowShader);
 					}
 				}
-				for (int i = 0; i < dlightCnt; i++){
-					glEnable(GL_TEXTURE_2D);
-					direclight* direc = getDLight(i);
-					direc->bindTex(ShadowShader);
+				ShadowShader->setInt("LightType", 0);
+				for (int i = 0; i < slightCnt; i++){
+					spotlight* spot = getSLight(i);
+					spot->bindTex(ShadowShader);
 					
 					for(int j =0; j < this->getObjectCount(); j++){
 						mesh* cube = getObject(j);

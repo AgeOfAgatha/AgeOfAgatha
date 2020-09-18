@@ -99,7 +99,7 @@ left hand corner of the window
 			//Print fps
 			static char fpsString[32];
 			memset(fpsString, '\0', sizeof(fpsString));
-			sprintf(fpsString, "%0.0lfms\n%d FPS", latency,fps);
+			sprintf(fpsString, "%.2lfms\n%d FPS", latency,fps);
 
 			//Set matrices for ortho
 			glMatrixMode(GL_PROJECTION);
@@ -114,7 +114,7 @@ left hand corner of the window
 			//Print text
 			glRasterPos2f(-1.0f, 0.9f);
 			for(unsigned int i=0; i<strlen(fpsString); ++i)
-			glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, fpsString[i]);
+				glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, fpsString[i]);
 
 			//reset matrices
 			glMatrixMode(GL_PROJECTION);

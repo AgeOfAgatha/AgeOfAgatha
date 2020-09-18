@@ -1,6 +1,10 @@
 binl/*.o
+binm/*.o
 binw32/*.o
 binw64/*.o
-run.*
+release/lin/*
+release/mac/*
+release/w32/*
+release/w64/*
 */log.txt
 log.txt

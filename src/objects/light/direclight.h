@@ -4,12 +4,16 @@
 /*--------------------------------------------//
 Includes
 //--------------------------------------------*/
-    #include "../../globals.h"
+    #include "../../../deps/glm/glm.hpp"
     #include "../../shaders/shader.h"
+    #include "../../common/vector.h"
+    #include "../../common/quaternion.h"
+    #include "../../globals.h"
     #include "light.h"
 
     #include <stdlib.h>
     #include <stdio.h>
+    #include <math.h> 
 
 /*--------------------------------------------//
 Spot Light Class
@@ -20,21 +24,24 @@ Spot Light Class
             /*--------------------------------------------//
             Class Variables
             //--------------------------------------------*/
-                unsigned int depthMap;
+                unsigned int depthMap, FBO, buffer;
 
             /*--------------------------------------------//
             Functions
             //--------------------------------------------*/
                 void initTex(){
-                    //Create the shadow map texture
-                    glGenTextures(1, &depthMap);
+                    // Create shadow texture
                     glBindTexture(GL_TEXTURE_2D, depthMap);
-                    glTexImage2D(   GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0,
-                                    GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
-                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+                    // Create empty texture
+                    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, SHADOW_HEIGHT, SHADOW_WIDTH, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+                    // Bilinear filtering
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                    // Color needs to be 0 outside of texture coordinates
+                    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+                    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+                    glBindTexture(GL_TEXTURE_2D, 0);
+                    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
                 };
                 
         public: 
@@ -43,7 +50,6 @@ Spot Light Class
             //--------------------------------------------*/
                 light base;
                 vec3 direction;
-				glm::mat4 lightProjectionMatrix, lightViewMatrix;
 				
             /*--------------------------------------------//
             Constructor
@@ -52,38 +58,77 @@ Spot Light Class
                     base = light();
                     direction = vec3(0.0f, 0.0f, -1.0f);
 
+                    glGenFramebuffers(1, &FBO);
+                    glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+                    glGenRenderbuffers(1, &buffer);
+                    glBindRenderbuffer(GL_RENDERBUFFER, buffer);
+                    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGB, SHADOW_HEIGHT, SHADOW_WIDTH);
+                    // Attach the renderbuffer
+                    glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, buffer);
+
                     initTex();
 
-                    glPushMatrix();
-
-					glLoadIdentity();
-					gluPerspective(45.0f, 1.0f, 2.0f, 8.0f);
-					glGetFloatv(GL_MODELVIEW_MATRIX, (GLfloat*)&lightProjectionMatrix[0][0]);
-					
-					glLoadIdentity();
-					gluLookAt(	direction[0], direction[1], direction[2],
-								0.0f, 0.0f, 0.0f,
-								0.0f, 1.0f, 0.0f);
-					glGetFloatv(GL_MODELVIEW_MATRIX, (GLfloat*)&lightViewMatrix[0][0]);
-					
-					glPopMatrix();
+                    glBindFramebuffer(GL_FRAMEBUFFER, 0);
                 }
             /*--------------------------------------------//
             Functions
             //--------------------------------------------*/
             	void drawTex(Shader* shad){
-					glm::mat4 lightSpaceMatrix = lightProjectionMatrix * lightViewMatrix;
-					shad->setMat4("LightSpaceMatrix", lightSpaceMatrix);
-            	}
-            	void copyTex(){
-					//Read the depth buffer into the shadow map texture
-					glBindTexture(GL_TEXTURE_2D, depthMap);
-					glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, SHADOW_HEIGHT, SHADOW_WIDTH);
+                    //Position and orient camera.
+                    int viewerAltitude = -asin(-direction[2]);
+                    int viewerAzimuth = atan2(-direction[1], -direction[0]);
+                    int viewerDistance = 20;
+                    glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f );
+                    glm::quat quat = glm::quat(glm::vec3(viewerAltitude, viewerAzimuth, 0.0));
+                    glm::mat4 looking = toMat4(quat);
+                    glm::vec4 camera = looking * glm::vec4(position.x + 0.0f, position.y + 0.0f, position.z + 1.0f*viewerDistance, 1.0f);
+
+                    //Create project matrix
+                    glm::mat4 projection;
+                    projection = glm::perspective(glm::radians(FRUSTUM_FIELD_OF_VIEW), (float)SHADOW_WIDTH/SHADOW_HEIGHT, (float)FRUSTUM_NEAR_PLANE, (float)FRUSTUM_FAR_PLANE);
+                    //Find up vector
+                    glm::vec4 up = looking * glm::vec4(0,1,0,1);
+                    //Create view matrix
+                    glm::mat4 view;
+                    view = glm::lookAt(
+                        glm::vec3(camera[0], camera[1], camera[2]),
+                        position,
+                        glm::vec3(up[0], up[1], up[2])
+                    );
+                    glm::mat4 lightSpaceMatrix = projection * view;
+                    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+                    glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,0,0);
+                    glFramebufferTexture2D(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_TEXTURE_2D,depthMap,0);
+                    shad->setMat4("ViewMatrix", view);
+                    shad->setMat4("ProjectionMatrix", projection);
             	}
             	void bindTex(Shader* shad){
-            		shad->setInt("DepthMap", depthMap);
- 					shad->setVec3("DirecLight.direction", (glm::vec3)direction);
- 					shad->setVec3("DirecLight.base.color", (glm::vec3)base.color);
+                    //Position and orient camera.
+                    int viewerAltitude = -asin(-direction[2]);
+                    int viewerAzimuth = atan2(-direction[1], -direction[0]);
+                    int viewerDistance = 20;
+                    glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f );
+                    glm::quat quat = glm::quat(glm::vec3(viewerAltitude, viewerAzimuth, 0.0));
+                    glm::mat4 looking = toMat4(quat);
+                    glm::vec4 camera = looking * glm::vec4(position.x + 0.0f, position.y + 0.0f, position.z + 1.0f*viewerDistance, 1.0f);
+
+                    //Create project matrix
+                    glm::mat4 projection;
+                    projection = glm::perspective(glm::radians(FRUSTUM_FIELD_OF_VIEW), (float)SHADOW_WIDTH/SHADOW_HEIGHT, (float)FRUSTUM_NEAR_PLANE, (float)FRUSTUM_FAR_PLANE);
+                    //Find up vector
+                    glm::vec4 up = looking * glm::vec4(0,1,0,1);
+                    //Create view matrix
+                    glm::mat4 view;
+                    view = glm::lookAt(
+                        glm::vec3(camera[0], camera[1], camera[2]),
+                        position,
+                        glm::vec3(up[0], up[1], up[2])
+                    );
+                    glm::mat4 lightSpaceMatrix = projection * view;
+                    shad->setMat4("LightSpaceMatrix", lightSpaceMatrix);
+                    shad->setInt("DepthMap", depthMap);
+                    shad->setVec3("DirecLight.direction", (glm::vec3)direction);
+                    shad->setVec3("DirecLight.base.color", (glm::vec3)base.color);
 
  					//Bind & enable shadow map texture
  					glActiveTexture(GL_TEXTURE0 + depthMap);

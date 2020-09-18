@@ -14,6 +14,8 @@ and the ui interface.
 	Constructors
 	//--------------------------------------------*/
 		game::game(int win){
+			renderctrl = new renderer();
+			renderctrl->reshape(INIT_WINDOW_SIZE_X, INIT_WINDOW_SIZE_Y);
 			//setup default window size
 			currWindowSize[0] = INIT_WINDOW_SIZE_X;
 			currWindowSize[1] = INIT_WINDOW_SIZE_Y;
@@ -43,8 +45,10 @@ and the ui interface.
 
 			//intialize lighting
 				direclight* direc = new direclight();
-					direc->direction = vec3(0.0f, 0.0f, 1.0f);
+					direc->direction = vec3(1.0f, 0.75f, 0.5f);
+					direc->direction.normalize();
 					direc->base.color = vec3(0.5f, 0.5f, 0.5f);
+
 				spotlight* spot1 = new spotlight();
 					spot1->position = vec3(5.0f, 5.0f, 5.0f);
 					spot1->direction = vec3(0.0f, 0.0f, 1.0f);
@@ -70,9 +74,9 @@ and the ui interface.
                     spot3->exponential = 0.1f;
 
 			//load lighting into world
-//				worldspace->addSLight(spot1);
-//				worldspace->addSLight(spot2);
-//				worldspace->addSLight(spot3);
+				// worldspace->addSLight(spot1);
+				// worldspace->addSLight(spot2);
+				// worldspace->addSLight(spot3);
 				worldspace->addDLight(direc);
 		}
 
@@ -100,27 +104,28 @@ and the ui interface.
 	lighting has been done.
 	//--------------------------------------------*/
 		void game::Draw(){
-			//Position and orient camera.
-			glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f );
-			glm::quat quat = glm::quat(vec3(viewerAltitude, viewerAzimuth, 0.0));
-			glm::mat4 looking = toMat4(quat);
-			glm::vec4 camera = looking * glm::vec4(position.x + 0.0f, position.y + 0.0f, position.z + 1.0f*viewerDistance, 1.0f);
+			// //Position and orient camera.
+			// glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f );
+			// glm::quat quat = glm::quat(vec3(viewerAltitude, viewerAzimuth, 0.0));
+			// glm::mat4 looking = toMat4(quat);
+			// glm::vec4 camera = looking * glm::vec4(position.x + 0.0f, position.y + 0.0f, position.z + 1.0f*viewerDistance, 1.0f);
 
-			//Create project matrix
-			glm::mat4 projection;
-			projection = glm::perspective(glm::radians(FRUSTUM_FIELD_OF_VIEW), (float)currWindowSize[0]/currWindowSize[1], (float)FRUSTUM_NEAR_PLANE, (float)FRUSTUM_FAR_PLANE);
-			//Find up vector
-			glm::vec4 up = looking * glm::vec4(0,1,0,1);
-			//Create view matrix
-			glm::mat4 view;
-			view = glm::lookAt(
-				glm::vec3(camera[0], camera[1], camera[2]),
-				position,
-				glm::vec3(up[0], up[1], up[2])
-			);
+			// //Create project matrix
+			// glm::mat4 projection;
+			// projection = glm::perspective(glm::radians(FRUSTUM_FIELD_OF_VIEW), (float)currWindowSize[0]/currWindowSize[1], (float)FRUSTUM_NEAR_PLANE, (float)FRUSTUM_FAR_PLANE);
+			// //Find up vector
+			// glm::vec4 up = looking * glm::vec4(0,1,0,1);
+			// //Create view matrix
+			// glm::mat4 view;
+			// view = glm::lookAt(
+			// 	glm::vec3(camera[0], camera[1], camera[2]),
+			// 	position,
+			// 	glm::vec3(up[0], up[1], up[2])
+			// );
 
-			//Draw the world
-			worldspace->draw(projection, view, camera, currWindowSize);
+			// //Draw the world
+			// worldspace->draw(projection, view, camera, currWindowSize);
+			renderctrl->draw();
 		}
 
 	/*--------------------------------------------//
@@ -149,6 +154,7 @@ and the ui interface.
 				//worldspace->update();
 				value = 0;
 			}
+			renderctrl->update();
 			return value++;
 		}
 
@@ -234,6 +240,7 @@ and the ui interface.
 			}
 
 			glViewport(int(0.5f*(w - currViewportSize[0])), int(0.5f*(h - currViewportSize[1])), currViewportSize[0], currViewportSize[1]);
+			renderctrl->reshape(w,h);
 		}
 
 	/*--------------------------------------------//

@@ -13,9 +13,11 @@ Includes
     #include "../common/vector.h"
 
     #include <stdlib.h>
+    #include <string.h>
+    #include <fstream>
+    #include <sstream>
     #include <iostream>
     #include <vector>
-    #include <cstdio>
 
 /*--------------------------------------------//
 Shader Class
@@ -28,7 +30,7 @@ Shader Class
                 GLenum getFormat(const char* name);
                 void printShaderInfoLog(GLint shader);
                 void checkCompileErrors(GLuint shader, const char* type);
-                char* loadFile(const char *fname);
+                std::string loadFile(const char *fname);
 
         public:
             /*--------------------------------------------//
@@ -45,23 +47,23 @@ Shader Class
             Functions
             //--------------------------------------------*/
                 void use();
-                int getAttribLoc(const char* &name) const;
-                int getUniformLoc(const char* &name) const;
-                void setBool(const char* &name, bool value) const;
-                void setInt(const char* &name, int value) const;
-                void setFloat(const char* &name, float value) const;
-                void setVec2(const char* &name, const vec2 &value) const;
-                void setVec2(const char* &name, float x, float y) const;
-                void setVec2(const char* &name, const glm::vec2 &value) const;
-                void setVec3(const char* &name, const vec3 &value) const;
-                void setVec3(const char* &name, float x, float y, float z) const;
-                void setVec3(const char* &name, const glm::vec3 &value) const;
-                void setVec4(const char* &name, const vec4 &value) const;
-                void setVec4(const char* &name, float x, float y, float z, float w) const;
-                void setVec4(const char* &name, const glm::vec4 &value) const;
-                void setMat4(const char* &name, float* value) const;
-                void setMat2(const char* &name, const glm::mat2 &mat) const;
-                void setMat3(const char* &name, const glm::mat3 &mat) const;
-                void setMat4(const char* &name, const glm::mat4 &mat) const;
+                int getAttribLoc(const std::string &name) const;
+                int getUniformLoc(const std::string &name) const;
+                void setBool(const std::string &name, bool value) const;
+                void setInt(const std::string &name, int value) const;
+                void setFloat(const std::string &name, float value) const;
+                void setVec2(const std::string &name, const vec2 &value) const;
+                void setVec2(const std::string &name, float x, float y) const;
+                void setVec2(const std::string &name, const glm::vec2 &value) const;
+                void setVec3(const std::string &name, const vec3 &value) const;
+                void setVec3(const std::string &name, float x, float y, float z) const;
+                void setVec3(const std::string &name, const glm::vec3 &value) const;
+                void setVec4(const std::string &name, const vec4 &value) const;
+                void setVec4(const std::string &name, float x, float y, float z, float w) const;
+                void setVec4(const std::string &name, const glm::vec4 &value) const;
+                void setMat4(const std::string &name, float* value) const;
+                void setMat2(const std::string &name, const glm::mat2 &mat) const;
+                void setMat3(const std::string &name, const glm::mat3 &mat) const;
+                void setMat4(const std::string &name, const glm::mat4 &mat) const;
     };
 #endif

@@ -21,6 +21,7 @@ Includes
 	#include "../objects/light/spotlight.h"
 	#include "../interface/interface.h"
 	#include "../interface/text/frameDelay.h"
+	#include "../renderer/render.h"
 
 	#include <stdio.h>
 	#include <stdlib.h>
@@ -40,6 +41,7 @@ class game{
 		//--------------------------------------------*/
 			world* worldspace;//Stores the physical world, handles all interactions between discrete objects
 			uinterface* display;//Interacts directly with the player through 2D elements
+			renderer* renderctrl;//handles the Rendering Context
 			double viewerAltitude = 1; 
 			double viewerAzimuth = 1;
 			double viewerDistance = VIEWER_DISTANCE;

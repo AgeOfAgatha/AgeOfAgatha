@@ -52,7 +52,7 @@ class world{
 			mesh** gravObj;
 
 			//init shaders and buffers
-			Shader *DepthSpotShader, *DepthDirecShader, *ShadowShader, *DepthDebugShader;
+			Shader *ShadowShader, *SimpleShader;
 			
 			//init primatives
 			unsigned int cubeVAO = 0;

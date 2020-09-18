@@ -55,7 +55,7 @@ using namespace std;
 #define			GRAVITYCONSTANT 			100									//multiplier for all gravity applied in the simulation
 #define			FRICTIONCONSTANT 			100									//multiplier for all friction applied in the simulation
 #define			DEFORMCONSTANT 				0.1									//multiplier for all deformation applied in the simulation
-#define			TIMER 						20									//how often do we run the timer function which updates the world
+#define			UPDATE_TIMER				20									//how often do we run the timer function which updates the world
 #define 		BUFFER_RES_X				512									//what resolution to render for our buffer (width)
 #define 		BUFFER_RES_Y				512									//what resolution to render for our buffer (height)
 
