@@ -12,6 +12,7 @@ Includes
 	#include "../globals.h"
 	#include "../../deps/glm/glm.hpp"
 
+	#include "../renderer/render.h"
 	#include "../common/vector.h"
 	#include "../common/sorting.h"
 	#include "../shaders/shader.h"
@@ -30,6 +31,7 @@ class world{
 		/*--------------------------------------------//
 		Class Variables
 		//--------------------------------------------*/
+			renderer* renderctrl;//handles the Rendering Context
 			//set by external at time of creation
 			int timestep;//how often is this world updated
 			int timeout;//how many iterations can an object not move before it is considered asleep
@@ -85,7 +87,6 @@ class world{
 		/*--------------------------------------------//
 		Functions
 		//--------------------------------------------*/
-
 			//regular objects
 				bool loadObj(char* objPath, char* mtlPath, mesh** parent);
 				void addMesh(mesh* &obj);
@@ -115,6 +116,7 @@ class world{
 			//misc
 				int getTimeStep();
 			//rendering
+				void reshape(int w, int h);
 				void draw(glm::mat4 projection, glm::mat4 view, glm::vec4 camera, GLint currWindowSize[2]);
 				void renderCube();
 				void renderQuad();

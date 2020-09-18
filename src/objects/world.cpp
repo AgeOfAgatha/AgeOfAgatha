@@ -38,6 +38,8 @@ This is where the simulation is controlled
 					deformConst = 0.1;
 
 				ShaderInit();
+				renderctrl = new renderer();
+				renderctrl->reshape(INIT_WINDOW_SIZE_X, INIT_WINDOW_SIZE_Y);
 			};
 
 		/*--------------------------------------------//
@@ -561,19 +563,20 @@ This is where the simulation is controlled
 		proceeds all objects forward by one timestep
 		//--------------------------------------------*/
 			void world::update(){
-				for (int i = 0; i < objCnt; ++i){
-					applyGravity(objects[i]);
-					testBpCollision(objects[i], i);
-					objects[i]->updateAcc();
-					objects[i]->updateVel();
-					objects[i]->updatePos();
-					if (objects[i]->getMass() > gravObjMass){
-						addGravObj(objects[i]);
-					}else{
-						remGravObj(objects[i]);
-					}
-				}
-				return;
+				renderctrl->update();
+				// for (int i = 0; i < objCnt; ++i){
+				// 	applyGravity(objects[i]);
+				// 	testBpCollision(objects[i], i);
+				// 	objects[i]->updateAcc();
+				// 	objects[i]->updateVel();
+				// 	objects[i]->updatePos();
+				// 	if (objects[i]->getMass() > gravObjMass){
+				// 		addGravObj(objects[i]);
+				// 	}else{
+				// 		remGravObj(objects[i]);
+				// 	}
+				// }
+				// return;
 			};
 
 		/*--------------------------------------------//
@@ -857,8 +860,15 @@ This is where the simulation is controlled
 	lighting is broken up into passes to simplify
 	overall process
 	//--------------------------------------------*/
-		// renderCube() renders a 1x1 3D cube in NDC.
-		// ------------------------------------------
+		/*-------------------------------------------//
+		reshape gets called when window is resized
+		//-------------------------------------------*/
+		void world::reshape(int w, int h){
+			renderctrl->reshape(w,h);
+		}
+		/*-------------------------------------------//
+		renderCube() renders a 1x1 3D cube in NDC.
+		//-------------------------------------------*/
 			void world::renderCube()
 			{
 			    // initialize (if necessary)
@@ -930,8 +940,9 @@ This is where the simulation is controlled
 			    glBindVertexArray(0);
 			}
 
-		// renderQuad() renders a 1x1 XY quad in NDC
-		// -----------------------------------------
+		/*-------------------------------------------//
+		renderQuad() renders a 1x1 XY quad in NDC
+		//-------------------------------------------*/
 			void world::renderQuad()
 			{
 			    if (quadVAO == 0)
@@ -986,97 +997,98 @@ This is where the simulation is controlled
 		Overall Draw function
 		//--------------------------------------------*/
 			void world::draw(glm::mat4 projection, glm::mat4 view, glm::vec4 camera, GLint currWindowSize[2]){
-				glEnable(GL_DEPTH_TEST);
-				glEnable(GL_NORMALIZE);
-				glEnable(GL_CULL_FACE);
-				glDepthFunc(GL_LEQUAL);
-				glDepthMask(GL_TRUE);
-				glCullFace(GL_FRONT);
+				renderctrl->draw();
+				// glEnable(GL_DEPTH_TEST);
+				// glEnable(GL_NORMALIZE);
+				// glEnable(GL_CULL_FACE);
+				// glDepthFunc(GL_LEQUAL);
+				// glDepthMask(GL_TRUE);
+				// glCullFace(GL_FRONT);
 
-				glMatrixMode(GL_MODELVIEW);
-				glLoadIdentity();
+				// glMatrixMode(GL_MODELVIEW);
+				// glLoadIdentity();
 
-				objectSort(camera);
+				// objectSort(camera);
 
-				
-				glShadeModel(GL_FLAT);//Disable color writes, and use flat shading for speed
-				glColorMask(0, 0, 0, 0);
 
-				//Use viewport the same size as the shadow map
-				glViewport(0, 0, SHADOW_HEIGHT, SHADOW_WIDTH);
-				//Draw the scene
-				SimpleShader->use();
-				for (int i = 0; i < slightCnt; i++){
-					spotlight* spot = getSLight(i);
-					spot->drawTex(SimpleShader);
-					glClear(GL_DEPTH_BUFFER_BIT);
+				// glShadeModel(GL_FLAT);//Disable color writes, and use flat shading for speed
+				// glColorMask(0, 0, 0, 0);
+
+				// //Use viewport the same size as the shadow map
+				// glViewport(0, 0, SHADOW_HEIGHT, SHADOW_WIDTH);
+				// //Draw the scene
+				// SimpleShader->use();
+				// for (int i = 0; i < slightCnt; i++){
+				// 	spotlight* spot = getSLight(i);
+				// 	spot->drawTex(SimpleShader);
+				// 	glClear(GL_DEPTH_BUFFER_BIT);
 					
-					for(int j =0; j < this->getObjectCount(); j++){
-						mesh* cube = getObject(j);
-						cube->draw(SimpleShader);
-					}
-                    glBindFramebuffer(GL_FRAMEBUFFER,0);
-				}
-		        glUseProgram(0);
-		        SimpleShader->use();
-				for (int i = 0; i < dlightCnt; i++){
-					direclight* direc = getDLight(i);
-					direc->drawTex(SimpleShader);
-					glClear(GL_DEPTH_BUFFER_BIT);
+				// 	for(int j =0; j < this->getObjectCount(); j++){
+				// 		mesh* cube = getObject(j);
+				// 		cube->draw(SimpleShader);
+				// 	}
+				//     glBindFramebuffer(GL_FRAMEBUFFER,0);
+				// }
+				// glUseProgram(0);
+				// SimpleShader->use();
+				// for (int i = 0; i < dlightCnt; i++){
+				// 	direclight* direc = getDLight(i);
+				// 	direc->drawTex(SimpleShader);
+				// 	glClear(GL_DEPTH_BUFFER_BIT);
 					
-					for(int j =0; j < this->getObjectCount(); j++){
-						mesh* cube = getObject(j);
-						cube->draw(SimpleShader);
-					}
-                    glBindFramebuffer(GL_FRAMEBUFFER,0);
-				}
-		        glUseProgram(0);
+				// 	for(int j =0; j < this->getObjectCount(); j++){
+				// 		mesh* cube = getObject(j);
+				// 		cube->draw(SimpleShader);
+				// 	}
+				//     glBindFramebuffer(GL_FRAMEBUFFER,0);
+				// }
+				// glUseProgram(0);
 
 
 
-		        
-				//restore states
-				glDisable(GL_CULL_FACE);
-				glShadeModel(GL_SMOOTH);
-				glColorMask(1, 1, 1, 1);
-				glViewport(0, 0, currWindowSize[0], currWindowSize[1]);
 
-				glMatrixMode(GL_PROJECTION);
-				glLoadMatrixf((GLfloat*)&projection[0][0]);
-	
-				glMatrixMode(GL_MODELVIEW);
-				glLoadMatrixf((GLfloat*)&view[0][0]);
+				// //restore states
+				// glDisable(GL_CULL_FACE);
+				// glShadeModel(GL_SMOOTH);
+				// glColorMask(1, 1, 1, 1);
+				// glViewport(0, 0, currWindowSize[0], currWindowSize[1]);
 
-				//2nd pass - Draw from camera's point of view
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				// glMatrixMode(GL_PROJECTION);
+				// glLoadMatrixf((GLfloat*)&projection[0][0]);
 
-				//Draw the scene
-				ShadowShader->use();
-				ShadowShader->setMat4("ViewMatrix", view);
-				ShadowShader->setMat4("ProjectionMatrix", projection);
-				ShadowShader->setVec4("ViewPos", camera);
+				// glMatrixMode(GL_MODELVIEW);
+				// glLoadMatrixf((GLfloat*)&view[0][0]);
 
-				glEnable(GL_TEXTURE_2D);
-				ShadowShader->setInt("LightType", 1);
-				for (int i = 0; i < dlightCnt; i++){
-					direclight* direc = getDLight(i);
-					direc->bindTex(ShadowShader);
+				// //2nd pass - Draw from camera's point of view
+				// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+				// //Draw the scene
+				// ShadowShader->use();
+				// ShadowShader->setMat4("ViewMatrix", view);
+				// ShadowShader->setMat4("ProjectionMatrix", projection);
+				// ShadowShader->setVec4("ViewPos", camera);
+
+				// glEnable(GL_TEXTURE_2D);
+				// ShadowShader->setInt("LightType", 1);
+				// for (int i = 0; i < dlightCnt; i++){
+				// 	direclight* direc = getDLight(i);
+				// 	direc->bindTex(ShadowShader);
 					
-					for(int j =0; j < this->getObjectCount(); j++){
-						mesh* cube = getObject(j);
-						cube->draw(ShadowShader);
-					}
-				}
-				ShadowShader->setInt("LightType", 0);
-				for (int i = 0; i < slightCnt; i++){
-					spotlight* spot = getSLight(i);
-					spot->bindTex(ShadowShader);
+				// 	for(int j =0; j < this->getObjectCount(); j++){
+				// 		mesh* cube = getObject(j);
+				// 		cube->draw(ShadowShader);
+				// 	}
+				// }
+				// ShadowShader->setInt("LightType", 0);
+				// for (int i = 0; i < slightCnt; i++){
+				// 	spotlight* spot = getSLight(i);
+				// 	spot->bindTex(ShadowShader);
 					
-					for(int j =0; j < this->getObjectCount(); j++){
-						mesh* cube = getObject(j);
-						cube->draw(ShadowShader);
-					}
-				}
-		        glUseProgram(0);
+				// 	for(int j =0; j < this->getObjectCount(); j++){
+				// 		mesh* cube = getObject(j);
+				// 		cube->draw(ShadowShader);
+				// 	}
+				// }
+				// glUseProgram(0);
 			};
 #endif

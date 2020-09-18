@@ -16,19 +16,18 @@ EXTW64 = .x64.exe
 
 #Get OS and configure based on OS
 ifeq ($(OS),Windows_NT)
-    CFLAGSW += -D WIN32
     ifeq ($(PROCESSOR_ARCHITEW6432),AMD64)
         CFLAGSW += -D AMD64
    		DISTRO = windows64
-    else
-        ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
-            CFLAGSW += -D AMD64
-   			DISTRO = windows64
-        endif
-        ifeq ($(PROCESSOR_ARCHITECTURE),x86)
-            CFLAGSW += -D IA32
-   			DISTRO = windows32
-        endif
+   	else
+	    ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
+	        CFLAGSW += -D AMD64
+			DISTRO = windows64
+	    endif
+	    ifeq ($(PROCESSOR_ARCHITECTURE),x86)
+	        CFLAGSW += -D IA32 WIN32
+			DISTRO = windows32
+	    endif
     endif
 else
     UNAME_S := $(shell uname -s)

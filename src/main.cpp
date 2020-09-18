@@ -1,8 +1,6 @@
 ////////////////////////////////////////////////////////////////////
 //Main driver file - Gets everything started
 ////////////////////////////////////////////////////////////////////
-#ifndef MAIN_H
-#define MAIN_H
 using namespace std;
 
 /*--------------------------------------------//
@@ -18,7 +16,7 @@ Includes
 /*--------------------------------------------//
 Globals
 //--------------------------------------------*/
-		game* app;
+	game* app;
 
 /*--------------------------------------------//
 Error Message Callback for opengl
@@ -151,7 +149,7 @@ Main - Entry point for program
 		int window;
 		glutInitWindowPosition(INIT_WINDOW_POSITION_X, INIT_WINDOW_POSITION_Y);
 		glutInitWindowSize(currWindowSize[0], currWindowSize[1]);
-		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_STENCIL);
+		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 		glClearColor(BACKGROUND_COLOR_R, BACKGROUND_COLOR_G, BACKGROUND_COLOR_B, 1.0f);
 		window = glutCreateWindow("Age of Agatha");
 		glViewport(0, 0, currWindowSize[0], currWindowSize[1]);
@@ -191,4 +189,3 @@ Main - Entry point for program
 
 		return 0;
 	}
-#endif

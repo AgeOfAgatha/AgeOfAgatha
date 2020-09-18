@@ -6,15 +6,15 @@ all: main
 #########################
 shaders: shader.o
 dependencies: glew.o
-renderer: render.o renderer-deps
-renderer-deps: FPS_COUNTER.o scene.o GLee.o COLOR.o MATRIX4X4.o PLANE.o VECTOR2D.o VECTOR3D.o VECTOR4D.o
+renderer: renderer-deps render.o
+renderer-deps: fps_counter.o scene.o GLee.o COLOR.o MATRIX4X4.o PLANE.o VECTOR2D.o VECTOR3D.o VECTOR4D.o
 common: dependencies angles.o vector.o line.o plane.o sorting.o quaternion.o ../../src/globals.h
 objects: dependencies common actors texture.o vertex.o triangle.o mesh.o world.o
 actors: dependencies common bone.o joint.o boneVertex.o skeleton.o
 interface: common dependencies interface_text element.o interface.o
 interface_text: common dependencies frameDelay.o
 simulation: dependencies common objects interface shaders game.o
-main: common simulation dependencies renderer main.o
+main:  common simulation dependencies renderer main.o  
 
 #########################
 #Renderer Section
@@ -23,9 +23,9 @@ render.o: ../../src/renderer/render.cpp ../../src/renderer/render.h
 	@echo -e '\t\t'Making renderer...
 	@$(CC) $(CFLAGS) ../../src/renderer/render.cpp -o $@
 
-FPS_COUNTER.o: ../../src/renderer/FPS_COUNTER.cpp ../../src/renderer/FPS_COUNTER.h
-	@echo -e '\t\t'Making FPS counter...
-	@$(CC) $(CFLAGS) ../../src/renderer/FPS_COUNTER.cpp -o $@
+fps_counter.o: ../../src/renderer/fps_counter.cpp ../../src/renderer/fps_counter.h
+	@echo -e '\t\t'Making fps counter...
+	@$(CC) $(CFLAGS) ../../src/renderer/fps_counter.cpp -o $@
 
 scene.o: ../../src/renderer/scene.cpp ../../src/renderer/scene.h
 	@echo -e '\t\t'Making scene...
