@@ -1,27 +1,27 @@
 /*--------------------------------------------//
 Angles definition
-This is used to simplify definition of angles
+This is used to simplify definition of Angles
 //--------------------------------------------*/
 #ifndef ANGLES
 #define ANGLES
 	/*--------------------------------------------//
 	Includes
 	//--------------------------------------------*/
-		#include "angles.h"
+		#include "Angles.h"
 
 	/*--------------------------------------------//
 	Default constructor
 	//--------------------------------------------*/
-		angles::angles(){
+		Angles::Angles(){
 			p = 0;
 			y = 0;
 			r = 0;
 		};
 
 	/*--------------------------------------------//
-	Constuctor with angles specified
+	Constuctor with Angles specified
 	//--------------------------------------------*/
-		angles::angles(double pi, double yi, double ri):angles(){
+		Angles::Angles(double pi, double yi, double ri):Angles(){
 			p = pi;
 			y = yi;
 			r = ri;
@@ -30,65 +30,65 @@ This is used to simplify definition of angles
 	/*--------------------------------------------//
 	Destructor
 	//--------------------------------------------*/
-		angles::~angles(){};
+		Angles::~Angles(){};
 
 	/*--------------------------------------------//
 	Overridden operators
 	//--------------------------------------------*/
 		//Arithmetic
 			//addition
-				angles angles::operator+(const angles &other) {
-					return angles(this->p + other.p, this->y + other.y, this->r + other.r);
+				Angles Angles::operator+(const Angles &other) {
+					return Angles(this->p + other.p, this->y + other.y, this->r + other.r);
 				};
-				angles angles::operator+=(const angles &other) {
+				Angles Angles::operator+=(const Angles &other) {
 					this->p += other.p;
 					this->y += other.y;
 					this->r += other.r;
 					return (*this);
 				};
 			//subtraction
-				angles angles::operator-(const angles &other) {
-					return angles(this->p - other.p, this->y - other.y, this->r - other.r);
+				Angles Angles::operator-(const Angles &other) {
+					return Angles(this->p - other.p, this->y - other.y, this->r - other.r);
 				};
-				angles angles::operator-=(const angles &other) {
+				Angles Angles::operator-=(const Angles &other) {
 					this->p -= other.p;
 					this->y -= other.y;
 					this->r -= other.r;
 					return (*this);
 				};
 			//multiplication
-				angles angles::operator*(const angles &other) {
-					return angles(this->p * other.p, this->y * other.y, this->r * other.r);
+				Angles Angles::operator*(const Angles &other) {
+					return Angles(this->p * other.p, this->y * other.y, this->r * other.r);
 				};
-				angles angles::operator*=(const angles &other) {
+				Angles Angles::operator*=(const Angles &other) {
 					this->p *= other.p;
 					this->y *= other.y;
 					this->r *= other.r;
 					return (*this);
 				};
-				angles angles::operator*(const int &other) {
-					return angles(this->p * other, this->y * other, this->r * other);
+				Angles Angles::operator*(const int &other) {
+					return Angles(this->p * other, this->y * other, this->r * other);
 				};
-				angles angles::operator*=(const int &other) {
+				Angles Angles::operator*=(const int &other) {
 					this->p *= other;
 					this->y *= other;
 					this->r *= other;
 					return (*this);
 				};
 			//division
-				angles angles::operator/(const angles &other) {
-					return angles(this->p / other.p, this->y / other.y, this->r / other.r);
+				Angles Angles::operator/(const Angles &other) {
+					return Angles(this->p / other.p, this->y / other.y, this->r / other.r);
 				};
-				angles angles::operator/=(const angles &other) {
+				Angles Angles::operator/=(const Angles &other) {
 					this->p /= other.p;
 					this->y /= other.y;
 					this->r /= other.r;
 					return (*this);
 				};
-				angles angles::operator/(const int &other) {
-					return angles(this->p / other, this->y / other, this->r / other);
+				Angles Angles::operator/(const int &other) {
+					return Angles(this->p / other, this->y / other, this->r / other);
 				};
-				angles angles::operator/=(const int &other) {
+				Angles Angles::operator/=(const int &other) {
 					this->p /= other;
 					this->y /= other;
 					this->r /= other;
@@ -96,78 +96,78 @@ This is used to simplify definition of angles
 				};
 		//compairisons
 			//less than
-				bool angles::operator<(const int &other) const {
+				bool Angles::operator<(const int &other) const {
 					return (this->p < other && this->y < other && this->r < other);
 				};
-				bool angles::operator<=(const int &other) const {
+				bool Angles::operator<=(const int &other) const {
 					return (this->p <= other && this->y <= other && this->r <= other);
 				};
-				bool angles::operator<(const float &other) const {
+				bool Angles::operator<(const float &other) const {
 					return (this->p < other && this->y < other && this->r < other);
 				};
-				bool angles::operator<=(const float &other) const {
+				bool Angles::operator<=(const float &other) const {
 					return (this->p <= other && this->y <= other && this->r <= other);
 				};
-				bool angles::operator<(const double &other) const {
+				bool Angles::operator<(const double &other) const {
 					return (this->p < other && this->y < other && this->r < other);
 				};
-				bool angles::operator<=(const double &other) const {
+				bool Angles::operator<=(const double &other) const {
 					return (this->p <= other && this->y <= other && this->r <= other);
 				};
-				bool angles::operator<(const angles &other) const {
+				bool Angles::operator<(const Angles &other) const {
 					return (this->p < other.p && this->y < other.y && this->r < other.r);
 				};
-				bool angles::operator<=(const angles &other) const {
+				bool Angles::operator<=(const Angles &other) const {
 					return (this->p <= other.p && this->y <= other.y && this->r <= other.r);
 				};
 			//greater than
-				bool angles::operator>(const int &other) const {
+				bool Angles::operator>(const int &other) const {
 					return (this->p > other && this->y > other && this->r > other);
 				};
-				bool angles::operator>=(const int &other) const {
+				bool Angles::operator>=(const int &other) const {
 					return (this->p >= other && this->y >= other && this->r >= other);
 				};
-				bool angles::operator>(const float &other) const {
+				bool Angles::operator>(const float &other) const {
 					return (this->p > other && this->y > other && this->r > other);
 				};
-				bool angles::operator>=(const float &other) const {
+				bool Angles::operator>=(const float &other) const {
 					return (this->p >= other && this->y >= other && this->r >= other);
 				};
-				bool angles::operator>(const double &other) const {
+				bool Angles::operator>(const double &other) const {
 					return (this->p > other && this->y > other && this->r > other);
 				};
-				bool angles::operator>=(const double &other) const {
+				bool Angles::operator>=(const double &other) const {
 					return (this->p >= other && this->y >= other && this->r >= other);
 				};
-				bool angles::operator>(const angles &other) const {
+				bool Angles::operator>(const Angles &other) const {
 					return (this->p > other.p && this->y > other.y && this->r > other.r);
 				};
-				bool angles::operator>=(const angles &other) const {
+				bool Angles::operator>=(const Angles &other) const {
 					return (this->p >= other.p && this->y >= other.y && this->r >= other.r);
 				};
 			//equals
-				bool angles::operator==(const angles &other) const {
+				bool Angles::operator==(const Angles &other) const {
 					return (this->p == other.p && this->y == other.y && this->r == other.r);
 				};
-				bool angles::operator==(const int &other) const {
+				bool Angles::operator==(const int &other) const {
 					return (this->p == other && this->y == other && this->r == other);
 				};
-				bool angles::operator==(const float &other) const {
+				bool Angles::operator==(const float &other) const {
 					return (this->p == other && this->y == other && this->r == other);
 				};
-				bool angles::operator==(const double &other) const {
+				bool Angles::operator==(const double &other) const {
 					return (this->p == other && this->y == other && this->r == other);
 				};
-				bool angles::operator!=(const angles &other) const {
+				bool Angles::operator!=(const Angles &other) const {
 					return *this!=other;
 				};
-				bool angles::operator!=(const int &other) const {
+				bool Angles::operator!=(const int &other) const {
 					return *this!=other;
 				};
-				bool angles::operator!=(const float &other) const {
+				bool Angles::operator!=(const float &other) const {
 					return *this!=other;
 				};
-				bool angles::operator!=(const double &other) const {
+				bool Angles::operator!=(const double &other) const {
 					return *this!=other;
 				};
 #endif

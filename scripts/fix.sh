@@ -12,4 +12,4 @@ function fun {
 	done
 }
 
-fun "src"
+fun $1

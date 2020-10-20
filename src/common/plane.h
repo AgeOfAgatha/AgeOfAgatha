@@ -1,19 +1,17 @@
 /*--------------------------------------------//
 Plane definition
-follows plane definition as: ax + by + cz + d = 0
+follows Plane definition as: ax + by + cz + d = 0
 //--------------------------------------------*/
 #ifndef PLANE_H
 #define PLANE_H
-class plane;
+class Plane;
 
 /*--------------------------------------------//
 Include
 //--------------------------------------------*/
-	#include "../../deps/glm/glm.hpp"
-
 	#include "vector.h"
 
-class plane{
+class Plane{
 	private:
 		/*--------------------------------------------//
 		Class Variables
@@ -25,17 +23,17 @@ class plane{
 		/*--------------------------------------------//
 		Default constructor
 		//--------------------------------------------*/
-			plane();
+			Plane();
 
 		/*--------------------------------------------//
 		Overloaded constructors
 		//--------------------------------------------*/
-			plane(vec3 a, vec3 b);
-			plane(vec3 a, double b);
+			Plane(vec3 a, vec3 b);
+			Plane(vec3 a, double b);
 
 		/*--------------------------------------------//
 		Check if point is behind us
 		//--------------------------------------------*/
-			bool facing(vec3 a);
+			bool Facing(vec3 a);
 };
 #endif

@@ -2,9 +2,8 @@
 #define GLOBALS_H
 using namespace std;
 #define GLUT_DISABLE_ATEXIT_HACK
-#include <GL/glew.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
+#define GLX_GLXEXT_LEGACY
+#include <GL/GLee.h>
 #include <GL/glut.h>
 
 //Mathematical

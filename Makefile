@@ -75,20 +75,20 @@ all:
 #Assemble OS specific
 #########################
 linux:
-	@(echo '\t'Compiling object code... && $(MAKE) -C bin/binl all --no-print-directory && echo '\t'Done Compiling) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo '\t'Assembling executable... && $(MAKE) release/lin/run$(EXTL) --no-print-directory && echo '\t'Done Assembling) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo -e '\t'Compiling object code... && $(MAKE) -C bin/binl all --no-print-directory && echo -e '\t'Done Compiling) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo -e '\t'Assembling executable... && $(MAKE) release/lin/run$(EXTL) --no-print-directory && echo -e '\t'Done Assembling) | grep -vE "(Nothing to be done for|is up to date)"
 
 mac:
-	@(echo '\t'Compiling object code... && $(MAKE) -C bin/binm all --no-print-directory && echo '\t'Done Compiling) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo '\t'Assembling executable... && $(MAKE) release/mac/run$(EXTM) --no-print-directory && echo '\t'Done Assembling) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo -e '\t'Compiling object code... && $(MAKE) -C bin/binm all --no-print-directory && echo -e '\t'Done Compiling) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo -e '\t'Assembling executable... && $(MAKE) release/mac/run$(EXTM) --no-print-directory && echo -e '\t'Done Assembling) | grep -vE "(Nothing to be done for|is up to date)"
 
 windows32:
-	@(echo '\t'Compiling object code... && $(MAKE) -C bin/binw32 all --no-print-directory && echo '\t'Done Compiling) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo '\t'Assembling executable... && $(MAKE) release/w32/run$(EXTW32) --no-print-directory && echo '\t'Done Assembling) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo -e '\t'Compiling object code... && $(MAKE) -C bin/binw32 all --no-print-directory && echo -e '\t'Done Compiling) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo -e '\t'Assembling executable... && $(MAKE) release/w32/run$(EXTW32) --no-print-directory && echo -e '\t'Done Assembling) | grep -vE "(Nothing to be done for|is up to date)"
 
 windows64:
-	@(echo '\t'Compiling object code... && $(MAKE) -C bin/binw64 all --no-print-directory && echo '\t'Done Compiling) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo '\t'Assembling executable... && $(MAKE) release/w64/run$(EXTW64) --no-print-directory && echo '\t'Done Assembling) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo -e '\t'Compiling object code... && $(MAKE) -C bin/binw64 all --no-print-directory && echo -e '\t'Done Compiling) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo -e '\t'Assembling executable... && $(MAKE) release/w64/run$(EXTW64) --no-print-directory && echo -e '\t'Done Assembling) | grep -vE "(Nothing to be done for|is up to date)"
 
 #########################
 #Assemble executable
@@ -100,13 +100,13 @@ release/lin/run$(EXTL): bin/binl/*.o
 	@mkdir ./release/lin/shaders
 	@mkdir ./release/lin/models
 	@mkdir ./release/lin/textures
-	@cp models/* release/lin/models
-	@cp textures/* release/lin/textures
-	@cp src/shaders/*.fragment release/lin/shaders
-	@cp src/shaders/*.vertex release/lin/shaders
-	@cp src/shaders/*.geometry release/lin/shaders
-	@cp bin/binl/*.dll release/lin/
-	@cp bin/*.dll release/lin/
+	@cp models/* release/lin/models 2>/dev/null || :
+	@cp textures/* release/lin/textures 2>/dev/null || :
+	@cp src/shaders/*.fragment release/lin/shaders 2>/dev/null || :
+	@cp src/shaders/*.vertex release/lin/shaders 2>/dev/null || :
+	@cp src/shaders/*.geometry release/lin/shaders 2>/dev/null || :
+	@cp bin/binl/*.dll release/lin/ 2>/dev/null || :
+	@cp bin/*.dll release/lin/ 2>/dev/null || :
 	
 release/mac/run$(EXTM): bin/binm/*.o
 	@echo -e '\t\t'Executable is being assembled...
@@ -115,13 +115,13 @@ release/mac/run$(EXTM): bin/binm/*.o
 	@mkdir ./release/mac/shaders
 	@mkdir ./release/mac/models
 	@mkdir ./release/mac/textures
-	@cp models/* release/mac/models
-	@cp textures/* release/mac/textures
-	@cp src/shaders/*.fragment release/mac/shaders
-	@cp src/shaders/*.vertex release/mac/shaders
-	@cp src/shaders/*.geometry release/mac/shaders
-	@cp bin/binm/*.dll release/mac/
-	@cp bin/*.dll release/mac/
+	@cp models/* release/mac/models 2>/dev/null || :
+	@cp textures/* release/mac/textures 2>/dev/null || :
+	@cp src/shaders/*.fragment release/mac/shaders 2>/dev/null || :
+	@cp src/shaders/*.vertex release/mac/shaders 2>/dev/null || :
+	@cp src/shaders/*.geometry release/mac/shaders 2>/dev/null || :
+	@cp bin/binm/*.dll release/mac/ 2>/dev/null || :
+	@cp bin/*.dll release/mac/ 2>/dev/null || :
 	
 release/w32/run$(EXTW32): bin/binw32/*.o
 	@echo -e '\t\t'Executable is being assembled...
@@ -130,13 +130,13 @@ release/w32/run$(EXTW32): bin/binw32/*.o
 	@mkdir ./release/w32/shaders
 	@mkdir ./release/w32/models
 	@mkdir ./release/w32/textures
-	@cp models/* release/w32/models
-	@cp textures/* release/w32/textures
-	@cp src/shaders/*.fragment release/w32/shaders
-	@cp src/shaders/*.vertex release/w32/shaders
-	@cp src/shaders/*.geometry release/w32/shaders
-	@cp bin/binw32/*.dll release/w32/
-	@cp bin/*.dll release/w32/
+	@cp models/* release/w32/models 2>/dev/null || :
+	@cp textures/* release/w32/textures 2>/dev/null || :
+	@cp src/shaders/*.fragment release/w32/shaders 2>/dev/null || :
+	@cp src/shaders/*.vertex release/w32/shaders 2>/dev/null || :
+	@cp src/shaders/*.geometry release/w32/shaders 2>/dev/null || :
+	@cp bin/binw32/*.dll release/w32/ 2>/dev/null || :
+	@cp bin/*.dll release/w32/ 2>/dev/null || :
 	
 release/w64/run$(EXTW64): bin/binw64/*.o
 	@echo -e '\t\t'Executable is being assembled...
@@ -145,19 +145,19 @@ release/w64/run$(EXTW64): bin/binw64/*.o
 	@mkdir ./release/w64/shaders
 	@mkdir ./release/w64/models
 	@mkdir ./release/w64/textures
-	@cp models/* release/w64/models
-	@cp textures/* release/w64/textures
-	@cp src/shaders/*.fragment release/w64/shaders
-	@cp src/shaders/*.vertex release/w64/shaders
-	@cp src/shaders/*.geometry release/w64/shaders
-	@cp bin/binw64/*.dll release/w64/
-	@cp bin/*.dll release/w64/
+	@cp models/* release/w64/models 2>/dev/null || :
+	@cp textures/* release/w64/textures 2>/dev/null || :
+	@cp src/shaders/*.fragment release/w64/shaders 2>/dev/null || :
+	@cp src/shaders/*.vertex release/w64/shaders 2>/dev/null || :
+	@cp src/shaders/*.geometry release/w64/shaders 2>/dev/null || :
+	@cp bin/binw64/*.dll release/w64/ 2>/dev/null || :
+	@cp bin/*.dll release/w64/ 2>/dev/null || :
 
 #########################
 #Utility functions
 #########################
 help:
-	@echo "Available build targets:\
+	@echo -e "Available build targets:\
 \n\t`tput bold`Command;Description`tput sgr0`\
 \n\tmain;Build for detected operating system\
 \n\tall;Build for all operating systems\
@@ -197,18 +197,18 @@ cl:
 
 clean:
 	@echo Cleaning...
-	@(echo '\t'Cleaning `tput bold`linux`tput sgr0` shaders... && $(MAKE) clean-linux-shaders --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo '\t'Cleaning `tput bold`mac`tput sgr0` shaders... && $(MAKE) clean-mac-shaders --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo '\t'Cleaning `tput bold`windows32`tput sgr0` shaders... && $(MAKE) clean-windows32-shaders --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo '\t'Cleaning `tput bold`windows64`tput sgr0` shaders... && $(MAKE) clean-windows64-shaders --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo -e '\t'Cleaning `tput bold`linux`tput sgr0` shaders... && $(MAKE) clean-linux-shaders --no-print-directory && echo -e '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo -e '\t'Cleaning `tput bold`mac`tput sgr0` shaders... && $(MAKE) clean-mac-shaders --no-print-directory && echo -e '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo -e '\t'Cleaning `tput bold`windows32`tput sgr0` shaders... && $(MAKE) clean-windows32-shaders --no-print-directory && echo -e '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo -e '\t'Cleaning `tput bold`windows64`tput sgr0` shaders... && $(MAKE) clean-windows64-shaders --no-print-directory && echo -e '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
 	@echo Done cleaning
 
 clean-all:
 	@echo Cleaning...
-	@(echo '\t'Cleaning `tput bold`linux`tput sgr0`... && $(MAKE) clean-linux --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo '\t'Cleaning `tput bold`mac`tput sgr0`... && $(MAKE) clean-mac --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo '\t'Cleaning `tput bold`windows32`tput sgr0`... && $(MAKE) clean-windows32 --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo '\t'Cleaning `tput bold`windows64`tput sgr0`... && $(MAKE) clean-windows64 --no-print-directory && echo '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo -e '\t'Cleaning `tput bold`linux`tput sgr0`... && $(MAKE) clean-linux --no-print-directory && echo -e '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo -e '\t'Cleaning `tput bold`mac`tput sgr0`... && $(MAKE) clean-mac --no-print-directory && echo -e '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo -e '\t'Cleaning `tput bold`windows32`tput sgr0`... && $(MAKE) clean-windows32 --no-print-directory && echo -e '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
+	@(echo -e '\t'Cleaning `tput bold`windows64`tput sgr0`... && $(MAKE) clean-windows64 --no-print-directory && echo -e '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
 	@echo Done cleaning
 
 clean-linux:
@@ -278,4 +278,4 @@ clean-windows64-shaders:
 
 fix:
 	@echo Replacing spaces with tabs in source files
-	@./fix.sh
+	@./scripts/fix.sh src

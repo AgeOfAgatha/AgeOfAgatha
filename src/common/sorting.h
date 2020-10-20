@@ -26,7 +26,7 @@ class Sort{
 		/*--------------------------------------------//
 		Functions
 		//--------------------------------------------*/
-			void swap(void* obj1, void* obj2);
+			void Swap(void* obj1, void* obj2);
 			virtual void SortObjs(){}
 
 	public:

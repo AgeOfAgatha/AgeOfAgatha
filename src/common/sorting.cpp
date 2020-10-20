@@ -13,7 +13,7 @@ structures.
 	/*--------------------------------------------//
 	Swap two elements
 	//--------------------------------------------*/
-		void Sort::swap(void* obj1, void* obj2){
+		void Sort::Swap(void* obj1, void* obj2){
 			void* temp = obj1;
 			obj1 = obj2;
 			obj2 = temp;
@@ -103,8 +103,8 @@ structures.
 		 
 		    // If largest is not root
 		    if (largest != i){
-		        swap(objs[i], objs[largest]);
-		        swap(cost[i], cost[largest]);
+		        Swap(objs[i], objs[largest]);
+		        Swap(cost[i], cost[largest]);
 		 
 		        // Recursively heapify the affected sub-tree
 		        BuildHeap(n, largest);
@@ -120,8 +120,8 @@ structures.
 			//this does our sorting
 			for (int i=size -1; i>=0; i--){
 				//move current root to the end
-				swap(objs[0], objs[i]);
-				swap(cost[0], cost[i]);
+				Swap(objs[0], objs[i]);
+				Swap(cost[0], cost[i]);
 
 				//call max heapify on the reduced heap
 				BuildHeap(i, 0);

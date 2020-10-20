@@ -1,12 +1,12 @@
 /*--------------------------------------------//
 Angles definition
-This is used to simplify definition of angles
+This is used to simplify definition of Angles
 //--------------------------------------------*/
 #ifndef ANGLES_H
 #define ANGLES_H
-class angles;
+class Angles;
 
-class angles{
+class Angles{
 	public:
 		/*--------------------------------------------//
 		Class Variables
@@ -17,38 +17,38 @@ class angles{
 		/*--------------------------------------------//
 		Default constructor
 		//--------------------------------------------*/
-			angles();
+			Angles();
 
 		/*--------------------------------------------//
-		Constuctor with angles specified
+		Constuctor with Angles specified
 		//--------------------------------------------*/
-			angles(double pi, double yi, double ri);
+			Angles(double pi, double yi, double ri);
 
 		/*--------------------------------------------//
 		Destructor
 		//--------------------------------------------*/
-			~angles();
+			~Angles();
 
 		/*--------------------------------------------//
 		Overridden operators
 		//--------------------------------------------*/
 			//arithmetic
 				//addition
-					angles operator+(const angles &other);
-					angles operator+=(const angles &other);
+					Angles operator+(const Angles &other);
+					Angles operator+=(const Angles &other);
 				//subtraction
-					angles operator-(const angles &other);
-					angles operator-=(const angles &other);
+					Angles operator-(const Angles &other);
+					Angles operator-=(const Angles &other);
 				//multiplication
-					angles operator*(const angles &other);
-					angles operator*=(const angles &other);
-					angles operator*(const int &other);
-					angles operator*=(const int &other);
+					Angles operator*(const Angles &other);
+					Angles operator*=(const Angles &other);
+					Angles operator*(const int &other);
+					Angles operator*=(const int &other);
 				//division
-					angles operator/(const angles &other);
-					angles operator/=(const angles &other);
-					angles operator/(const int &other);
-					angles operator/=(const int &other);
+					Angles operator/(const Angles &other);
+					Angles operator/=(const Angles &other);
+					Angles operator/(const int &other);
+					Angles operator/=(const int &other);
 			//compairisons
 				//less than
 					bool operator<(const int &other) const;
@@ -57,8 +57,8 @@ class angles{
 					bool operator<=(const float &other) const;
 					bool operator<(const double &other) const;
 					bool operator<=(const double &other) const;
-					bool operator<(const angles &other) const;
-					bool operator<=(const angles &other) const;
+					bool operator<(const Angles &other) const;
+					bool operator<=(const Angles &other) const;
 				//greater than
 					bool operator>(const int &other) const;
 					bool operator>=(const int &other) const;
@@ -66,14 +66,14 @@ class angles{
 					bool operator>=(const float &other) const;
 					bool operator>(const double &other) const;
 					bool operator>=(const double &other) const;
-					bool operator>(const angles &other) const;
-					bool operator>=(const angles &other) const;
+					bool operator>(const Angles &other) const;
+					bool operator>=(const Angles &other) const;
 				//equals
-					bool operator==(const angles &other) const;
+					bool operator==(const Angles &other) const;
 					bool operator==(const int &other) const;
 					bool operator==(const float &other) const;
 					bool operator==(const double &other) const;
-					bool operator!=(const angles &other) const;
+					bool operator!=(const Angles &other) const;
 					bool operator!=(const int &other) const;
 					bool operator!=(const float &other) const;
 					bool operator!=(const double &other) const;
