@@ -9,6 +9,7 @@ simplifies vector use
 Includes
 //--------------------------------------------*/
 	#include <math.h>
+	#include "../globals.h"
 
 /*--------------------------------------------//
 Classes
@@ -30,6 +31,9 @@ Classes
 			Constructor
 			//--------------------------------------------*/
 				Vec2(void): x(0.0f), y(0.0f){}
+				Vec2(double newi): x(newi), y(newi){}
+				Vec2(float newi): x(newi), y(newi){}
+				Vec2(int newi): x(newi), y(newi){}
 				Vec2(double newX, double newY): x(newX), y(newY){}
 				Vec2(float newX, float newY): x(newX), y(newY){}
 				Vec2(int newX, int newY): x(newX), y(newY){}
@@ -158,10 +162,14 @@ Classes
 			Constructor
 			//--------------------------------------------*/
 				Vec3(void): x(0.0f), y(0.0f), z(0.0f){}
+				Vec3(double newi): x(newi), y(newi), z(newi){}
+				Vec3(float newi): x(newi), y(newi), z(newi){}
+				Vec3(int newi): x(newi), y(newi), z(newi){}
 				Vec3(double newX, double newY, double newZ): x(newX), y(newY), z(newZ){}
 				Vec3(float newX, float newY, float newZ): x(newX), y(newY), z(newZ){}
 				Vec3(int newX, int newY, int newZ): x(newX), y(newY), z(newZ){}
 				Vec3(const float * rhs): x(*rhs), y(*(rhs+1)), z(*(rhs+2)){}
+				Vec3(const Vec4 & rhs);
 				Vec3(const Vec3 & rhs): x(rhs.x), y(rhs.y), z(rhs.z){}
 				Vec3(const Vec2 & rhs):	x(rhs.x), y(rhs.y), z(0.0f){}
 				~Vec3(){}//destructor
@@ -311,12 +319,18 @@ Classes
 			Constructor
 			//--------------------------------------------*/
 				Vec4(void): x(0.0f), y(0.0f), z(0.0f), w(0.0f){}
+				Vec4(double newi): x(newi), y(newi), z(newi), w(newi){}
+				Vec4(float newi): x(newi), y(newi), z(newi), w(newi){}
+				Vec4(int newi): x(newi), y(newi), z(newi), w(newi){}
 				Vec4(double newX, double newY, double newZ, double newW): x(newX), y(newY), z(newZ), w(newW){}
 				Vec4(float newX, float newY, float newZ, float newW): x(newX), y(newY), z(newZ), w(newW){}
 				Vec4(int newX, int newY, int newZ, int newW): x(newX), y(newY), z(newZ), w(newW){}
 				Vec4(const float * rhs): x(*rhs), y(*(rhs+1)), z(*(rhs+2)), w(*(rhs+3)){}
 				Vec4(const Vec4 & rhs): x(rhs.x), y(rhs.y), z(rhs.z), w(rhs.w){}
 				Vec4(const Vec3 & rhs):	x(rhs.x), y(rhs.y), z(rhs.z), w(1.0f){}
+				Vec4(const Vec3 & rhs, int newW): x(rhs.x), y(rhs.y), z(rhs.z), w(newW){}
+				Vec4(const Vec3 & rhs, float newW): x(rhs.x), y(rhs.y), z(rhs.z), w(newW){}
+				Vec4(const Vec3 & rhs, double newW): x(rhs.x), y(rhs.y), z(rhs.z), w(newW){}
 				~Vec4(){}//destructor
 
 			/*--------------------------------------------//

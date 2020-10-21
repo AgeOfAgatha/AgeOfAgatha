@@ -9,8 +9,12 @@ simplifies matrix use
 Includes
 //--------------------------------------------*/
 	#include <memory.h>
+	#include <limits>
+	#include <cassert>
 	#include "vector.h"
 	#include "angles.h"
+	#include "quaternion.h"
+	#include "../globals.h"
 
 /*--------------------------------------------//
 Classes
@@ -162,7 +166,7 @@ Classes
 			/*--------------------------------------------//
 			Variables
 			//--------------------------------------------*/
-				double entries[16];
+				float entries[16];
 
 		public:
 			/*--------------------------------------------//
@@ -177,7 +181,9 @@ Classes
 				Mat4(const double rhs);
 				Mat4(const float rhs):Mat4((double)rhs){}
 				Mat4(const int rhs):Mat4((double)rhs){}
-				Mat4(const Mat4 & rhs);
+				Mat4(const Mat3& rhs);
+				Mat4(const Mat4& rhs);
+				Mat4(const Quat& qu);
 			/*--------------------------------------------//
 			Destructor
 			//--------------------------------------------*/
@@ -205,10 +211,14 @@ Classes
 				Mat4 Translate(const Vec3& trans);
 				Mat4 Translate(const Vec4& trans){Translate((Vec3)trans);}
 				Mat4 LookAt(const Vec3& eye, const Vec3& center, const Vec3& up);
-				Mat4 Project(const Vec4& trans);
 				Mat4 Ortho(const Vec4& trans);
-				Mat4 Frustrum(const Vec4& trans);
-				Mat4 Perspective(const Vec4& trans);
+				Mat4 Frustrum(const Vec4& trans, double neary, double fary);
+				Mat4 Perspective(double fovy, double aspect, double zNear, double zFar);
+				Mat4 PerspectiveFov(double fov, double width, double height, double zNear, double zFar);
+				Mat4 InfinitePerspective(double fovy, double aspect, double zNear);
+				Mat4 TweakedInfinitePerspective(double fovy, double aspect, double zNear, double ep);
+				Mat4 TweakedInfinitePerspective(double fovy, double aspect, double zNear);
+				static Vec3 Project(Vec3 const& obj, Mat4 const& model, Mat4 const& proj, Vec4 const& viewport);
 			/*--------------------------------------------//
 			Old Functions
 			//--------------------------------------------*/
@@ -284,7 +294,7 @@ Classes
 
 				//cast to pointer to a (float *) for glGetFloatv etc
 				operator float* () const {return (float*) this;}
-				operator const float* () const {return (const float*) *this;}
+				operator const float* () const {return (const float*) this;}
 	};
 
 #endif	//Matrix_H

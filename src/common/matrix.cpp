@@ -27,11 +27,11 @@ Constructors
 	}
 
 	Mat2::Mat2(const Mat2 & rhs){
-		memcpy(entries, rhs.entries, 4*sizeof(double));
+		memcpy(entries, rhs.entries, 4*sizeof(float));
 	}
 
 	Mat2::Mat2(const double* rhs){
-		memcpy(entries, rhs, 4*sizeof(double));
+		memcpy(entries, rhs, 4*sizeof(float));
 	}
 	Mat3::Mat3(	double e0, double e1, double e2, 
 				double e3, double e4, double e5, 
@@ -55,11 +55,11 @@ Constructors
 	}
 
 	Mat3::Mat3(const Mat3 & rhs){
-		memcpy(entries, rhs.entries, 9*sizeof(double));
+		memcpy(entries, rhs.entries, 9*sizeof(float));
 	}
 
 	Mat3::Mat3(const double* rhs){
-		memcpy(entries, rhs, 9*sizeof(double));
+		memcpy(entries, rhs, 9*sizeof(float));
 	}
 	Mat4::Mat4(	double e0, double e1, double e2, double e3,
 				double e4, double e5, double e6, double e7,
@@ -91,13 +91,40 @@ Constructors
 		entries[11]=entries[12]=entries[13]=entries[14]=0;
 		entries[15]=rhs;
 	}
+	Mat4::Mat4(const Mat3& rhs){
+		LoadIdentity();
+		memcpy(entries, rhs.entries, 9*sizeof(float));
+	}
+	Mat4::Mat4(const Mat4& rhs){
+		memcpy(entries, rhs.entries, 16*sizeof(float));
+	}
+	Mat4::Mat4(const Quat& qu){
+		LoadIdentity();
+		double qxx = (qu.x * qu.x);
+		double qyy = (qu.y * qu.y);
+		double qzz = (qu.z * qu.z);
+		double qxz = (qu.x * qu.z);
+		double qxy = (qu.x * qu.y);
+		double qyz = (qu.y * qu.z);
+		double qwx = (qu.w * qu.x);
+		double qwy = (qu.w * qu.y);
+		double qwz = (qu.w * qu.z);
 
-	Mat4::Mat4(const Mat4 & rhs){
-		memcpy(entries, rhs.entries, 16*sizeof(double));
+		entries[0] 	= 1 - 2 * (qyy +  qzz);
+		entries[1] 	= 2 * (qxy + qwz);
+		entries[2] 	= 2 * (qxz - qwy);
+
+		entries[4] 	= 2 * (qxy - qwz);
+		entries[5] 	= 1 - 2 * (qxx +  qzz);
+		entries[6] 	= 2 * (qyz + qwx);
+
+		entries[8] 	= 2 * (qxz + qwy);
+		entries[9] 	= 2 * (qyz - qwx);
+		entries[10] = 1 - 2 * (qxx +  qyy);
 	}
 
 	Mat4::Mat4(const double* rhs){
-		memcpy(entries, rhs, 16*sizeof(double));
+		memcpy(entries, rhs, 16*sizeof(float));
 	}
 
 /*--------------------------------------------//
@@ -282,13 +309,13 @@ Functions
 	}
 
 	void Mat2::LoadZero(void){
-		memset(entries, 0, 4*sizeof(double));
+		memset(entries, 0, 4*sizeof(float));
 	}
 	void Mat3::LoadZero(void){
-		memset(entries, 0, 9*sizeof(double));
+		memset(entries, 0, 9*sizeof(float));
 	}
 	void Mat4::LoadZero(void){
-		memset(entries, 0, 16*sizeof(double));
+		memset(entries, 0, 16*sizeof(float));
 	}
 
 /*--------------------------------------------//
@@ -357,6 +384,7 @@ GLM based Functions
 	}
 	Mat4 Mat4::LookAt(const Vec3& eye, const Vec3& center, const Vec3& up){
 		const Vec3 f = (center - eye).GetNormalized();
+		const glm::vec3 fu = glm::normalize(glm::vec3(center.x,center.y,center.z) - glm::vec3(eye.x,eye.y,eye.z));
 		const Vec3 s = f.CrossProduct(up).GetNormalized(); //up cross f for LH
 		const Vec3 u = s.CrossProduct(f); // f cross s for LH
 
@@ -374,11 +402,98 @@ GLM based Functions
 		entries[13] =-u.Dot(eye);
 		entries[14] = f.Dot(eye); // - for LH
 		return *this;
+	}//trans = vec4(left, right, bottom, top)
+	Mat4 Mat4::Ortho(const Vec4& trans){
+		entries[0] 	= 2 / (trans[1] - trans[0]);
+		entries[4] 	= 2 / (trans[3] - trans[2]);
+		entries[9] 	= - 1;
+		entries[12] = - (trans[1] + trans[0]) / (trans[1] - trans[0]);
+		entries[13] = - (trans[3] + trans[2]) / (trans[3] - trans[2]);
+		return *this;
+	}//trans = vec4(left, right, bottom, top)
+	Mat4 Mat4::Frustrum(const Vec4& trans, double neary, double fary){
+		entries[0] =	2 * neary / ( trans[1] - trans[0] );
+		entries[4] = 	2 * neary / ( trans[3] - trans[2] );
+		entries[8] = 	( trans[1] + trans[0] ) / ( trans[1] - trans[0] );
+		entries[9] = 	( trans[3] + trans[2] ) / ( trans[3] - trans[2] );
+		entries[10] = - ( fary + neary ) / ( fary - neary );
+		entries[11] = - 1;
+		entries[14] = - ( 2 * fary * neary ) / ( fary - neary );
+		return *this;
 	}
-	Mat4 Mat4::Project(const Vec4& trans){}
-	Mat4 Mat4::Ortho(const Vec4& trans){}
-	Mat4 Mat4::Frustrum(const Vec4& trans){}
-	Mat4 Mat4::Perspective(const Vec4& trans){}
+	Mat4 Mat4::Perspective(double fovy, double aspect, double zNear, double zFar){
+		assert(abs(aspect - std::numeric_limits<double>::epsilon()) > 0);
+		const double tanHalfFovy = tan(fovy / 2);
+
+		entries[0] 	= 1 / (aspect * tanHalfFovy);
+		entries[5]	= 1 / (tanHalfFovy);
+		entries[10] = - (zFar + zNear) / (zFar - zNear);
+		entries[11] = - 1;
+		entries[14] = - (2 * zFar * zNear) / (zFar - zNear);
+		return *this;
+	}
+	Mat4 Mat4::PerspectiveFov(double fov, double width, double height, double zNear, double zFar){
+		assert(width > 0);
+		assert(height > 0);
+		assert(fov > 0);
+
+		const double rad = fov;
+		const double h = cos(0.5 * rad) / sin(0.5 * rad);
+		const double w = h * height / width; ///todo max(width , Height) / min(width , Height)?
+
+		LoadZero();
+		entries[0] 	= w;
+		entries[5] 	= h;
+		entries[10] = - (zFar + zNear) / (zFar - zNear);
+		entries[11] = - 1;
+		entries[14] = - (2 * zFar * zNear) / (zFar - zNear);
+		return *this;
+	}
+	Mat4 Mat4::InfinitePerspective(double fovy, double aspect, double zNear){
+		const double range = tan(fovy / 2) * zNear;
+		const double left = -range * aspect;
+		const double right = range * aspect;
+		const double bottom = -range;
+		const double top = range;
+
+		LoadZero();
+		entries[0] 	= (2 * zNear) / (right - left);
+		entries[5] 	= (2 * zNear) / (top - bottom);
+		entries[10] = - 1;
+		entries[11] = - 1;
+		entries[14] = - 2 * zNear;
+		return *this;
+	}
+	Mat4 Mat4::TweakedInfinitePerspective(double fovy, double aspect, double zNear, double ep){
+		const double range = tan(fovy / 2) * zNear;
+		const double left = -range * aspect;
+		const double right = range * aspect;
+		const double bottom = -range;
+		const double top = range;
+
+		LoadZero();
+		entries[0] 	= (2 * zNear) / (right - left);
+		entries[5] 	= (2 * zNear) / (top - bottom);
+		entries[10] = ep - 1;
+		entries[11] = 1;
+		entries[14] = (ep - 2) * zNear;
+		return *this;
+	}
+	Mat4 Mat4::TweakedInfinitePerspective(double fovy, double aspect, double zNear){
+		return TweakedInfinitePerspective(fovy, aspect, zNear, std::numeric_limits<double>::epsilon());
+	}
+	Vec3 Mat4::Project(Vec3 const& obj, Mat4 const& model, Mat4 const& proj, Vec4 const& viewport){
+		Vec4 tmp = Vec4(obj, 1);
+		tmp = model * tmp;
+		tmp = proj * tmp;
+
+		tmp /= tmp.w;
+		tmp = tmp * 0.5 + 0.5;
+		tmp.SetX(tmp[0] * viewport[2] + viewport[0]);
+		tmp.SetY(tmp[1] * viewport[3] + viewport[1]);
+
+		return Vec3(tmp);
+	}
 
 
 /*--------------------------------------------//
@@ -605,8 +720,8 @@ Old Functions
 	void Mat4::SetRotationAxis(const double angle, const Vec3 & axis){
 		Vec3 u=axis.GetNormalized();
 
-		float sinAngle=(float)sin(M_PI*angle/180);
-		float cosAngle=(float)cos(M_PI*angle/180);
+		float sinAngle=(float)sin(PI*angle/180);
+		float cosAngle=(float)cos(PI*angle/180);
 		float oneMinusCosAngle=1.0f-cosAngle;
 
 		LoadIdentity();
@@ -627,8 +742,8 @@ Old Functions
 	void Mat4::SetRotationX(const double angle){
 		LoadIdentity();
 
-		entries[5]=(float)cos(M_PI*angle/180);
-		entries[6]=(float)sin(M_PI*angle/180);
+		entries[5]=(float)cos(PI*angle/180);
+		entries[6]=(float)sin(PI*angle/180);
 
 		entries[9]=-entries[6];
 		entries[10]=entries[5];
@@ -637,8 +752,8 @@ Old Functions
 	void Mat4::SetRotationY(const double angle){
 		LoadIdentity();
 
-		entries[0]=(float)cos(M_PI*angle/180);
-		entries[2]=-(float)sin(M_PI*angle/180);
+		entries[0]=(float)cos(PI*angle/180);
+		entries[2]=-(float)sin(PI*angle/180);
 
 		entries[8]=-entries[2];
 		entries[10]=entries[0];
@@ -647,8 +762,8 @@ Old Functions
 	void Mat4::SetRotationZ(const double angle){
 		LoadIdentity();
 
-		entries[0]=(float)cos(M_PI*angle/180);
-		entries[1]=(float)sin(M_PI*angle/180);
+		entries[0]=(float)cos(PI*angle/180);
+		entries[1]=(float)sin(PI*angle/180);
 
 		entries[4]=-entries[1];
 		entries[5]=entries[0];
@@ -698,7 +813,7 @@ Old Functions
 		float left, right, top, bottom;
 
 		//convert fov from degrees to radians
-		fovy*=(float)M_PI/180;
+		fovy*=(float)PI/180;
 
 		top=n*tanf(fovy/2.0f);
 		bottom=-top;
@@ -730,12 +845,12 @@ Old Functions
 	}
 
 	void Mat4::SetRotationPartEuler(const double angleX, const double angleY, const double angleZ){
-		double cr = cos( M_PI*angleX/180 );
-		double sr = sin( M_PI*angleX/180 );
-		double cp = cos( M_PI*angleY/180 );
-		double sp = sin( M_PI*angleY/180 );
-		double cy = cos( M_PI*angleZ/180 );
-		double sy = sin( M_PI*angleZ/180 );
+		double cr = cos( PI*angleX/180 );
+		double sr = sin( PI*angleX/180 );
+		double cp = cos( PI*angleY/180 );
+		double sp = sin( PI*angleY/180 );
+		double cy = cos( PI*angleZ/180 );
+		double sy = sin( PI*angleZ/180 );
 
 		entries[0] = ( float )( cp*cy );
 		entries[1] = ( float )( cp*sy );

@@ -12,6 +12,11 @@ This is used to simplify definition of points
 	/*--------------------------------------------//
 	Misc
 	//--------------------------------------------*/
+		Vec3::Vec3(const Vec4 & rhs){
+			x=(rhs.x);
+			y=(rhs.y);
+			z=(rhs.z);
+		}
 		Vec4::operator Vec3(){
 			if(w==0.0f || w==1.0f)
 				return Vec3(x, y, z);
@@ -24,18 +29,18 @@ This is used to simplify definition of points
 	makes the sum of each component equal to one
 	//--------------------------------------------*/
 		void Vec2::Normalize(){
-			int a = abs(this->x)+abs(this->y);
+			double a = sqrt(pow(this->x,2)+pow(this->y,2));
 			this->x = this->x/a;
 			this->y = this->x/y;
 		}
 		void Vec3::Normalize(){
-			int a = abs(this->x)+abs(this->y)+abs(this->z);
+			double a = sqrt(pow(this->x,2)+pow(this->y,2)+pow(this->z,2));
 			this->x = this->x/a;
 			this->y = this->y/a;
 			this->z = this->z/a;
 		}
 		void Vec4::Normalize(){
-			int a = abs(this->x)+abs(this->y)+abs(this->z)+abs(this->w);
+			double a = sqrt(pow(this->x,2)+pow(this->y,2)+pow(this->z,2)+pow(this->w,2));
 			this->x = this->x/a;
 			this->y = this->y/a;
 			this->z = this->z/a;
@@ -115,6 +120,7 @@ This is used to simplify definition of points
 			temp=temp*0.5f+Vec4(0.5f, 0.5f, 0.5f, 0.5f);
 			return temp;
 		}
+	
 	/*--------------------------------------------//
 	RotateX
 	//--------------------------------------------*/
@@ -125,8 +131,8 @@ This is used to simplify definition of points
 			if(angle==0.0)
 				return (*this);
 
-			float sinAngle=(float)sin(M_PI*angle/180);
-			float cosAngle=(float)cos(M_PI*angle/180);
+			float sinAngle=(float)sin(PI*angle/180);
+			float cosAngle=(float)cos(PI*angle/180);
 
 			return Vec3( x, y*cosAngle - z*sinAngle, y*sinAngle + z*cosAngle );
 		}
@@ -150,8 +156,8 @@ This is used to simplify definition of points
 			if(angle==0.0)
 				return (*this);
 
-			float sinAngle=(float)sin(M_PI*angle/180);
-			float cosAngle=(float)cos(M_PI*angle/180);
+			float sinAngle=(float)sin(PI*angle/180);
+			float cosAngle=(float)cos(PI*angle/180);
 
 			return Vec3( x*cosAngle + z*sinAngle, y, -x*sinAngle + z*cosAngle);
 		}
@@ -175,8 +181,8 @@ This is used to simplify definition of points
 			if(angle==0.0)
 				return (*this);
 
-			float sinAngle=(float)sin(M_PI*angle/180);
-			float cosAngle=(float)cos(M_PI*angle/180);
+			float sinAngle=(float)sin(PI*angle/180);
+			float cosAngle=(float)cos(PI*angle/180);
 			
 			return Vec3(x*cosAngle - y*sinAngle, x*sinAngle + y*cosAngle, z);
 		}
@@ -204,8 +210,8 @@ This is used to simplify definition of points
 
 			Vec3 rotMatrixRow0, rotMatrixRow1, rotMatrixRow2;
 
-			float sinAngle=(float)sin(M_PI*angle/180);
-			float cosAngle=(float)cos(M_PI*angle/180);
+			float sinAngle=(float)sin(PI*angle/180);
+			float cosAngle=(float)cos(PI*angle/180);
 			float oneMinusCosAngle=1.0f-cosAngle;
 
 			rotMatrixRow0.x=(u.x)*(u.x) + cosAngle*(1-(u.x)*(u.x));

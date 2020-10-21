@@ -5,12 +5,19 @@ using namespace std;
 #define GLX_GLXEXT_LEGACY
 #include <GL/GLee.h>
 #include <GL/glut.h>
+#include <string>
+#include <sstream>
 
+namespace patch
+{
+    template < typename T > std::string to_string( const T& n )
+    {
+        std::ostringstream stm ;
+        stm << n ;
+        return stm.str() ;
+    }
+}
 //Mathematical
-#define STR(x) #x
-#define MAX(x,y) (((x) > (y)) ? (x) : (y))
-#define TORAD(x) ((M_PI/180.0)*(x))
-#define TODEG(x) ((180.0/M_PI)*(x))
 #if defined(_WIN32)
 #  define drand48() (((float) rand())/((float) RAND_MAX))
 #  define srand48(x) (srand((x)))
@@ -19,6 +26,10 @@ using namespace std;
 #  define srand48(x) (srand((x)))
 #endif
 #define	 		PI  						3.1415926535f						//
+#define 		STR(x) 						#x 									//
+#define 		MAX(x,y) 					(((x) > (y)) ? (x) : (y))			//
+#define 		TORAD(x) 					((PI/180.0)*(x))					//
+#define 		TODEG(x) 					((180.0/PI)*(x))					//
 
 //window settings
 #define 		MAX_FRAMES_IN_FLIGHT  	 	2									//
@@ -66,8 +77,8 @@ using namespace std;
 #define			SPECULAR_EXPON   			20.0f								// Low level of shininess (scale: 0-128).
 
 //Lighting Constants
-#define			SHADOW_WIDTH				1024 								//
-#define			SHADOW_HEIGHT 				1024 								//
+#define			SHADOW_WIDTH				512 								//
+#define			SHADOW_HEIGHT 				512 								//
 #define			LIGHT_AMBIENT_R 			0.8f 								//
 #define			LIGHT_AMBIENT_G 			0.8f								//
 #define			LIGHT_AMBIENT_B 			0.8f								//
