@@ -17,11 +17,5 @@ uniform sampler2D texture1;
 uniform int texture2set;
 uniform sampler2D texture2;
 
-void main(){             
-	// map to [0;1] range by dividing by FarPlane
-	float lightDistance = length(fragmentin.FragPos.xyz - LightPosition) / FarPlane;
-
-	// write this as modified depth
-	gl_FragDepth = lightDistance;
-	gl_FragDepth = gl_FragCoord.z;
+void main(){
 }

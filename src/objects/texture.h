@@ -8,7 +8,6 @@ Includes
 //--------------------------------------------*/
 	#include "../globals.h"
 	#include "../../deps/glm/glm.hpp"
-	#include "../../deps/stb/stb_image.h"
 
 class texture{
 	private:

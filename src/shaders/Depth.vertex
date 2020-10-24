@@ -16,12 +16,13 @@ out VERTEXOUT{
 }vertexout;
 
 uniform mat4 ModelMatrix;
-uniform mat4 ViewMatrix;
-uniform mat4 ProjectionMatrix;
-uniform mat4 LightSpaceMatrix;
+uniform mat4 CameraViewMatrix;
+uniform mat4 CameraProjectionMatrix;
+uniform mat4 LightViewMatrix;
+uniform mat4 LightProjectionMatrix;
 
 void main(){
-    gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * position;
+    gl_Position = CameraProjectionMatrix * CameraViewMatrix * ModelMatrix * position;
     
     vertexout.Color = col;
 	vertexout.FragPos = (ModelMatrix * position).xyz;
@@ -30,5 +31,5 @@ void main(){
 	vertexout.Blend = Blend;
 	vertexout.Normal = mat3(transpose(inverse(ModelMatrix))) * normal;
 	
-    vertexout.LightFragPos = LightSpaceMatrix * ModelMatrix * position;
+    vertexout.LightFragPos = LightProjectionMatrix * LightViewMatrix * ModelMatrix * position;
 }

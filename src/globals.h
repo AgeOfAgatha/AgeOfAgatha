@@ -5,8 +5,11 @@ using namespace std;
 #define GLX_GLXEXT_LEGACY
 #include <GL/GLee.h>
 #include <GL/glut.h>
+#include <GL/freeglut.h>
 #include <string>
 #include <sstream>
+#include <stb/stb_image.h>
+#include <stb/stb_image_write.h>
 
 namespace patch
 {

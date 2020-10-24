@@ -2,6 +2,7 @@
 //Main driver file - Gets everything started
 ////////////////////////////////////////////////////////////////////
 using namespace std;
+#define STB_IMAGE_WRITE_IMPLEMENTATION
 
 /*--------------------------------------------//
 Includes
@@ -15,23 +16,24 @@ Includes
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <iostream>
-
+	#include <sstream>
 
 /*--------------------------------------------//
 Globals
 //--------------------------------------------*/
 	GLint currWindowSize[2];//Size of the window
 	int window;
-	Vec3 lightPos = Vec3(4.0f, 4.0f, 4.0f);
+	Vec3 lightPos = Vec3(3.0f, 3.0f, 3.0f);
 	//input specifics
 	double viewerAltitude = 1; 
 	double viewerAzimuth = 1;
 	double viewerDistance = VIEWER_DISTANCE;
 	bool lbutton = false;
 	bool wireframe = false;
+	int mx = 0, my = 0;
 
 	Shader *DepthShader, *ShadowMapping;
-	unsigned int depthMapFBO, depthMap, shadowMapTexture;
+	unsigned int depthMapFBO, shadowMapTexture;
 	const Vec4 white(1.0f, 1.0f, 1.0f, 1.0f);
 	const Vec4 black(0.0f, 0.0f, 0.0f, 0.0f);
 	Mat4 BiasMatrix = Mat4(
@@ -467,7 +469,7 @@ GLUT functions - passes down class stack
 
 	// renders the 3D scene
 	// --------------------
-	void RenderScene(Mat4 ViewMatrix){
+	void RenderScene(Mat4 ViewMatrix, Shader* shade){
 	    // cubes
 	    Mat4 model;
 	    for (int i = -1; i < 2; i++){
@@ -477,9 +479,14 @@ GLUT functions - passes down class stack
 					model.Translate(Vec3(i*1.0f, j*1.0f, k*1.0f));
 					model.Rotate((Vec3(1.0, 0.0, 1.0)).GetNormalized(), TORAD(60.0f));
 					model.Scale(Vec3(0.4));
-					glLoadMatrixf(ViewMatrix * model);
-					glutSolidSphere(1.0, 24, 24);
-					//renderCube();
+					if (shade == NULL){
+						glMatrixMode(GL_MODELVIEW);
+						glLoadMatrixf(ViewMatrix * model);
+					}else{
+						shade->setMat4("ModelMatrix", model);
+					}
+					//glutSolidSphere(1.0, 24, 24);
+					renderCube();
 				}
 			}
 		}
@@ -491,7 +498,7 @@ GLUT functions - passes down class stack
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//Position and orient camera.
-		Mat4 LightProjectionMatrix, LightViewMatrix, CameraProjectionMatrix, CameraViewMatrix, LightSpaceMatrix;
+		Mat4 LightProjectionMatrix, LightViewMatrix, CameraProjectionMatrix, CameraViewMatrix;
 		std::vector<Mat4> shadowTransforms;
 		Vec3 position = Vec3(0.0f, 0.0f, 0.0f );
 		Quat quat = Quat(Vec3(viewerAltitude, viewerAzimuth, 0.0));
@@ -504,36 +511,56 @@ GLUT functions - passes down class stack
 		CameraViewMatrix.LookAt(camera, position, up);
 		LightProjectionMatrix.Perspective(FRUSTUM_FIELD_OF_VIEW, (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT, (float)FRUSTUM_NEAR_PLANE, (float)FRUSTUM_FAR_PLANE);
 		LightViewMatrix.LookAt(lightPos, position, Vec3(0,1,0));
-		LightSpaceMatrix = LightProjectionMatrix * LightViewMatrix;
 
-		//First pass - from light's point of view
-		glPushMatrix();
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		DepthShader->use();
+		DepthShader->setMat4("CameraProjectionMatrix", LightProjectionMatrix);
+		DepthShader->setMat4("CameraViewMatrix", LightViewMatrix);
+		DepthShader->setMat4("LightProjectionMatrix", LightProjectionMatrix);
+		DepthShader->setMat4("LightViewMatrix", LightViewMatrix);
+		DepthShader->setVec3("LightPosition", lightPos);
+		DepthShader->setVec3("FarPlane", FRUSTUM_FAR_PLANE);
 
-			//Use viewport the same size as the shadow map
-			glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-
-			glMatrixMode(GL_PROJECTION);
-			glLoadMatrixf(LightProjectionMatrix);
-
-			glMatrixMode(GL_MODELVIEW);
-			glLoadMatrixf(LightViewMatrix);
-
-			//Draw back faces into the shadow map
-			glCullFace(GL_FRONT);
-
-			//Draw the scene
-			RenderScene(CameraViewMatrix);
-
-			//Read the depth buffer into the shadow map texture
-			glBindTexture(GL_TEXTURE_2D, shadowMapTexture);
-			glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-
-			//restore states
-			glCullFace(GL_BACK);
-		glPopMatrix();
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		renderQuad();
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, shadowMapTexture);
+		RenderScene(LightViewMatrix, DepthShader);
+		
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glViewport(0, 0, currWindowSize[0], currWindowSize[1]);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		//render from camera
+		ShadowMapping->use();
+		ShadowMapping->setMat4("CameraProjectionMatrix", CameraProjectionMatrix);
+		ShadowMapping->setMat4("CameraViewMatrix", CameraViewMatrix);
+		ShadowMapping->setVec4("ViewPos", camera);
+		ShadowMapping->setVec3("SpotLight.position", lightPos);
+		ShadowMapping->setFloat("SpotLight.fov", FRUSTUM_FIELD_OF_VIEW);
+		ShadowMapping->setFloat("SpotLight.constant", 0.1f);
+		ShadowMapping->setFloat("SpotLight.linear", 0.1f);
+		ShadowMapping->setFloat("SpotLight.exponential", 0.1f);
+		ShadowMapping->setVec3("SpotLight.direc.direction", (-lightPos).GetNormalized());
+		ShadowMapping->setVec3("SpotLight.direc.base.color", Vec3(white));
+		ShadowMapping->setVec3("DirecLight.base.color", Vec3(white));
+		ShadowMapping->setVec3("DirecLight.direction", (-lightPos).GetNormalized());
+		ShadowMapping->setMat4("LightProjectionMatrix", LightProjectionMatrix);
+		ShadowMapping->setMat4("LightViewMatrix", LightViewMatrix);
+		ShadowMapping->setInt("DepthMap", 1);
+		ShadowMapping->setInt("LightType", 0);
+		ShadowMapping->setInt("texture1set", 0);
+		ShadowMapping->setInt("texture2set", 0);
+		ShadowMapping->setInt("ALIAS", 10);
+
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, shadowMapTexture);
+
+		RenderScene(CameraViewMatrix, ShadowMapping);
+
+		glUseProgram(0);
+
 		//Post new frame buffer
 		glFinish();
 		glutSwapBuffers();
@@ -637,6 +664,8 @@ GLUT functions - passes down class stack
 		}else{
 			lstate = false;
 		}
+		mx = x;
+		my = currWindowSize[1] - y;
 	}
 
 /*--------------------------------------------//
@@ -674,16 +703,25 @@ Main - Entry point for program
 		glutVisibilityFunc(Visible);
 		glutMenuStateFunc(MenuUse);
 
+		//Create the shadow map frame buffer
+		glGenFramebuffers(1, &depthMapFBO);
 
 		//Create the shadow map texture
 		glGenTextures(1, &shadowMapTexture);
 		glBindTexture(GL_TEXTURE_2D, shadowMapTexture);
 		glTexImage2D(	GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0,
-						GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+						GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+		float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowMapTexture, 0);
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		//Use the color as the ambient and diffuse material
 		glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
@@ -697,6 +735,9 @@ Main - Entry point for program
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+		DepthShader = new Shader("DepthShader", "shaders/depth.vertex", "shaders/depth.fragment", NULL);
+		ShadowMapping = new Shader("ShadowMapping", "shaders/shadow.vertex", "shaders/shadow.fragment", NULL);
 
 		//start the game
 		glutMainLoop();
