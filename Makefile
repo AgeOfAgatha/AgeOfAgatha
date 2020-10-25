@@ -75,20 +75,40 @@ all:
 #Assemble OS specific
 #########################
 linux:
-	@(echo -e '\t'Compiling object code... && $(MAKE) -C bin/binl all --no-print-directory && echo -e '\t'Done Compiling) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo -e '\t'Assembling executable... && $(MAKE) release/lin/run$(EXTL) --no-print-directory && echo -e '\t'Done Assembling) | grep -vE "(Nothing to be done for|is up to date)"
+	@echo -e '\t'Compiling object code...
+	@$(MAKE) -C bin/binl all --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
+	@echo -e '\t'Done Compiling
+	@mkdir -p release/lin
+	@echo -e '\t'Assembling executable...
+	@$(MAKE) release/lin/run$(EXTL) --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
+	@echo -e '\t'Done Assembling
 
 mac:
-	@(echo -e '\t'Compiling object code... && $(MAKE) -C bin/binm all --no-print-directory && echo -e '\t'Done Compiling) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo -e '\t'Assembling executable... && $(MAKE) release/mac/run$(EXTM) --no-print-directory && echo -e '\t'Done Assembling) | grep -vE "(Nothing to be done for|is up to date)"
+	@echo -e '\t'Compiling object code...
+	@$(MAKE) -C bin/binm all --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
+	@echo -e '\t'Done Compiling
+	@mkdir -p release/mac
+	@echo -e '\t'Assembling executable...
+	$(MAKE) release/mac/run$(EXTM) --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
+	@echo -e '\t'Done Assembling
 
 windows32:
-	@(echo -e '\t'Compiling object code... && $(MAKE) -C bin/binw32 all --no-print-directory && echo -e '\t'Done Compiling) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo -e '\t'Assembling executable... && $(MAKE) release/w32/run$(EXTW32) --no-print-directory && echo -e '\t'Done Assembling) | grep -vE "(Nothing to be done for|is up to date)"
+	@echo -e '\t'Compiling object code...
+	@$(MAKE) -C bin/binw32 all --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
+	@echo -e '\t'Done Compiling
+	@mkdir -p release/w32
+	@echo -e '\t'Assembling executable...
+	@$(MAKE) release/w32/run$(EXTW32) --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
+	@echo -e '\t'Done Assembling
 
 windows64:
-	@(echo -e '\t'Compiling object code... && $(MAKE) -C bin/binw64 all --no-print-directory && echo -e '\t'Done Compiling) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo -e '\t'Assembling executable... && $(MAKE) release/w64/run$(EXTW64) --no-print-directory && echo -e '\t'Done Assembling) | grep -vE "(Nothing to be done for|is up to date)"
+	@echo -e '\t'Compiling object code...
+	@$(MAKE) -C bin/binw64 all --no-print-directory  | grep -vE "(Nothing to be done for|is up to date)"
+	@echo -e '\t'Done Compiling
+	@mkdir -p release/w64
+	@echo -e '\t'Assembling executable...
+	@$(MAKE) release/w64/run$(EXTW64) --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
+	@echo -e '\t'Done Assembling
 
 #########################
 #Assemble executable
@@ -183,32 +203,52 @@ help:
 \n\tclean-windows32-shaders;Clean shaders for windows 32 bit\
 \n\tclean-windows64-shaders;Clean shaders for windows 64 bit\
 \n\tfix;Replaces spaces with tabs in source files\
-\n\thelp;Print availabe commands" | column -t -s ';'
+\n\thelp;Print availabe commands" | awk '{sub(/-e /,""); print}' | column -t -s ';'
 	@echo "`tput bold`requires: export MESA_GL_VERSION_OVERRIDE=4.3`tput sgr0`"
 
 run: release/lin/run$(EXTL)
 	@cd release/lin && MESA_GL_VERSION_OVERRIDE=4.3 ./run$(EXTL)
 
 c:
-	@(echo cleaning `tput bold`$(DISTRO)`tput sgr0`... && $(MAKE) clean-$(DISTRO)-shaders --no-print-directory && echo Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
+	@echo cleaning `tput bold`$(DISTRO)`tput sgr0`...
+	@$(MAKE) clean-$(DISTRO)-shaders --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
+	@echo Done Cleaning
 
 cl:
-	@(echo cleaning `tput bold`$(DISTRO)`tput sgr0` shaders... && $(MAKE) clean-$(DISTRO) --no-print-directory && echo Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
+	@echo cleaning `tput bold`$(DISTRO)`tput sgr0` shaders...
+	@$(MAKE) clean-$(DISTRO) --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
+	@echo Done Cleaning
 
 clean:
 	@echo Cleaning...
-	@(echo -e '\t'Cleaning `tput bold`linux`tput sgr0` shaders... && $(MAKE) clean-linux-shaders --no-print-directory && echo -e '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo -e '\t'Cleaning `tput bold`mac`tput sgr0` shaders... && $(MAKE) clean-mac-shaders --no-print-directory && echo -e '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo -e '\t'Cleaning `tput bold`windows32`tput sgr0` shaders... && $(MAKE) clean-windows32-shaders --no-print-directory && echo -e '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo -e '\t'Cleaning `tput bold`windows64`tput sgr0` shaders... && $(MAKE) clean-windows64-shaders --no-print-directory && echo -e '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
+	@echo -e '\t'Cleaning `tput bold`linux`tput sgr0` shaders...
+	@$(MAKE) clean-linux-shaders --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
+	@echo -e '\t'Done Cleaning
+	@echo -e '\t'Cleaning `tput bold`mac`tput sgr0` shaders...
+	@$(MAKE) clean-mac-shaders --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
+	@echo -e '\t'Done Cleaning
+	@echo -e '\t'Cleaning `tput bold`windows32`tput sgr0` shaders...
+	@$(MAKE) clean-windows32-shaders --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
+	@echo -e '\t'Done Cleaning
+	@echo -e '\t'Cleaning `tput bold`windows64`tput sgr0` shaders...
+	@$(MAKE) clean-windows64-shaders --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
+	@echo -e '\t'Done Cleaning
 	@echo Done cleaning
 
 clean-all:
 	@echo Cleaning...
-	@(echo -e '\t'Cleaning `tput bold`linux`tput sgr0`... && $(MAKE) clean-linux --no-print-directory && echo -e '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo -e '\t'Cleaning `tput bold`mac`tput sgr0`... && $(MAKE) clean-mac --no-print-directory && echo -e '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo -e '\t'Cleaning `tput bold`windows32`tput sgr0`... && $(MAKE) clean-windows32 --no-print-directory && echo -e '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
-	@(echo -e '\t'Cleaning `tput bold`windows64`tput sgr0`... && $(MAKE) clean-windows64 --no-print-directory && echo -e '\t'Done Cleaning) | grep -vE "(Nothing to be done for|is up to date)"
+	@echo -e '\t'Cleaning `tput bold`linux`tput sgr0`...
+	@$(MAKE) clean-linux --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
+	@echo -e '\t'Done Cleaning
+	@echo -e '\t'Cleaning `tput bold`mac`tput sgr0`... 
+	@$(MAKE) clean-mac --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
+	@echo -e '\t'Done Cleaning
+	@echo -e '\t'Cleaning `tput bold`windows32`tput sgr0`... 
+	@$(MAKE) clean-windows32 --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
+	@echo -e '\t'Done Cleaning
+	@echo -e '\t'Cleaning `tput bold`windows64`tput sgr0`...
+	@$(MAKE) clean-windows64 --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
+	@echo -e '\t'Done Cleaning
 	@echo Done cleaning
 
 clean-linux:

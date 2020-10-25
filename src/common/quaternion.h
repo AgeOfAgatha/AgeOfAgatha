@@ -33,6 +33,8 @@ Classes
 				Quat(Vec3 u, Vec3 v);
 				Quat(float s, Vec3 vec):x(vec.x),y(vec.y),z(vec.z),w(s){}
 				Quat(const Quat& q):x(q.x),y(q.y),z(q.z),w(q.w){}
+				Quat(const Vec3& q):x(q.x),y(q.y),z(q.z),w(1){}
+				Quat(const Vec4& q):x(q.x),y(q.y),z(q.z),w(q.w){}
 				Quat(double wi, double xi, double yi, double zi):x(xi),y(yi),z(zi),w(wi){}
 			/*--------------------------------------------//
 			Functions

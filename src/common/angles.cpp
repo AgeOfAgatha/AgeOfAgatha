@@ -7,7 +7,7 @@ This is used to simplify definition of Angles
 	/*--------------------------------------------//
 	Includes
 	//--------------------------------------------*/
-		#include "Angles.h"
+		#include "angles.h"
 
 	/*--------------------------------------------//
 	Default constructor
