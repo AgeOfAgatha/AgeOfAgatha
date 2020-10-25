@@ -204,6 +204,7 @@ Classes
 
 				//vector algebra
 				Vec3 CrossProduct(const Vec3 & rhs) const { return Vec3(y*rhs.z - z*rhs.y, z*rhs.x - x*rhs.z, x*rhs.y - y*rhs.x); }
+				Vec3 Cross(const Vec3 & rhs) const { return this->CrossProduct(rhs); }
 				Vec3 Lerp(const Vec3 & v2, float factor) const { return (*this)*(1.0f-factor) + v2*factor; }
 				Vec3 QuadraticInterpolate(const Vec3 & v2, const Vec3 & v3, float factor) const { return (*this)*(1.0f-factor)*(1.0f-factor) + 2*v2*factor*(1.0f-factor) + v3*factor*factor; }
 
@@ -364,7 +365,10 @@ Classes
 				Vec4 GetPackedTo01() const;
 
 				//vector algebra
+				Vec4 CrossProduct(const Vec4 & rhs) const { return Vec4(y*rhs.z - z*rhs.y, z*rhs.x - x*rhs.z, x*rhs.y - y*rhs.x, 1.0); }
 				Vec4 CrossProduct(const Vec3 & rhs) const { return Vec4(y*rhs.z - z*rhs.y, z*rhs.x - x*rhs.z, x*rhs.y - y*rhs.x, 1.0); }
+				Vec4 Cross(const Vec4 & rhs) const { return this->CrossProduct(rhs); }
+				Vec4 Cross(const Vec3 & rhs) const { return this->CrossProduct(rhs); }
 				Vec4 Lerp(const Vec4 & v2, float factor) const { return (*this)*(1.0f-factor)+v2*factor; }
 				Vec4 QuadraticInterpolate(const Vec4 & v2, const Vec4 & v3, float factor) const { return (*this)*(1.0f-factor)*(1.0f-factor) + 2*v2*factor*(1.0f-factor) + v3*factor*factor; }
 

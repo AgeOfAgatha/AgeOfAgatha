@@ -384,7 +384,6 @@ GLM based Functions
 	}
 	Mat4 Mat4::LookAt(const Vec3& eye, const Vec3& center, const Vec3& up){
 		const Vec3 f = (center - eye).GetNormalized();
-		const glm::vec3 fu = glm::normalize(glm::vec3(center.x,center.y,center.z) - glm::vec3(eye.x,eye.y,eye.z));
 		const Vec3 s = f.CrossProduct(up).GetNormalized(); //up cross f for LH
 		const Vec3 u = s.CrossProduct(f); // f cross s for LH
 

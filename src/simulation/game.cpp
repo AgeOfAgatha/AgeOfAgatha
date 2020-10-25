@@ -233,7 +233,6 @@ and the ui interface.
 				currViewportSize[1] = h;
 				currViewportSize[0] = int(h * ASPECT_RATIO);
 			}
-			worldspace->reshape(w,h);
 			glViewport(int(0.5f*(w - currViewportSize[0])), int(0.5f*(h - currViewportSize[1])), currViewportSize[0], currViewportSize[1]);
 		}
 
@@ -247,8 +246,6 @@ and the ui interface.
 	HandleButton - handle mouse button events
 	//--------------------------------------------*/
 		void game::HandleButton(int button, int state, int x, int y){
-			glutPostRedisplay();
-
 			if(button == GLUT_LEFT_BUTTON){
 				if (state == GLUT_DOWN)
 					lbutton = true;
@@ -270,8 +267,6 @@ and the ui interface.
 	HandleMotion - handle mouse motion events
 	//--------------------------------------------*/
 		void game::HandleMotion(int x, int y){
-			glutPostRedisplay();
-
 			static bool lstate = false;
 			if (lbutton){
 				static int oldx = x;

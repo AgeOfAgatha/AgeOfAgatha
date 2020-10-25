@@ -38,8 +38,6 @@ This is where the simulation is controlled
 					deformConst = 0.1;
 
 				ShaderInit();
-				renderctrl = new renderer();
-				renderctrl->reshape(INIT_WINDOW_SIZE_X, INIT_WINDOW_SIZE_Y);
 			};
 
 		/*--------------------------------------------//
@@ -563,20 +561,19 @@ This is where the simulation is controlled
 		proceeds all objects forward by one timestep
 		//--------------------------------------------*/
 			void world::update(){
-				renderctrl->update();
-				// for (int i = 0; i < objCnt; ++i){
-				// 	applyGravity(objects[i]);
-				// 	testBpCollision(objects[i], i);
-				// 	objects[i]->updateAcc();
-				// 	objects[i]->updateVel();
-				// 	objects[i]->updatePos();
-				// 	if (objects[i]->getMass() > gravObjMass){
-				// 		addGravObj(objects[i]);
-				// 	}else{
-				// 		remGravObj(objects[i]);
-				// 	}
-				// }
-				// return;
+				for (int i = 0; i < objCnt; ++i){
+					applyGravity(objects[i]);
+					testBpCollision(objects[i], i);
+					objects[i]->updateAcc();
+					objects[i]->updateVel();
+					objects[i]->updatePos();
+					if (objects[i]->getMass() > gravObjMass){
+						addGravObj(objects[i]);
+					}else{
+						remGravObj(objects[i]);
+					}
+				}
+				return;
 			};
 
 		/*--------------------------------------------//
@@ -861,12 +858,6 @@ This is where the simulation is controlled
 	overall process
 	//--------------------------------------------*/
 		/*-------------------------------------------//
-		reshape gets called when window is resized
-		//-------------------------------------------*/
-		void world::reshape(int w, int h){
-			renderctrl->reshape(w,h);
-		}
-		/*-------------------------------------------//
 		renderCube() renders a 1x1 3D cube in NDC.
 		//-------------------------------------------*/
 			void world::renderCube()
@@ -997,98 +988,72 @@ This is where the simulation is controlled
 		Overall Draw function
 		//--------------------------------------------*/
 			void world::draw(glm::mat4 projection, glm::mat4 view, glm::vec4 camera, GLint currWindowSize[2]){
-				renderctrl->draw();
-				// glEnable(GL_DEPTH_TEST);
-				// glEnable(GL_NORMALIZE);
-				// glEnable(GL_CULL_FACE);
-				// glDepthFunc(GL_LEQUAL);
-				// glDepthMask(GL_TRUE);
-				// glCullFace(GL_FRONT);
+				// Clear the screen
+				glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-				// glMatrixMode(GL_MODELVIEW);
-				// glLoadIdentity();
+				//Position and orient camera.
+				Mat4 LightProjectionMatrix, LightViewMatrix, CameraProjectionMatrix, CameraViewMatrix;
+				std::vector<Mat4> shadowTransforms;
+				Vec3 position = Vec3(0.0f, 0.0f, 0.0f );
+				Quat quat = Quat(Vec3(viewerAltitude, viewerAzimuth, 0.0));
+				Mat4 looking = Mat4(quat);
+				Vec4 camera = looking * Vec4(position.x + 0.0f, position.y + 0.0f, position.z + 1.0f*viewerDistance, 1.0f);
+				Vec4 up = looking * Vec4(0,1,0,1);
 
-				// objectSort(camera);
+				//Calculate & save matrices
+				CameraProjectionMatrix.Perspective(FRUSTUM_FIELD_OF_VIEW, (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT, (float)FRUSTUM_NEAR_PLANE, (float)FRUSTUM_FAR_PLANE);
+				CameraViewMatrix.LookAt(camera, position, up);
+				LightProjectionMatrix.Perspective(FRUSTUM_FIELD_OF_VIEW, (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT, (float)FRUSTUM_NEAR_PLANE, (float)FRUSTUM_FAR_PLANE);
+				LightViewMatrix.LookAt(lightPos, position, Vec3(0,1,0));
 
+				DepthShader->use();
+				DepthShader->setMat4("CameraProjectionMatrix", LightProjectionMatrix);
+				DepthShader->setMat4("CameraViewMatrix", LightViewMatrix);
+				DepthShader->setMat4("LightProjectionMatrix", LightProjectionMatrix);
+				DepthShader->setMat4("LightViewMatrix", LightViewMatrix);
+				DepthShader->setVec3("LightPosition", lightPos);
+				DepthShader->setVec3("FarPlane", FRUSTUM_FAR_PLANE);
 
-				// glShadeModel(GL_FLAT);//Disable color writes, and use flat shading for speed
-				// glColorMask(0, 0, 0, 0);
+				glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+				glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-				// //Use viewport the same size as the shadow map
-				// glViewport(0, 0, SHADOW_HEIGHT, SHADOW_WIDTH);
-				// //Draw the scene
-				// SimpleShader->use();
-				// for (int i = 0; i < slightCnt; i++){
-				// 	spotlight* spot = getSLight(i);
-				// 	spot->drawTex(SimpleShader);
-				// 	glClear(GL_DEPTH_BUFFER_BIT);
-					
-				// 	for(int j =0; j < this->getObjectCount(); j++){
-				// 		mesh* cube = getObject(j);
-				// 		cube->draw(SimpleShader);
-				// 	}
-				//     glBindFramebuffer(GL_FRAMEBUFFER,0);
-				// }
-				// glUseProgram(0);
-				// SimpleShader->use();
-				// for (int i = 0; i < dlightCnt; i++){
-				// 	direclight* direc = getDLight(i);
-				// 	direc->drawTex(SimpleShader);
-				// 	glClear(GL_DEPTH_BUFFER_BIT);
-					
-				// 	for(int j =0; j < this->getObjectCount(); j++){
-				// 		mesh* cube = getObject(j);
-				// 		cube->draw(SimpleShader);
-				// 	}
-				//     glBindFramebuffer(GL_FRAMEBUFFER,0);
-				// }
-				// glUseProgram(0);
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, shadowMapTexture);
+				RenderScene(LightViewMatrix, DepthShader);
+				
+				glBindFramebuffer(GL_FRAMEBUFFER, 0);
+				glViewport(0, 0, currWindowSize[0], currWindowSize[1]);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+				//render from camera
+				ShadowMapping->use();
+				ShadowMapping->setMat4("CameraProjectionMatrix", CameraProjectionMatrix);
+				ShadowMapping->setMat4("CameraViewMatrix", CameraViewMatrix);
+				ShadowMapping->setVec4("ViewPos", camera);
+				ShadowMapping->setVec3("SpotLight.position", lightPos);
+				ShadowMapping->setFloat("SpotLight.fov", FRUSTUM_FIELD_OF_VIEW);
+				ShadowMapping->setFloat("SpotLight.constant", 0.1f);
+				ShadowMapping->setFloat("SpotLight.linear", 0.1f);
+				ShadowMapping->setFloat("SpotLight.exponential", 0.1f);
+				ShadowMapping->setVec3("SpotLight.direc.direction", (-lightPos).GetNormalized());
+				ShadowMapping->setVec3("SpotLight.direc.base.color", Vec3(white));
+				ShadowMapping->setVec3("DirecLight.base.color", Vec3(white));
+				ShadowMapping->setVec3("DirecLight.direction", (-lightPos).GetNormalized());
+				ShadowMapping->setMat4("LightProjectionMatrix", LightProjectionMatrix);
+				ShadowMapping->setMat4("LightViewMatrix", LightViewMatrix);
+				ShadowMapping->setInt("DepthMap", 1);
+				ShadowMapping->setInt("LightType", 0);
+				ShadowMapping->setInt("texture1set", 0);
+				ShadowMapping->setInt("texture2set", 0);
+				ShadowMapping->setInt("ALIAS", 10);
 
+				glActiveTexture(GL_TEXTURE1);
+				glBindTexture(GL_TEXTURE_2D, shadowMapTexture);
 
+				RenderScene(CameraViewMatrix, ShadowMapping);
 
-				// //restore states
-				// glDisable(GL_CULL_FACE);
-				// glShadeModel(GL_SMOOTH);
-				// glColorMask(1, 1, 1, 1);
-				// glViewport(0, 0, currWindowSize[0], currWindowSize[1]);
-
-				// glMatrixMode(GL_PROJECTION);
-				// glLoadMatrixf((GLfloat*)&projection[0][0]);
-
-				// glMatrixMode(GL_MODELVIEW);
-				// glLoadMatrixf((GLfloat*)&view[0][0]);
-
-				// //2nd pass - Draw from camera's point of view
-				// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-				// //Draw the scene
-				// ShadowShader->use();
-				// ShadowShader->setMat4("ViewMatrix", view);
-				// ShadowShader->setMat4("ProjectionMatrix", projection);
-				// ShadowShader->setVec4("ViewPos", camera);
-
-				// glEnable(GL_TEXTURE_2D);
-				// ShadowShader->setInt("LightType", 1);
-				// for (int i = 0; i < dlightCnt; i++){
-				// 	direclight* direc = getDLight(i);
-				// 	direc->bindTex(ShadowShader);
-					
-				// 	for(int j =0; j < this->getObjectCount(); j++){
-				// 		mesh* cube = getObject(j);
-				// 		cube->draw(ShadowShader);
-				// 	}
-				// }
-				// ShadowShader->setInt("LightType", 0);
-				// for (int i = 0; i < slightCnt; i++){
-				// 	spotlight* spot = getSLight(i);
-				// 	spot->bindTex(ShadowShader);
-					
-				// 	for(int j =0; j < this->getObjectCount(); j++){
-				// 		mesh* cube = getObject(j);
-				// 		cube->draw(ShadowShader);
-				// 	}
-				// }
-				// glUseProgram(0);
+				glUseProgram(0);
 			};
 #endif

@@ -10,9 +10,6 @@ class world;
 Includes
 //--------------------------------------------*/
 	#include "../globals.h"
-	#include "../../deps/glm/glm.hpp"
-
-	#include "../renderer/render.h"
 	#include "../common/vector.h"
 	#include "../common/sorting.h"
 	#include "../shaders/shader.h"
@@ -116,7 +113,6 @@ class world{
 			//misc
 				int getTimeStep();
 			//rendering
-				void reshape(int w, int h);
 				void draw(glm::mat4 projection, glm::mat4 view, glm::vec4 camera, GLint currWindowSize[2]);
 				void renderCube();
 				void renderQuad();

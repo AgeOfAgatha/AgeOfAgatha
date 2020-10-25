@@ -466,15 +466,15 @@ GLUT functions - passes down class stack
 		    glBindVertexArray(0);
 		}
 
-
-	// renders the 3D scene
-	// --------------------
+	/*--------------------------------------------//
+	Renders scene
+	//--------------------------------------------*/
 	void RenderScene(Mat4 ViewMatrix, Shader* shade){
-	    // cubes
-	    Mat4 model;
-	    for (int i = -1; i < 2; i++){
-		    for (int j = -1; j < 2; j++){
-			    for (int k = -1; k < 2; k++){
+		// cubes
+		Mat4 model;
+		for (int i = -1; i < 2; i++){
+			for (int j = -1; j < 2; j++){
+				for (int k = -1; k < 2; k++){
 					model = Mat4(1.0f);
 					model.Translate(Vec3(i*1.0f, j*1.0f, k*1.0f));
 					model.Rotate((Vec3(1.0, 0.0, 1.0)).GetNormalized(), TORAD(60.0f));
