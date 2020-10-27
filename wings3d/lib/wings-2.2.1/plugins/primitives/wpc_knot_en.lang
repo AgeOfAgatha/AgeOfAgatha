@@ -1,8 +1,0 @@
-%% -*- mode:erlang; erlang-indent-level: 2 -*-
-{wpc_knot,
- [
-  {knot_menu,
-   [
-    {1,"Torus Knot"}
-   ]}
- ]}.
