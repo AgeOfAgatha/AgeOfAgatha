@@ -16,6 +16,14 @@ You should now have a directory called AgeOfAgatha created in the directory wher
 What things you need to install the software and how to install them
 ```
 opengl - should come with your graphics drivers
+
+Needed Libraries:
+	C:
+		build-essential gcc make perl dkms g++-multilib
+	build for Windows:
+		mingw-w64 gcc-mingw-w64-x86-64 g++=mingw-w64-x86-64
+	OpenGL:
+		freeglut3-dev
 ```
 
 ### Installing
