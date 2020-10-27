@@ -31,6 +31,15 @@ This is used to simplify definition of quaternions
 
 			*this = Quat(real_part, t.x, t.y, t.z).Normalize();
 		}
+		Quat::Quat(const Vec3& q){
+			Vec3 c = cos(q * 0.5);
+			Vec3 s = sin(q * 0.5);
+
+			this->w = c.x * c.y * c.z + s.x * s.y * s.z;
+			this->x = s.x * c.y * c.z - c.x * s.y * s.z;
+			this->y = c.x * s.y * c.z + s.x * c.y * s.z;
+			this->z = c.x * c.y * s.z - s.x * s.y * c.z;
+		}
 
 	/*--------------------------------------------//
 	Cross of two quaternions

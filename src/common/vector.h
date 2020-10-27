@@ -197,6 +197,9 @@ Classes
 				double GetSquaredLength() const { return (x*x)+(y*y)+(z*z); }
 				double Distance(Vec3 other) const;
 				double Dot(Vec3 other) const;
+				friend Vec3 cos(const Vec3& v){return Vec3(cos(v.x), cos(v.y), cos(v.z));}
+				friend Vec3 sin(const Vec3& v){return Vec3(sin(v.x), sin(v.y), sin(v.z));}
+				friend Vec3 tan(const Vec3& v){return Vec3(tan(v.x), tan(v.y), tan(v.z));}
 
 				//pack to [0,1] for color
 				void PackTo01();

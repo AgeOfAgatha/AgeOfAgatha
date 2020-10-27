@@ -8,3 +8,4 @@ release/w32/*
 release/w64/*
 */log.txt
 log.txt
+deploy/*

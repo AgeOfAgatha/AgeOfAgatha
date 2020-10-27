@@ -54,7 +54,7 @@ else
     endif
 endif
 
-.PHONY: main all help fix linux mac solaris windows32 windows64 run c cl clean clean-all clean-linux clean-mac clean-windows32 clean-windows64 clean-linux-shaders clean-mac-shaders clean-windows32-shaders clean-windows64-shaders
+.PHONY: main all deploy help fix linux mac solaris windows32 windows64 run c cl clean clean-all clean-linux clean-mac clean-windows32 clean-windows64 clean-linux-shaders clean-mac-shaders clean-windows32-shaders clean-windows64-shaders
 
 #########################
 #assemble for my distro
@@ -65,6 +65,14 @@ main:
 #########################
 #assemble for all distros
 #########################
+deploy:
+	@mkdir -p deploy
+	@rm ./deploy/*.tar.gz -f 2>/dev/null
+	@echo deploying for `tput bold`linux`tput sgr0`... && tar -zcvf deploy/lin.tar.gz release/lin
+	@echo deploying for `tput bold`mac`tput sgr0`... && tar -zcvf deploy/mac.tar.gz release/mac
+	@echo deploying for `tput bold`windows 32 bit`tput sgr0`... && tar -zcvf deploy/w32.tar.gz release/w32
+	@echo deploying for `tput bold`windows 64 bit`tput sgr0`... && tar -zcvf deploy/w64.tar.gz release/w64
+
 all:
 	@echo making for `tput bold`linux`tput sgr0`... && $(MAKE) linux --no-print-directory
 	@echo making for `tput bold`mac`tput sgr0`... && $(MAKE) mac --no-print-directory
@@ -89,7 +97,7 @@ mac:
 	@echo -e '\t'Done Compiling
 	@mkdir -p release/mac
 	@echo -e '\t'Assembling executable...
-	$(MAKE) release/mac/run$(EXTM) --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
+	@$(MAKE) release/mac/run$(EXTM) --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
 	@echo -e '\t'Done Assembling
 
 windows32:
