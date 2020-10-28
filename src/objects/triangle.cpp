@@ -17,10 +17,10 @@ Smallest object that can be drawn
 			VAO = 0;
 			materials[0] = NULL;
 			materials[1] = NULL;
-			textcoord = (vec2**)malloc(sizeof(vec2*)*3);
-			textcoord[0] = new vec2(1.0, 1.0);
-			textcoord[1] = new vec2(1.0, 1.0);
-			textcoord[2] = new vec2(1.0, 1.0);
+			textcoord = (Vec2**)malloc(sizeof(Vec2*)*3);
+			textcoord[0] = new Vec2(1.0, 1.0);
+			textcoord[1] = new Vec2(1.0, 1.0);
+			textcoord[2] = new Vec2(1.0, 1.0);
 			textblend = (double**)malloc(sizeof(double*)*3);
 			textblend[0] = new double(0.5);
 			textblend[1] = new double(0.5);
@@ -30,7 +30,7 @@ Smallest object that can be drawn
 	/*--------------------------------------------//
 	Constructor with the positions specified
 	//--------------------------------------------*/
-		triangle::triangle(vertex* a, vertex* b, vertex* c, vec2 st1, double b1, vec2 st2, double b2, vec2 st3, double b3):triangle(){
+		triangle::triangle(vertex* a, vertex* b, vertex* c, Vec2 st1, double b1, Vec2 st2, double b2, Vec2 st3, double b3):triangle(){
 			points[0] = a;
 			points[1] = b;
 			points[2] = c;
@@ -115,13 +115,13 @@ Smallest object that can be drawn
 			glVertexAttribPointer((GLuint)4, (GLuint)1, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
 		    glEnableVertexAttribArray((GLuint)4);
 		};
-		triangle::triangle(vertex* a, vertex* b, vertex* c, vec2* st1, double b1, vec2* st2, double b2, vec2* st3, double b3){
+		triangle::triangle(vertex* a, vertex* b, vertex* c, Vec2* st1, double b1, Vec2* st2, double b2, Vec2* st3, double b3){
 			points = (vertex**)malloc(sizeof(vertex*)*3);
 			VAO = 0;
 			materials[0] = NULL;
 			materials[1] = NULL;
 			textblend = (double**)malloc(sizeof(double*)*3);
-			textcoord = (vec2**)malloc(sizeof(vec2*)*3);
+			textcoord = (Vec2**)malloc(sizeof(Vec2*)*3);
 
 			points[0] = a;
 			points[1] = b;
@@ -241,65 +241,65 @@ Smallest object that can be drawn
 		vertex* triangle::getVertex(int i) const{
 			return (points[i]);
 		};
-		vec3 triangle::getNormal(){
-			vec4* a = getVertex(0)->pos;
-			vec4* b = getVertex(1)->pos;
-			vec4* c = getVertex(2)->pos;
+		Vec3 triangle::getNormal(){
+			Vec4* a = getVertex(0)->pos;
+			Vec4* b = getVertex(1)->pos;
+			Vec4* c = getVertex(2)->pos;
 
-			vec3* v = new vec3(b->x - a->x, b->y - a->y, b->z - a->z);
-			vec3* w = new vec3(c->x - a->x, c->y - a->y, c->z - a->z);
+			Vec3* v = new Vec3(b->x - a->x, b->y - a->y, b->z - a->z);
+			Vec3* w = new Vec3(c->x - a->x, c->y - a->y, c->z - a->z);
 
 			//define some planes
-			vec3 normal =  vec3(v->y*w->x - v->z*w->y, v->z*w->x - v->x*w->z, v->x*w->y - v->y*w->x);
-			normal.normalize();
+			Vec3 normal =  Vec3(v->y*w->x - v->z*w->y, v->z*w->x - v->x*w->z, v->x*w->y - v->y*w->x);
+			normal.Normalize();
 			return normal;
 		};
 
 	/*--------------------------------------------//
 	Get position - returns avg of vertices
 	//--------------------------------------------*/
-		vec3 triangle::getPosition(){
-			vec4* a = getVertex(0)->pos;
-			vec4* b = getVertex(1)->pos;
-			vec4* c = getVertex(2)->pos;
+		Vec3 triangle::getPosition(){
+			Vec4* a = getVertex(0)->pos;
+			Vec4* b = getVertex(1)->pos;
+			Vec4* c = getVertex(2)->pos;
 
 			double x = (a->x + b->x + c->x)/3;
 			double y = (a->y + b->y + c->y)/3;
 			double z = (a->z + b->z + c->z)/3;
 
-			return vec3(x, y, z);
+			return Vec3(x, y, z);
 		}
 
 	/*--------------------------------------------//
 	Checks if a point is behind the triangle and
 	within the bounds of the triangle
 	//--------------------------------------------*/
-		bool triangle::intersects(vec3 vec){
-			vec3 a = vec3(*getVertex(0)->pos);
-			vec3 b = vec3(*getVertex(1)->pos);
-			vec3 c = vec3(*getVertex(2)->pos);
+		bool triangle::intersects(Vec3 vec){
+			Vec3 a = Vec3(*getVertex(0)->pos);
+			Vec3 b = Vec3(*getVertex(1)->pos);
+			Vec3 c = Vec3(*getVertex(2)->pos);
 
 			//plane aligned with triangle
-			plane plane1 = plane(getNormal(), getPosition());
+			Plane plane1 = Plane(getNormal(), getPosition());
 
 			//define 'bumper' planes
-			vec3 pos2 = vec3((a.x+b.x)/2, (a.y+b.y)/2, (a.z+b.z)/2);
-			vec3 pos3 = vec3((c.x+b.x)/2, (c.y+b.y)/2, (c.z+b.z)/2);
-			vec3 pos4 = vec3((a.x+c.x)/2, (a.y+c.y)/2, (a.z+c.z)/2);
+			Vec3 pos2 = Vec3((a.x+b.x)/2, (a.y+b.y)/2, (a.z+b.z)/2);
+			Vec3 pos3 = Vec3((c.x+b.x)/2, (c.y+b.y)/2, (c.z+b.z)/2);
+			Vec3 pos4 = Vec3((a.x+c.x)/2, (a.y+c.y)/2, (a.z+c.z)/2);
 
-			vec3 norm2 = c - pos2;
-			vec3 norm3 = a - pos3;
-			vec3 norm4 = b - pos4;
+			Vec3 norm2 = c - pos2;
+			Vec3 norm3 = a - pos3;
+			Vec3 norm4 = b - pos4;
 
-			norm2.normalize();
-			norm3.normalize();
-			norm4.normalize();
+			norm2.Normalize();
+			norm3.Normalize();
+			norm4.Normalize();
 
-			plane plane2 = plane(norm2, pos2);
-			plane plane3 = plane(norm3, pos4);
-			plane plane4 = plane(norm3, pos4);
+			Plane plane2 = Plane(norm2, pos2);
+			Plane plane3 = Plane(norm3, pos4);
+			Plane plane4 = Plane(norm3, pos4);
 
-			return ( plane1.facing(vec) && !(plane2.facing(vec) || plane3.facing(vec) || plane4.facing(vec)) );
+			return ( plane1.Facing(vec) && !(plane2.Facing(vec) || plane3.Facing(vec) || plane4.Facing(vec)) );
 		}
 
 	/*--------------------------------------------//
@@ -319,28 +319,28 @@ Smallest object that can be drawn
 			//position
 		    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
 		    for (int i = 0; i < 3; i++){
-		    	vec4* pos = verts[i]->pos;
+		    	Vec4* pos = verts[i]->pos;
 				glBufferSubData(GL_ARRAY_BUFFER, 4*i*sizeof(double), 4*sizeof(double), (void*)pos);
 		    }
 
 		    //normal
 		    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
 		     for (int i = 0; i < 3; i++){
-		    	vec3* norm = verts[i]->normal;
+		    	Vec3* norm = verts[i]->normal;
 				glBufferSubData(GL_ARRAY_BUFFER, 3*i*sizeof(double), 3*sizeof(double), (void*)norm);
 		    }
 
 		    //color
 		    glBindBuffer(GL_ARRAY_BUFFER, VBO[2]);
 		     for (int i = 0; i < 3; i++){
-		     	vec4* col = verts[i]->color;
+		     	Vec4* col = verts[i]->color;
 				glBufferSubData(GL_ARRAY_BUFFER, 4*i*sizeof(double), 4*sizeof(double), (void*)col);
 		    }
 
 		    //texture coordinate
 		    glBindBuffer(GL_ARRAY_BUFFER, VBO[3]);
 		     for (int i = 0; i < 3; i++){
-		     	vec2* st = textcoord[i];
+		     	Vec2* st = textcoord[i];
 				glBufferSubData(GL_ARRAY_BUFFER, 2*i*sizeof(double), 2*sizeof(double), (void*)st);
 		    }
 

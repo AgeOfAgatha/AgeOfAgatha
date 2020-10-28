@@ -29,7 +29,7 @@ left hand corner of the window
 	/*--------------------------------------------//
 	Set Position
 	//--------------------------------------------*/
-		void FrameDelay::setPos(vec3 p){
+		void FrameDelay::setPos(Vec3 p){
 			pos[0] = p.x;
 			pos[1] = p.y;
 			pos[2] = p.z;
@@ -48,14 +48,14 @@ left hand corner of the window
 	/*--------------------------------------------//
 	Get Position
 	//--------------------------------------------*/
-		vec3 FrameDelay::getPos(){
-			return vec3((double)pos[0], (double)pos[1], (double)pos[2]);
+		Vec3 FrameDelay::getPos(){
+			return Vec3((double)pos[0], (double)pos[1], (double)pos[2]);
 		}
 
 	/*--------------------------------------------//
 	Set Color
 	//--------------------------------------------*/
-		void FrameDelay::setColor(vec3 p){
+		void FrameDelay::setColor(Vec3 p){
 			color[0] = p.x;
 			color[1] = p.y;
 			color[2] = p.z;
@@ -74,8 +74,8 @@ left hand corner of the window
 	/*--------------------------------------------//
 	Get Color
 	//--------------------------------------------*/
-		vec3 FrameDelay::getColor(){
-			return vec3((double)color[0], (double)color[1], (double)color[2]);
+		Vec3 FrameDelay::getColor(){
+			return Vec3((double)color[0], (double)color[1], (double)color[2]);
 		}
 
 	/*--------------------------------------------//

@@ -15,7 +15,6 @@ Includes
 	#include "../shaders/shader.h"
 	#include "light/spotlight.h"
 	#include "light/direclight.h"
-	#include "light/light.h"
 	#include "texture.h"
 	#include "mesh.h"
 
@@ -28,7 +27,6 @@ class world{
 		/*--------------------------------------------//
 		Class Variables
 		//--------------------------------------------*/
-			renderer* renderctrl;//handles the Rendering Context
 			//set by external at time of creation
 			int timestep;//how often is this world updated
 			int timeout;//how many iterations can an object not move before it is considered asleep
@@ -51,14 +49,17 @@ class world{
 			mesh** gravObj;
 
 			//init shaders and buffers
-			Shader *ShadowShader, *SimpleShader;
-			
+			Shader *DepthDirecShader, *DepthSpotShader, *ShadowNullMapping, *ShadowDirecMapping, *ShadowSpotMapping;
+			unsigned int DirecMapFBO, DirecMapTexture, SpotMapFBO, SpotMapTexture;
+
 			//init primatives
+			Vec3 lightPos = Vec3(5.0f, 5.0f, 5.0f);
 			unsigned int cubeVAO = 0;
-			unsigned int cubeVBO = 0;
+			unsigned int cubeVBO[6] = {0,0,0,0,0,0};
 
 			unsigned int quadVAO = 0;
-			unsigned int quadVBO;
+			unsigned int quadVBO[5] = {0,0,0,0,0};
+			const Vec4 white = Vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 		/*--------------------------------------------//
 		Functions
@@ -66,7 +67,7 @@ class world{
 			//initialization
 				void ShaderInit();
 			//misc
-				bool implicitTest(vec3 pos1, vec3 pos2, double radi1, double radi2, vec3 vel1, vec3 vel2);
+				bool implicitTest(Vec3 pos1, Vec3 pos2, double radi1, double radi2, Vec3 vel1, Vec3 vel2);
 				bool isAwake(mesh* &obj);
 
 	public:
@@ -90,7 +91,7 @@ class world{
 				void remMesh(mesh* &obj);
 				mesh* getObject(int i);
 				int getObjectCount();
-				void objectSort(glm::vec4 camera);
+				void objectSort(Vec4 camera);
 			//gravity objects
 				void addGravObj(mesh* &obj);
 				void remGravObj(mesh* &obj);
@@ -113,9 +114,10 @@ class world{
 			//misc
 				int getTimeStep();
 			//rendering
-				void draw(glm::mat4 projection, glm::mat4 view, glm::vec4 camera, GLint currWindowSize[2]);
+				void draw(Mat4 projection, Mat4 view, Vec4 camera, GLint currWindowSize[2]);
 				void renderCube();
 				void renderQuad();
+				void RenderScene(Mat4 ViewMatrix, Shader* shade);
 			//Physics
 				void update();
 				void applyGravity(mesh* &obj);

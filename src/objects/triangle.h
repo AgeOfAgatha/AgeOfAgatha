@@ -10,7 +10,6 @@ class triangle;
 Includes
 //--------------------------------------------*/
 	#include "../globals.h"
-	#include "../../deps/glm/glm.hpp"
 
 	#include "texture.h"
 	#include "vertex.h"
@@ -25,7 +24,7 @@ class triangle{
 		/*--------------------------------------------//
 		Class Variables
 		//--------------------------------------------*/
-			vec2** textcoord;//texture coordinates
+			Vec2** textcoord;//texture coordinates
 			double** textblend;//texture blend
 			vertex** points;//stores the vertices that make up this object
 			unsigned int VAO;//stores the objects opengl vertex array object
@@ -39,8 +38,8 @@ class triangle{
 		/*--------------------------------------------//
 		Constructors
 		//--------------------------------------------*/
-			triangle(vertex* a, vertex* b, vertex* c, vec2 st1, double b1, vec2 st2, double b2, vec2 st3, double b3);
-			triangle(vertex* a, vertex* b, vertex* c, vec2* st1, double b1, vec2* st2, double b2, vec2* st3, double b3);
+			triangle(vertex* a, vertex* b, vertex* c, Vec2 st1, double b1, Vec2 st2, double b2, Vec2 st3, double b3);
+			triangle(vertex* a, vertex* b, vertex* c, Vec2* st1, double b1, Vec2* st2, double b2, Vec2* st3, double b3);
 
 		/*--------------------------------------------//
 		Destructor
@@ -55,9 +54,9 @@ class triangle{
 			bool operator==(const triangle &other) const;
 			bool operator!=(const triangle &other) const;
 			vertex* getVertex(int i) const;
-			vec3 getNormal();
-			vec3 getPosition();
-			bool intersects(vec3 vec);
+			Vec3 getNormal();
+			Vec3 getPosition();
+			bool intersects(Vec3 vec);
 			void draw(Shader* shader);
 };
 #endif

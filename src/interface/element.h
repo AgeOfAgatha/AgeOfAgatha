@@ -13,7 +13,6 @@ class element;
 Includes
 //--------------------------------------------*/
 	#include "../globals.h"
-	#include "../../deps/glm/glm.hpp"
 
 	#include "interface.h"
 

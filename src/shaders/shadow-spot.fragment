@@ -1,0 +1,102 @@
+//[FRAGMENT SHADER]
+#version 330 core
+layout (location = 0) out vec4 FragColor;
+
+in VERTEXOUT{
+	vec4 Color;
+	vec3 FragPos;
+	vec3 Normal;
+	vec2 TexCoord;
+	float Blend;
+}fragmentin;
+
+struct spotlight{
+	vec3 color;
+	vec3 position;
+	float fov;
+	float constant;
+	float linear;
+	float exponential;
+};
+uniform int texture1set;
+uniform sampler2D texture1;
+uniform int texture2set;
+uniform sampler2D texture2;
+
+uniform spotlight SpotLight;
+
+uniform samplerCube DepthMap;
+uniform float far_plane;
+uniform int ALIAS;
+uniform vec4 ViewPos;
+
+float CalcSpotShadowFactor(){
+	vec3 FragToLight = fragmentin.FragPos - SpotLight.position;
+	float currentDepth = length(FragToLight) / far_plane;
+	float viewDistance = length(ViewPos.xyz - fragmentin.FragPos);
+
+	float bias = 0.01;
+	float shadow = 0.0;
+	float offset = (1+viewDistance/far_plane)/ALIAS;
+	for (int x = -ALIAS; x <= ALIAS; x++){
+		for (int y = -ALIAS; y <= ALIAS; y++){
+			for (int z = -ALIAS; z <= ALIAS; z++){
+				float closestDepth = texture(DepthMap, FragToLight + vec3(x*offset, y*offset, z*offset)).r;
+				if (currentDepth - offset*bias > closestDepth)
+					shadow += 1.0;
+			}
+		}
+	}
+	shadow /= 8*ALIAS*ALIAS*ALIAS;
+
+	if(currentDepth > 1)
+		shadow = 0.0;
+
+	return shadow;
+}
+
+vec3 CalcBaseColor(){
+	//Vertex color
+	vec3 FragDiff = vec3(min(max(fragmentin.Color.x, 0.0f), 1.0f), min(max(fragmentin.Color.y, 0.0f), 1.0f), min(max(fragmentin.Color.z, 0.0f), 1.0f));
+	//Textures
+	if (texture1set == 1 || texture2set == 1){
+		if (texture1set == 1 && texture2set != 1){
+			FragDiff = FragDiff * texture(texture1, fragmentin.TexCoord).xyz;
+		}
+		if (texture1set != 1 && texture2set == 1){
+			FragDiff = FragDiff * texture(texture1, fragmentin.TexCoord).xyz;
+		}
+		if (texture1set == 1 && texture2set == 1){
+			FragDiff = FragDiff * mix(texture(texture1, fragmentin.TexCoord), texture(texture2, fragmentin.TexCoord), fragmentin.Blend).xyz;
+		}
+	}
+	return FragDiff;
+}
+
+float CalcLightInternal(vec3 LightDirection){
+	//Diffuse
+	vec3 Normal = normalize(fragmentin.Normal);
+	float Diffuse = max(dot(Normal, LightDirection), 0.0);
+	//Specular
+	vec3 ViewDir = normalize(ViewPos.xyz - fragmentin.FragPos);
+	vec3 LightReflect = reflect(-LightDirection, Normal);
+	vec3 HalfwayDir = normalize(LightDirection + ViewDir);  
+	float SpecularFactor = dot(ViewDir, LightReflect) * dot(Normal, HalfwayDir);
+	float Specular = SpecularFactor * pow(max(dot(Normal, HalfwayDir), 0.0), 64.0);
+
+	return Diffuse + Specular;
+}
+
+
+void main(){ 
+	vec3 LightDirection = SpotLight.position - fragmentin.FragPos;
+	float AttDist = length(LightDirection)/far_plane;
+	LightDirection = normalize(LightDirection);
+	float AttConst = 1- SpotLight.constant;
+	float AttLine = 1- SpotLight.linear * AttDist;
+	float AttExpo = 1- SpotLight.exponential * AttDist * AttDist;
+	float Attenuation = max(min(AttConst * AttLine * AttExpo, 1.0), 0.0);
+	float Shadow = CalcSpotShadowFactor();
+
+	FragColor = vec4((1.0 - Shadow) * CalcLightInternal(LightDirection) * Attenuation * SpotLight.color * CalcBaseColor(), 1.0);
+}

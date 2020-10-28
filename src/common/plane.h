@@ -16,7 +16,7 @@ class Plane{
 		/*--------------------------------------------//
 		Class Variables
 		//--------------------------------------------*/
-			vec3 n;//normal vector, (a,b,c)
+			Vec3 n;//normal vector, (a,b,c)
 			double d;//basically offset, d = -(a*x0 + b*y0 + c*z0)
 
 	public:
@@ -28,12 +28,12 @@ class Plane{
 		/*--------------------------------------------//
 		Overloaded constructors
 		//--------------------------------------------*/
-			Plane(vec3 a, vec3 b);
-			Plane(vec3 a, double b);
+			Plane(Vec3 a, Vec3 b);
+			Plane(Vec3 a, double b);
 
 		/*--------------------------------------------//
 		Check if point is behind us
 		//--------------------------------------------*/
-			bool Facing(vec3 a);
+			bool Facing(Vec3 a);
 };
 #endif

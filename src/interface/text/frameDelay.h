@@ -11,7 +11,6 @@ class FrameDelay;
 Includes
 //--------------------------------------------*/
 	#include "../../globals.h"
-	#include "../../../deps/glm/glm.hpp"
 
 	#include "../interface.h"
 	#include "../element.h"
@@ -38,14 +37,14 @@ class FrameDelay:public element{
 		/*--------------------------------------------//
 		Functions
 		//--------------------------------------------*/
-			void setPos(vec3 p);
+			void setPos(Vec3 p);
 			void setPos(float p[]);
 			void setPos(float x, float y, float z);
-			vec3 getPos();
-			void setColor(vec3 p);
+			Vec3 getPos();
+			void setColor(Vec3 p);
 			void setColor(float p[]);
 			void setColor(float x, float y, float z);
-			vec3 getColor();
+			Vec3 getColor();
 			void draw();
 };
 #endif

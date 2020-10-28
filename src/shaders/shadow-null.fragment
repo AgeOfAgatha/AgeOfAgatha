@@ -1,0 +1,35 @@
+//[FRAGMENT SHADER]
+#version 330 core
+layout (location = 0) out vec4 FragColor;
+
+in VERTEXOUT{
+	vec4 Color;
+	vec3 FragPos;
+	vec3 Normal;
+	vec2 TexCoord;
+	float Blend;
+	vec4 LightFragPos;
+}fragmentin;
+
+uniform int texture1set;
+uniform sampler2D texture1;
+uniform int texture2set;
+uniform sampler2D texture2;
+
+
+void main(){ 
+	//Vertex color
+	FragColor = vec4(min(max(fragmentin.Color.x, 0.0f), 1.0f), min(max(fragmentin.Color.y, 0.0f), 1.0f), min(max(fragmentin.Color.z, 0.0f), 1.0f), 1.0f);
+	//Textures
+	if (texture1set == 1 || texture2set == 1){
+		if (texture1set == 1 && texture2set != 1){
+			FragColor = FragColor * vec4(texture(texture1, fragmentin.TexCoord).xyz, 1.0f);
+		}
+		if (texture1set != 1 && texture2set == 1){
+			FragColor = FragColor * vec4(texture(texture1, fragmentin.TexCoord).xyz, 1.0f);
+		}
+		if (texture1set == 1 && texture2set == 1){
+			FragColor = FragColor * vec4(mix(texture(texture1, fragmentin.TexCoord), texture(texture2, fragmentin.TexCoord), fragmentin.Blend).xyz, 1.0f);
+		}
+	}
+}

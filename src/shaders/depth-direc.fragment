@@ -1,0 +1,10 @@
+//[FRAGMENT SHADER]
+#version 330 core
+
+uniform int texture1set;
+uniform sampler2D texture1;
+uniform int texture2set;
+uniform sampler2D texture2;
+
+void main(){
+}

@@ -11,7 +11,6 @@ class uinterface;
 Includes
 //--------------------------------------------*/
 	#include "../globals.h"
-	#include "../../deps/glm/glm.hpp"
 
 	#include "element.h"
 

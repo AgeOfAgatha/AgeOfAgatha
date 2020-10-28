@@ -22,18 +22,18 @@ This is our basic object
 			nearbyCnt = 0;
 			nearby = NULL;
 
-			COM = vec3(0,0,0);
+			COM = Vec3(0,0,0);
 			
-			position = vec3(0,0,0);
-			velocity = vec3(0,0,0);
-			acceleration = vec3(0,0,0);
-			force = vec3(0,0,0);
+			position = Vec3(0,0,0);
+			velocity = Vec3(0,0,0);
+			acceleration = Vec3(0,0,0);
+			force = Vec3(0,0,0);
 
-			euler = angles(0.0, 0.0, 0.0);
-			angVel = angles(0.0, 0.0, 0.0);
-			angAcc = angles(0.0, 0.0, 0.0);
-			angFrc = angles(0.0, 0.0, 0.0);
-			quat = glm::quat(glm::vec3(euler.p, euler.y, euler.r));
+			euler = Angles(0.0, 0.0, 0.0);
+			angVel = Angles(0.0, 0.0, 0.0);
+			angAcc = Angles(0.0, 0.0, 0.0);
+			angFrc = Angles(0.0, 0.0, 0.0);
+			quat = Quat(Vec3(euler.p, euler.y, euler.r));
 
 			timer = 0;
 
@@ -56,11 +56,11 @@ This is our basic object
 		void mesh::draw(Shader* shader){
 			//Apply Transformations
 			if(deuler == true){
-				quat = glm::quat(glm::vec3(euler.p, euler.y, euler.r));
+				quat = Quat(Vec3(euler.p, euler.y, euler.r));
 				deuler = false;
 			}
-			glm::mat4 model = glm::toMat4(quat);
-			model = glm::translate(model, glm::vec3(this->position.x, this->position.y, this->position.z));
+			Mat4 model = Mat4(quat);
+			model.Translate(Vec3(this->position.x, this->position.y, this->position.z));
 	    	shader->setMat4("ModelMatrix", model);
 			//draw geometry
 			for (int i = 0; i < this->getTriangleCount(); i++){
@@ -247,7 +247,7 @@ This is our basic object
 		/*--------------------------------------------//
 		Add a triangle to the mesh by specifying points
 		//--------------------------------------------*/
-			void mesh::addTri(vertex* &a, vertex* &b, vertex* &c, vec2 st1, double b1, vec2 st2, double b2, vec2 st3, double b3){
+			void mesh::addTri(vertex* &a, vertex* &b, vertex* &c, Vec2 st1, double b1, Vec2 st2, double b2, Vec2 st3, double b3){
 				triangle** newtris = (triangle**) realloc(tris, sizeof(triangle*)*(triCnt+1));
 
 				if (newtris!=NULL) {
@@ -370,7 +370,7 @@ This is our basic object
 		Returns the meshes position in relation to the
 		world space
 		//--------------------------------------------*/
-			vec3 mesh::getPosition(){
+			Vec3 mesh::getPosition(){
 				return position;
 			};
 
@@ -378,12 +378,12 @@ This is our basic object
 		Sets the meshes position in relation to the
 		world space
 		//--------------------------------------------*/
-			void mesh::setPosition(vec3 pos){
+			void mesh::setPosition(Vec3 pos){
 				position = pos;
 				return;
 			};
 			void mesh::setPosition(double xpos, double ypos, double zpos){
-				this->setPosition(vec3(xpos, ypos, zpos));
+				this->setPosition(Vec3(xpos, ypos, zpos));
 				return;
 			};
 
@@ -394,7 +394,7 @@ This is our basic object
 		Returns the meshes angles in relation to the
 		world space
 		//--------------------------------------------*/
-			angles mesh::getAngles(){
+			Angles mesh::getAngles(){
 				return euler;
 			};
 
@@ -402,7 +402,7 @@ This is our basic object
 		Sets the meshes angles in relation to the world
 		space
 		//--------------------------------------------*/
-			void mesh::setAngles(angles ang){
+			void mesh::setAngles(Angles ang){
 				this->setAngles(ang.p, ang.y, ang.r);
 				return;
 			};
@@ -429,7 +429,7 @@ This is our basic object
 		Returns the meshes velocity in relation to the
 		world space
 		//--------------------------------------------*/
-			vec3 mesh::getVelocity(){
+			Vec3 mesh::getVelocity(){
 				return velocity;
 			};
 
@@ -437,12 +437,12 @@ This is our basic object
 		Sets the meshes velocity in relation to the
 		world space
 		//--------------------------------------------*/
-			void mesh::setVelocity(vec3 vel){
+			void mesh::setVelocity(Vec3 vel){
 				velocity = vel;
 				return;
 			};
 			void mesh::setVelocity(double xvel, double yvel, double zvel){
-				this->setVelocity(vec3(xvel, yvel, zvel));
+				this->setVelocity(Vec3(xvel, yvel, zvel));
 				return;
 			};
 
@@ -450,7 +450,7 @@ This is our basic object
 		Returns the meshes angular velocity in relation
 		to the world space
 		//--------------------------------------------*/
-			angles mesh::getAngVel(){
+			Angles mesh::getAngVel(){
 				return angVel;
 			};
 
@@ -458,12 +458,12 @@ This is our basic object
 		Sets the meshes anglular velocity in relation to
 		the world space
 		//--------------------------------------------*/
-			void mesh::setAngVel(angles ang){
+			void mesh::setAngVel(Angles ang){
 				angVel = ang;
 				return;
 			};
 			void mesh::setAngVel(double pitch, double yaw, double roll){
-				this->setAngVel(angles(pitch,yaw,roll));
+				this->setAngVel(Angles(pitch,yaw,roll));
 				return;
 			};
 
@@ -474,7 +474,7 @@ This is our basic object
 		Returns the meshes acceleration in relation to 
 		the world space
 		//--------------------------------------------*/
-			vec3 mesh::getAcceleration(){
+			Vec3 mesh::getAcceleration(){
 				return acceleration;
 			};
 
@@ -482,12 +482,12 @@ This is our basic object
 		Sets the meshes acceleration in relation to the
 		world space
 		//--------------------------------------------*/
-			void mesh::setAcceleration(vec3 acc){
+			void mesh::setAcceleration(Vec3 acc){
 				acceleration = acc;
 				return;
 			};
 			void mesh::setAcceleration(double xacc, double yacc, double zacc){
-				this->setAcceleration(vec3(xacc, yacc, zacc));
+				this->setAcceleration(Vec3(xacc, yacc, zacc));
 				return;
 			};
 
@@ -495,7 +495,7 @@ This is our basic object
 		Returns the meshes angular acceleration in 
 		relation to the world space
 		//--------------------------------------------*/
-			angles mesh::getAngAcc(){
+			Angles mesh::getAngAcc(){
 				return angAcc;
 			};
 
@@ -503,12 +503,12 @@ This is our basic object
 		Sets the meshes anglular acceleration in 
 		relation to the world space
 		//--------------------------------------------*/
-			void mesh::setAngAcc(angles ang){
+			void mesh::setAngAcc(Angles ang){
 				angAcc = ang;
 				return;
 			};
 			void mesh::setAngAcc(double pitch, double yaw, double roll){
-				this->setAngAcc(angles(pitch,yaw,roll));
+				this->setAngAcc(Angles(pitch,yaw,roll));
 				return;
 			};
 
@@ -519,7 +519,7 @@ This is our basic object
 		Decide how much force this object can handle
 		before deformation takes place
 		//--------------------------------------------*/
-			vec3 mesh::getMaxDisplacement(vec3 force){
+			Vec3 mesh::getMaxDisplacement(Vec3 force){
 				return (force * 0.1);
 			};
 
@@ -527,7 +527,7 @@ This is our basic object
 		Returns the meshes force in relation to the 
 		world space
 		//--------------------------------------------*/
-			vec3 mesh::getForce(){
+			Vec3 mesh::getForce(){
 				return force;
 			};
 
@@ -535,20 +535,20 @@ This is our basic object
 		Sets the meshes force in relation to the
 		world space
 		//--------------------------------------------*/
-			void mesh::setForce(vec3 frc){
+			void mesh::setForce(Vec3 frc){
 				force = frc;
 				return;
 			};
 			void mesh::setForce(double xfrc, double yfrc, double zfrc){
-				this->setForce(vec3(xfrc, yfrc, zfrc));
+				this->setForce(Vec3(xfrc, yfrc, zfrc));
 				return;
 			};
-			void mesh::applyForce(vec3 frc){
+			void mesh::applyForce(Vec3 frc){
 				force = force + frc;
 				return;
 			};
 			void mesh::applyForce(double xfrc, double yfrc, double zfrc){
-				this->applyForce(vec3(xfrc, yfrc, zfrc));
+				this->applyForce(Vec3(xfrc, yfrc, zfrc));
 				return;
 			};
 
@@ -556,7 +556,7 @@ This is our basic object
 		Returns the meshes angular force in relation to
 		the world space
 		//--------------------------------------------*/
-			angles mesh::getAngFrc(){
+			Angles mesh::getAngFrc(){
 				return angFrc;
 			};
 
@@ -564,12 +564,12 @@ This is our basic object
 		Sets the meshes anglular force in relation to 
 		the world space
 		//--------------------------------------------*/
-			void mesh::setAngfrc(angles ang){
+			void mesh::setAngfrc(Angles ang){
 				angFrc = ang;
 				return;
 			};
 			void mesh::setAngfrc(double pitch, double yaw, double roll){
-				this->setAngfrc(angles(pitch,yaw,roll));
+				this->setAngfrc(Angles(pitch,yaw,roll));
 				return;
 			};
 
@@ -590,7 +590,7 @@ This is our basic object
 			this->setAngles(euler + angVel);
 
 			if(deuler == true){
-				quat = glm::quat(glm::vec3(euler.p, euler.y, euler.r));
+				quat = Quat(Vec3(euler.p, euler.y, euler.r));
 				deuler = false;
 			}
 

@@ -19,19 +19,19 @@ class Line{
 		/*--------------------------------------------//
 		Class Variables
 		//--------------------------------------------*/
-			vec3 n;//directional vector
-			vec3 p;//basically offset, a point along the Line from which the Line extends along n and -n
+			Vec3 n;//directional vector
+			Vec3 p;//basically offset, a point along the Line from which the Line extends along n and -n
 			
 	public:
 		/*--------------------------------------------//
 		Constructors
 		//--------------------------------------------*/
 			Line();
-			Line(vec3 a, vec3 b);
+			Line(Vec3 a, Vec3 b);
 
 		/*--------------------------------------------//
 		Functions
 		//--------------------------------------------*/
-			double Distance(vec3 v, vec3& i, double U);
+			double Distance(Vec3 v, Vec3& i, double U);
 };
 #endif

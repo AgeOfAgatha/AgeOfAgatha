@@ -94,6 +94,8 @@ namespace patch
 #define			LIGHT_MODEL_AMBIENT_R 		0.7f								//
 #define			LIGHT_MODEL_AMBIENT_G 		0.7f								//
 #define			LIGHT_MODEL_AMBIENT_B 		0.7f								//
+#define			DIRECTIONAL_ALIAS 			10									//how many times to sample shadow map for directional lights
+#define			SPOTLIGHT_ALIAS 			3									//how many times to sample cube shadow map for point lights
 
 // Viewer Positioning Constants
 #define			VIEWER_DISTANCE				10.0f 								//

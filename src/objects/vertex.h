@@ -11,7 +11,6 @@ class vertex;
 Includes
 //--------------------------------------------*/
 	#include "../globals.h"
-	#include "../../deps/glm/glm.hpp"
 
 	#include "../common/vector.h"
 	#include "mesh.h"
@@ -23,17 +22,17 @@ class vertex{
 		/*--------------------------------------------//
 		Class variables
 		//--------------------------------------------*/
-			vec4* pos;//position for the vertex
-			vec3* normal;//normal for the vertex
-			vec4* color;//vertex color
+			Vec4* pos;//position for the vertex
+			Vec3* normal;//normal for the vertex
+			Vec4* color;//vertex color
 		/*--------------------------------------------//
 		Constructors
 		//--------------------------------------------*/
 			vertex();
 			vertex(double a, double b, double c);
-			vertex(vec3 p);
-			vertex(vec3 p, vec3 n, vec4 c);
-			vertex(vec4* p, vec3* n, vec4* c);
+			vertex(Vec3 p);
+			vertex(Vec3 p, Vec3 n, Vec4 c);
+			vertex(Vec4* p, Vec3* n, Vec4* c);
 
 		/*--------------------------------------------//
 		Destructor
@@ -48,63 +47,63 @@ class vertex{
 					vertex operator+(const int &other);
 					vertex operator+(const float &other);
 					vertex operator+(const double &other);
-					vertex operator+(const vec3 &other);
+					vertex operator+(const Vec3 &other);
 					vertex operator+=(const int &other);
 					vertex operator+=(const float &other);
 					vertex operator+=(const double &other);
-					vertex operator+=(const vec3 &other);
+					vertex operator+=(const Vec3 &other);
 				//Subtraction
 					vertex operator-(const int &other);
 					vertex operator-(const float &other);
 					vertex operator-(const double &other);
-					vertex operator-(const vec3 &other);
+					vertex operator-(const Vec3 &other);
 					vertex operator-=(const int &other);
 					vertex operator-=(const float &other);
 					vertex operator-=(const double &other);
-					vertex operator-=(const vec3 &other);
+					vertex operator-=(const Vec3 &other);
 				//Divison
 					vertex operator/(const int &other);
 					vertex operator/(const float &other);
 					vertex operator/(const double &other);
-					vertex operator/(const vec3 &other);
+					vertex operator/(const Vec3 &other);
 					vertex operator/=(const int &other);
 					vertex operator/=(const float &other);
 					vertex operator/=(const double &other);
-					vertex operator/=(const vec3 &other);
+					vertex operator/=(const Vec3 &other);
 				//Multiplication
 					vertex operator*(const int &other);
 					vertex operator*(const float &other);
 					vertex operator*(const double &other);
-					vertex operator*(const vec3 &other);
+					vertex operator*(const Vec3 &other);
 					vertex operator*=(const int &other);
 					vertex operator*=(const float &other);
 					vertex operator*=(const double &other);
-					vertex operator*=(const vec3 &other);
+					vertex operator*=(const Vec3 &other);
 			//Compairison
 				//less than
-					bool operator<(const vec3 &other) const;
+					bool operator<(const Vec3 &other) const;
 					bool operator<(const int &other) const;
 					bool operator<(const float &other) const;
 					bool operator<(const double &other) const;
-					bool operator<=(const vec3 &other) const;
+					bool operator<=(const Vec3 &other) const;
 					bool operator<=(const int &other) const;
 					bool operator<=(const float &other) const;
 					bool operator<=(const double &other) const;
 				//greater than
-					bool operator>(const vec3 &other) const;
+					bool operator>(const Vec3 &other) const;
 					bool operator>(const int &other) const;
 					bool operator>(const float &other) const;
 					bool operator>(const double &other) const;
-					bool operator>=(const vec3 &other) const;
+					bool operator>=(const Vec3 &other) const;
 					bool operator>=(const int &other) const;
 					bool operator>=(const float &other) const;
 					bool operator>=(const double &other) const;
 				//equals
-					bool operator==(const vec3 &other) const;
+					bool operator==(const Vec3 &other) const;
 					bool operator==(const int &other) const;
 					bool operator==(const float &other) const;
 					bool operator==(const double &other) const;
-					bool operator!=(const vec3 &other) const;
+					bool operator!=(const Vec3 &other) const;
 					bool operator!=(const int &other) const;
 					bool operator!=(const float &other) const;
 					bool operator!=(const double &other) const;

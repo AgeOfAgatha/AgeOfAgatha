@@ -14,14 +14,14 @@ point along that Line in 3d space
 	Default constructor
 	//--------------------------------------------*/
 		Line::Line(){
-			n = vec3(0,0,0);
-			p = vec3(0,0,0);
+			n = Vec3(0,0,0);
+			p = Vec3(0,0,0);
 		}
 
 	/*--------------------------------------------//
 	Overloaded constructor
 	//--------------------------------------------*/
-		Line::Line(vec3 a, vec3 b){
+		Line::Line(Vec3 a, Vec3 b){
 			n = a;
 			p = b;
 		}
@@ -32,10 +32,10 @@ point along that Line in 3d space
 	equations used:
 	P = p + U*n, (v-P) dot (n) = 0
 	//--------------------------------------------*/
-		double Line::Distance(vec3 v, vec3& i, double U){
-		    U = ((v.x - p.x)*(n.x) + (v.y - p.y)*(n.y) + (v.z - p.z)*(n.z)) / pow(n.length(), 2);
+		double Line::Distance(Vec3 v, Vec3& i, double U){
+		    U = ((v.x - p.x)*(n.x) + (v.y - p.y)*(n.y) + (v.z - p.z)*(n.z)) / pow(n.Length(), 2);
 		    i = v + n*U;
-		    double distance = (v - i).length();
+		    double distance = (v - i).Length();
 		 	return distance;
 		}
 #endif

@@ -103,26 +103,20 @@ and the ui interface.
 	//--------------------------------------------*/
 		void game::Draw(){
 			//Position and orient camera.
-			glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f );
-			glm::quat quat = glm::quat(vec3(viewerAltitude, viewerAzimuth, 0.0));
-			glm::mat4 looking = toMat4(quat);
-			glm::vec4 camera = looking * glm::vec4(position.x + 0.0f, position.y + 0.0f, position.z + 1.0f*viewerDistance, 1.0f);
+			Mat4 CameraProjectionMatrix, CameraViewMatrix;
+			std::vector<Mat4> shadowTransforms;
+			Vec3 PlayerPos = Vec3(0.0f, 0.0f, 0.0f );
+			Quat quat = Quat(Vec3(viewerAltitude, viewerAzimuth, 0.0));
+			Mat4 looking = Mat4(quat);
+			Vec4 CameraPos = looking * Vec4(PlayerPos.x + 0.0f, PlayerPos.y + 0.0f, PlayerPos.z + 1.0f*viewerDistance, 1.0f);
+			Vec4 up = looking * Vec4(0,1,0,1);
 
-			//Create project matrix
-			glm::mat4 projection;
-			projection = glm::perspective(glm::radians(FRUSTUM_FIELD_OF_VIEW), (float)currWindowSize[0]/currWindowSize[1], (float)FRUSTUM_NEAR_PLANE, (float)FRUSTUM_FAR_PLANE);
-			//Find up vector
-			glm::vec4 up = looking * glm::vec4(0,1,0,1);
-			//Create view matrix
-			glm::mat4 view;
-			view = glm::lookAt(
-				glm::vec3(camera[0], camera[1], camera[2]),
-				position,
-				glm::vec3(up[0], up[1], up[2])
-			);
+			//Calculate & save matrices
+			CameraProjectionMatrix.Perspective(FRUSTUM_FIELD_OF_VIEW, (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT, (float)FRUSTUM_NEAR_PLANE, (float)FRUSTUM_FAR_PLANE);
+			CameraViewMatrix.LookAt(CameraPos, PlayerPos, up);
 
 			//Draw the world
-			worldspace->draw(projection, view, camera, currWindowSize);
+			worldspace->draw(CameraProjectionMatrix, CameraViewMatrix, CameraPos, currWindowSize);
 		}
 
 	/*--------------------------------------------//

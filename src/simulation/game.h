@@ -11,12 +11,10 @@ Includes
 //--------------------------------------------*/
 	#include "../globals.h"
 	#include "../../deps/stb/stb_image.h"
-	#include "../../deps/glm/glm.hpp"
 
 	#include "../common/vector.h"
 	#include "../common/quaternion.h"
 	#include "../objects/world.h"
-	#include "../objects/light/light.h"
 	#include "../objects/light/direclight.h"
 	#include "../objects/light/spotlight.h"
 	#include "../interface/interface.h"
