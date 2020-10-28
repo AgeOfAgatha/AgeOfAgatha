@@ -38,7 +38,7 @@ Spot Light Class
 			Constructor
 			//--------------------------------------------*/
 				spotlight(){
-					color = Vec3(0.0f, 0.0f, 0.0f);
+					color = Vec3(1.0f, 1.0f, 1.0f);
 					position = Vec3(0.0f, 0.0f, 0.0f);
 					fov = 360.0f;
 					constant = 0.0f;
@@ -92,7 +92,7 @@ Spot Light Class
 				}
 				void bindTex(Shader* shad){
 					glActiveTexture(GL_TEXTURE0 + ShadowMapTexture);
-					glBindTexture(GL_TEXTURE_2D, ShadowMapTexture);
+					glBindTexture(GL_TEXTURE_CUBE_MAP, ShadowMapTexture);
 
 					shad->setVec3("SpotLight.position", position);
 					shad->setFloat("SpotLight.fov", fov);

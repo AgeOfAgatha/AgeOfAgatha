@@ -50,16 +50,13 @@ class world{
 
 			//init shaders and buffers
 			Shader *DepthDirecShader, *DepthSpotShader, *ShadowNullMapping, *ShadowDirecMapping, *ShadowSpotMapping;
-			unsigned int DirecMapFBO, DirecMapTexture, SpotMapFBO, SpotMapTexture;
 
 			//init primatives
-			Vec3 lightPos = Vec3(5.0f, 5.0f, 5.0f);
 			unsigned int cubeVAO = 0;
 			unsigned int cubeVBO[6] = {0,0,0,0,0,0};
 
 			unsigned int quadVAO = 0;
 			unsigned int quadVBO[5] = {0,0,0,0,0};
-			const Vec4 white = Vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 		/*--------------------------------------------//
 		Functions

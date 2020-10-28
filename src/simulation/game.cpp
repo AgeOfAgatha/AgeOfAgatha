@@ -29,53 +29,44 @@ and the ui interface.
 			FrameDelay* frame;
 			frame = new FrameDelay();
 			display->add(frame);
-			/*
+			
+
+			////////////////QUARANTINED////////////////
 			//load object
-			for (int i = -1; i < 1; i++){
-				for (int j = -1; j < 1; j++){
-					for (int k = -1; k < 1; k++){
-						mesh* parent;
-						worldspace->loadObj("models/cube.obj", "models/cube.mtl", &parent);
-						parent->setPosition(vec3(3*(i),3*(j),3*(k)));
-					}
-				}
-			}
+			// for (int i = -1; i < 1; i++){
+			// 	for (int j = -1; j < 1; j++){
+			// 		for (int k = -1; k < 1; k++){
+			// 			mesh* parent;
+			// 			worldspace->loadObj("models/cube.obj", "models/cube.mtl", &parent);
+			// 			parent->setPosition(Vec3(3*(i),3*(j),3*(k)));
+			// 		}
+			// 	}
+			// }
+			////////////////QUARANTINED////////////////
 
 			//intialize lighting
 				direclight* direc = new direclight();
-					direc->direction = vec3(1.0f, 0.75f, 0.5f);
-					direc->direction.normalize();
-					direc->base.color = vec3(0.5f, 0.5f, 0.5f);
+					direc->direction = Vec3(1.0f, 0.75f, 0.5f);
+					direc->direction.Normalize();
+					direc->color = Vec3(0.1f, 0.1f, 0.1f);
 
 				spotlight* spot1 = new spotlight();
-					spot1->position = vec3(5.0f, 5.0f, 5.0f);
-					spot1->direction = vec3(0.0f, 0.0f, 1.0f);
-					spot1->base.color = vec3(1.0f, 0.0f, 0.0f);
-					spot1->constant = 0.1f;
-					spot1->linear = 0.1f;
-					spot1->exponential = 0.1f;
+					spot1->position = Vec3(5.0f, 5.0f, -5.0f);
+					spot1->color = Vec3(0.0f, 0.0f, 1.0f);
 
 				spotlight* spot2 = new spotlight();
-					spot2->position = vec3(-5.0f, 5.0f, 5.0f);
-					spot2->direction = vec3(0.0f, 0.0f, 1.0f);
-					spot2->base.color = vec3(0.0f, 1.0f, 0.0f);
-					spot2->constant = 0.1f;
-					spot2->linear = 0.1f;
-					spot2->exponential = 0.1f;
+					spot2->position = Vec3(-5.0f, 5.0f, -5.0f);
+					spot2->color = Vec3(0.0f, 1.0f, 0.0f);
 
 				spotlight* spot3 = new spotlight();
-					spot3->position = vec3(0.0f, -5.0f, 5.0f);
-                    spot3->direction = vec3(0.0f, 0.0f, 1.0f);
-                    spot3->base.color = vec3(0.0f, 0.0f, 1.0f);
-                    spot3->constant = 0.1f;
-                    spot3->linear = 0.1f;
-                    spot3->exponential = 0.1f;
+					spot3->position = Vec3(0.0f, -5.0f, -5.0f);
+					spot3->color = Vec3(1.0f, 0.0f, 0.0f);
 
 				//load lighting into world
 					worldspace->addSLight(spot1);
 					worldspace->addSLight(spot2);
 					worldspace->addSLight(spot3);
-					worldspace->addDLight(direc);*/
+					worldspace->addDLight(direc);
 		}
 
 	/*--------------------------------------------//

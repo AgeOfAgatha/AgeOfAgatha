@@ -25,7 +25,7 @@ Globals
 /*--------------------------------------------//
 GLUT functions - passes down class stack
 //--------------------------------------------*/
-	void Draw(){app->PreDraw(); app->Draw(); app->PostDraw(); glutSwapBuffers(); glFlush();}
+	void Draw(){app->PreDraw(); app->Draw(); app->PostDraw(); glFinish(); glutPostRedisplay();}
 	void Update(int value){value = app->Update(value); glutTimerFunc(UPDATE_TIMER, Update, value);}
 	void KeypressASCII(unsigned char pressedKey, int mouseXPosition, int mouseYPosition){app->KeypressASCII(pressedKey,mouseXPosition,mouseYPosition);}
 	void KeypressNonASCII(int pressedKey, int mouseXPosition, int mouseYPosition){app->KeypressNonASCII(pressedKey,mouseXPosition,mouseYPosition);}
@@ -54,9 +54,10 @@ Main - Entry point for program
 		glViewport(0, 0, currWindowSize[0], currWindowSize[1]);
 
 		glClearDepth(1.0f);
-		glDepthFunc(GL_LEQUAL);
+		glDepthFunc(GL_LESS);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
 
 		glutTimerFunc(UPDATE_TIMER, Update, 0);
 		glutMouseFunc(HandleButton);

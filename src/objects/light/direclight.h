@@ -36,7 +36,7 @@ Spot Light Class
 			Constructor
 			//--------------------------------------------*/
 				direclight(){
-					color = Vec3(0.0f, 0.0f, 0.0f);
+					color = Vec3(1.0f, 1.0f, 1.0f);
 					direction = Vec3(0.0f, 0.0f, -1.0f);
 
 					LightProjectionMatrix.Perspective(TORAD(45.0f), (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT, (float)FRUSTUM_NEAR_PLANE, (float)FRUSTUM_FAR_PLANE);
@@ -64,6 +64,7 @@ Spot Light Class
 			//--------------------------------------------*/
 				void drawTex(Shader* shad){
 					LightViewMatrix.LookAt(direction, Vec3(0,0,0), Vec3(0,1,0));
+					
 					glBindFramebuffer(GL_FRAMEBUFFER, ShadowMapFBO);
 					glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 					glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -71,7 +72,9 @@ Spot Light Class
 					glActiveTexture(GL_TEXTURE0 + ShadowMapTexture);
 					glBindTexture(GL_TEXTURE_2D, ShadowMapTexture);
 
+					shad->setMat4("CameraProjectionMatrix", LightProjectionMatrix);
 					shad->setMat4("LightProjectionMatrix", LightProjectionMatrix);
+					shad->setMat4("CameraViewMatrix", LightViewMatrix);
 					shad->setMat4("LightViewMatrix", LightViewMatrix);
 				}
 				void bindTex(Shader* shad){

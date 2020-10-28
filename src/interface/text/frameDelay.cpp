@@ -91,9 +91,9 @@ left hand corner of the window
 
 			// Update frames-per-second
 			curtime = clock();
-			latency = (latency + (double)(curtime - lastime)/CLOCKS_PER_SEC) / 2;
+			latency = ((double)(curtime - lastime)/CLOCKS_PER_SEC);
 			if (latency > 0)
-				fps = 60 / latency;
+				fps = 1 / latency;
 			lastime = curtime;
 
 			//Print fps

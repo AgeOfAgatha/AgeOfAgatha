@@ -73,40 +73,6 @@ This is where the simulation is controlled
 			ShadowNullMapping = new Shader("ShadowNullMapping", "shaders/shadow.vertex", "shaders/shadow-null.fragment", NULL);
 			ShadowDirecMapping = new Shader("ShadowDirecMapping", "shaders/shadow.vertex", "shaders/shadow-direc.fragment", NULL);
 			ShadowSpotMapping = new Shader("ShadowSpotMapping", "shaders/shadow-spot.vertex", "shaders/shadow-spot.fragment", NULL);
-			
-			//Create the shadow map frame buffer for directional lights
-			glGenFramebuffers(1, &DirecMapFBO);
-			glGenTextures(1, &DirecMapTexture);
-			glBindTexture(GL_TEXTURE_2D, DirecMapTexture);
-			glTexImage2D(	GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0,
-							GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-			float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
-			glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-			glBindFramebuffer(GL_FRAMEBUFFER, DirecMapFBO);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, DirecMapTexture, 0);
-			glDrawBuffer(GL_NONE);
-			glReadBuffer(GL_NONE);
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-			//Create the shadow map frame buffer for directional lights
-			glGenFramebuffers(1, &SpotMapFBO);
-			glGenTextures(1, &SpotMapTexture);
-			glBindTexture(GL_TEXTURE_CUBE_MAP, SpotMapTexture);
-			for (unsigned int i = 0; i < 6; ++i)
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-			glBindFramebuffer(GL_FRAMEBUFFER, SpotMapFBO);
-			glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, SpotMapTexture, 0);
-			glDrawBuffer(GL_NONE);
-			glReadBuffer(GL_NONE);
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 
 	/*--------------------------------------------//
@@ -1353,7 +1319,6 @@ This is where the simulation is controlled
 							}else{
 								shade->setMat4("ModelMatrix", model);
 							}
-							//glutSolidSphere(1.0, 24, 24);
 							renderCube();
 						}
 					}
@@ -1368,88 +1333,55 @@ This is where the simulation is controlled
 				glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-				//Calculate & save matrices
-				Mat4 LightProjectionMatrix, LightViewMatrix;
-				std::vector<Mat4> shadowTransforms;
-				LightProjectionMatrix.Perspective(TORAD(90.0f), (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT, (float)FRUSTUM_NEAR_PLANE, (float)FRUSTUM_FAR_PLANE);
-				shadowTransforms.push_back(LightProjectionMatrix * LightViewMatrix.LookAt(lightPos, lightPos + Vec3(1.0f, 0.0f, 0.0f), Vec3(0.0f, -1.0f, 0.0f)));
-				shadowTransforms.push_back(LightProjectionMatrix * LightViewMatrix.LookAt(lightPos, lightPos + Vec3(-1.0f, 0.0f, 0.0f), Vec3(0.0f, -1.0f, 0.0f)));
-				shadowTransforms.push_back(LightProjectionMatrix * LightViewMatrix.LookAt(lightPos, lightPos + Vec3(0.0f, 1.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f)));
-				shadowTransforms.push_back(LightProjectionMatrix * LightViewMatrix.LookAt(lightPos, lightPos + Vec3(0.0f, -1.0f, 0.0f), Vec3(0.0f, 0.0f, -1.0f)));
-				shadowTransforms.push_back(LightProjectionMatrix * LightViewMatrix.LookAt(lightPos, lightPos + Vec3(0.0f, 0.0f, 1.0f), Vec3(0.0f, -1.0f, 0.0f)));
-				shadowTransforms.push_back(LightProjectionMatrix * LightViewMatrix.LookAt(lightPos, lightPos + Vec3(0.0f, 0.0f, -1.0f), Vec3(0.0f, -1.0f, 0.0f)));
-				LightViewMatrix.LookAt(lightPos, Vec3(0,0,0), Vec3(0,1,0));
-
+				//render from lights pov
 				DepthDirecShader->use();
-				DepthDirecShader->setMat4("CameraProjectionMatrix", LightProjectionMatrix);
-				DepthDirecShader->setMat4("CameraViewMatrix", LightViewMatrix);
-				DepthDirecShader->setMat4("LightProjectionMatrix", LightProjectionMatrix);
-				DepthDirecShader->setMat4("LightViewMatrix", LightViewMatrix);
+				for (int i = 0; i < getDLightCount(); i++){
+					getDLight(i)->drawTex(DepthDirecShader);
+					RenderScene(CameraViewMatrix, DepthDirecShader);
+				}
 				DepthSpotShader->use();
-				DepthSpotShader->setVec3("lightPos", lightPos);
-				DepthSpotShader->setFloat("far_plane", FRUSTUM_FAR_PLANE);
-				for (int i = 0; i < 6; ++i)
-					DepthSpotShader->setMat4("shadowMatrices[" + patch::to_string(i) + "]", shadowTransforms[i]);
-
-				//glBindFramebuffer(GL_FRAMEBUFFER, DirecMapFBO);
-				glBindFramebuffer(GL_FRAMEBUFFER, SpotMapFBO);
-				glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, DirecMapTexture);
-				glActiveTexture(GL_TEXTURE1);
-				glBindTexture(GL_TEXTURE_2D, SpotMapTexture);
-				RenderScene(LightViewMatrix, DepthSpotShader);
+				for (int i = 0; i < getSLightCount(); i++){
+					getSLight(i)->drawTex(DepthSpotShader);
+					RenderScene(CameraViewMatrix, DepthSpotShader);
+				}
 				
 				glBindFramebuffer(GL_FRAMEBUFFER, 0);
 				glViewport(0, 0, currWindowSize[0], currWindowSize[1]);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 				//render from camera
+				glEnable(GL_BLEND);
+				glBlendEquation(GL_FUNC_ADD);
+				glBlendFunc(GL_ONE, GL_ZERO);
+				glDepthFunc(GL_LESS);
+
 				ShadowDirecMapping->use();
 				ShadowDirecMapping->setMat4("CameraProjectionMatrix", CameraProjectionMatrix);
 				ShadowDirecMapping->setMat4("CameraViewMatrix", CameraViewMatrix);
-				ShadowDirecMapping->setMat4("LightProjectionMatrix", LightProjectionMatrix);
-				ShadowDirecMapping->setMat4("LightViewMatrix", LightViewMatrix);
 				ShadowDirecMapping->setVec4("ViewPos", CameraPos);
-				ShadowDirecMapping->setVec3("DirecLight.color", Vec3(white));
-				ShadowDirecMapping->setVec3("DirecLight.direction", lightPos);
-				ShadowDirecMapping->setInt("DepthMap", 2);
 				ShadowDirecMapping->setInt("texture1set", 0);
 				ShadowDirecMapping->setInt("texture2set", 0);
-				ShadowDirecMapping->setInt("ALIAS", 10);
-
+				for (int i = 0; i < getDLightCount(); i++){
+					getDLight(i)->bindTex(ShadowDirecMapping);
+					RenderScene(CameraViewMatrix, ShadowDirecMapping);
+					glDepthFunc(GL_EQUAL);
+					glBlendFunc(GL_ONE, GL_ONE);
+				}
 				ShadowSpotMapping->use();
 				ShadowSpotMapping->setMat4("CameraProjectionMatrix", CameraProjectionMatrix);
 				ShadowSpotMapping->setMat4("CameraViewMatrix", CameraViewMatrix);
-				ShadowSpotMapping->setMat4("LightProjectionMatrix", LightProjectionMatrix);
-				ShadowSpotMapping->setMat4("LightViewMatrix", LightViewMatrix);
 				ShadowSpotMapping->setVec4("ViewPos", CameraPos);
-				ShadowSpotMapping->setVec3("SpotLight.position", lightPos);
-				ShadowSpotMapping->setFloat("SpotLight.fov", FRUSTUM_FIELD_OF_VIEW);
-				ShadowSpotMapping->setFloat("SpotLight.constant", 0.0f);
-				ShadowSpotMapping->setFloat("SpotLight.linear", 0.0f);
-				ShadowSpotMapping->setFloat("SpotLight.exponential", 1.0f);
-				ShadowSpotMapping->setVec3("SpotLight.color", Vec3(white));
-				ShadowSpotMapping->setFloat("far_plane", FRUSTUM_FAR_PLANE);
-				ShadowSpotMapping->setInt("DepthMap", 3);
 				ShadowSpotMapping->setInt("texture1set", 0);
 				ShadowSpotMapping->setInt("texture2set", 0);
-				ShadowSpotMapping->setInt("ALIAS", 3);
+				for (int i = 0; i < getSLightCount(); i++){
+					getSLight(i)->bindTex(ShadowSpotMapping);
+					RenderScene(CameraViewMatrix, ShadowSpotMapping);
+					glDepthFunc(GL_EQUAL);
+					glBlendFunc(GL_ONE, GL_ONE);
+				}
 
-				glActiveTexture(GL_TEXTURE2);
-				glBindTexture(GL_TEXTURE_2D, DirecMapTexture);
-				glActiveTexture(GL_TEXTURE3);
-				glBindTexture(GL_TEXTURE_CUBE_MAP, SpotMapTexture);
-
-				RenderScene(CameraViewMatrix, ShadowSpotMapping);
-
+				glDisable(GL_BLEND);
+				glDepthFunc(GL_LESS);
 				glUseProgram(0);
-
-				//Post new frame buffer
-				glFinish();
-				glutSwapBuffers();
-				glutPostRedisplay();
 			};
 #endif
