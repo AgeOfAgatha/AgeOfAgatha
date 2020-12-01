@@ -13,7 +13,7 @@ Includes
 
 	#include "triangle.h"
 	#include "../shaders/shader.h"
-	#include "../common/Angles.h"
+	#include "../common/angles.h"
 	#include "../common/sorting.h"
 	#include "../common/vector.h"
 	#include "../common/quaternion.h"

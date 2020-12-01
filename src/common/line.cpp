@@ -8,7 +8,7 @@ point along that Line in 3d space
 	/*--------------------------------------------//
 	Includes
 	//--------------------------------------------*/
-		#include "Line.h"
+		#include "line.h"
 	
 	/*--------------------------------------------//
 	Default constructor

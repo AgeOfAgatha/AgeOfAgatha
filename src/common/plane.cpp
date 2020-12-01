@@ -7,7 +7,7 @@ follows Plane definition as: ax + by + cz + d = 0
 	/*--------------------------------------------//
 	Includes
 	//--------------------------------------------*/
-		#include "Plane.h"
+		#include "plane.h"
 
 	/*--------------------------------------------//
 	Default constructor
