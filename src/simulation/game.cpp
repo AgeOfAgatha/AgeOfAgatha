@@ -31,18 +31,16 @@ and the ui interface.
 			display->add(frame);
 			
 
-			////////////////QUARANTINED////////////////
 			//load object
-			// for (int i = -1; i < 1; i++){
-			// 	for (int j = -1; j < 1; j++){
-			// 		for (int k = -1; k < 1; k++){
-			// 			mesh* parent;
-			// 			worldspace->loadObj("models/cube.obj", "models/cube.mtl", &parent);
-			// 			parent->setPosition(Vec3(3*(i),3*(j),3*(k)));
-			// 		}
-			// 	}
-			// }
-			////////////////QUARANTINED////////////////
+			for (int i = -1; i < 1; i++){
+				for (int j = -1; j < 1; j++){
+					for (int k = -1; k < 1; k++){
+						mesh* parent;
+						worldspace->loadObj("models/cube.obj", "models/cube.mtl", &parent);
+						parent->setPosition(Vec3(3*(i),3*(j),3*(k)));
+					}
+				}
+			}
 
 			//intialize lighting
 				direclight* direc = new direclight();

@@ -50,6 +50,422 @@ This is our basic object
 		};
 
 	/*--------------------------------------------//
+	Renders a 1x1 cube
+	//--------------------------------------------*/
+		void mesh::renderCube(){
+		    // initialize (if necessary)
+		    if (cubeVAO == 0){
+		    	double vert[36][4] = {
+					// back face
+		            {-1.0f, -1.0f, -1.0f, 1.0f}, // bottom-left
+		            { 1.0f,  1.0f, -1.0f, 1.0f}, // top-right
+		            { 1.0f, -1.0f, -1.0f, 1.0f}, // bottom-right         
+		            { 1.0f,  1.0f, -1.0f, 1.0f}, // top-right
+		            {-1.0f, -1.0f, -1.0f, 1.0f}, // bottom-left
+		            {-1.0f,  1.0f, -1.0f, 1.0f}, // top-left
+		            // front face
+		            {-1.0f, -1.0f,  1.0f, 1.0f}, // bottom-left
+		            { 1.0f, -1.0f,  1.0f, 1.0f}, // bottom-right
+		            { 1.0f,  1.0f,  1.0f, 1.0f}, // top-right
+		            { 1.0f,  1.0f,  1.0f, 1.0f}, // top-right
+		            {-1.0f,  1.0f,  1.0f, 1.0f}, // top-left
+		            {-1.0f, -1.0f,  1.0f, 1.0f}, // bottom-left
+		            // left face
+		            {-1.0f,  1.0f,  1.0f, 1.0f}, // top-right
+		            {-1.0f,  1.0f, -1.0f, 1.0f}, // top-left
+		            {-1.0f, -1.0f, -1.0f, 1.0f}, // bottom-left
+		            {-1.0f, -1.0f, -1.0f, 1.0f}, // bottom-left
+		            {-1.0f, -1.0f,  1.0f, 1.0f}, // bottom-right
+		            {-1.0f,  1.0f,  1.0f, 1.0f}, // top-right
+		            // right face
+		            { 1.0f,  1.0f,  1.0f, 1.0f}, // top-left
+		            { 1.0f, -1.0f, -1.0f, 1.0f}, // bottom-right
+		            { 1.0f,  1.0f, -1.0f, 1.0f}, // top-right         
+		            { 1.0f, -1.0f, -1.0f, 1.0f}, // bottom-right
+		            { 1.0f,  1.0f,  1.0f, 1.0f}, // top-left
+		            { 1.0f, -1.0f,  1.0f, 1.0f}, // bottom-left     
+		            // bottom face
+		            {-1.0f, -1.0f, -1.0f, 1.0f}, // top-right
+		            { 1.0f, -1.0f, -1.0f, 1.0f}, // top-left
+		            { 1.0f, -1.0f,  1.0f, 1.0f}, // bottom-left
+		            { 1.0f, -1.0f,  1.0f, 1.0f}, // bottom-left
+		            {-1.0f, -1.0f,  1.0f, 1.0f}, // bottom-right
+		            {-1.0f, -1.0f, -1.0f, 1.0f}, // top-right
+		            // top face
+		            {-1.0f,  1.0f, -1.0f, 1.0f}, // top-left
+		            { 1.0f,  1.0f , 1.0f, 1.0f}, // bottom-right
+		            { 1.0f,  1.0f, -1.0f, 1.0f}, // top-right     
+		            { 1.0f,  1.0f,  1.0f, 1.0f}, // bottom-right
+		            {-1.0f,  1.0f, -1.0f, 1.0f}, // top-left
+		            {-1.0f,  1.0f,  1.0f, 1.0f}  // bottom-left   
+				};
+				//normal array
+				double norm[36][3] = {
+					// back face
+		            { 0.0f,  0.0f, -1.0f}, // bottom-left
+		            { 0.0f,  0.0f, -1.0f}, // top-right
+		            { 0.0f,  0.0f, -1.0f}, // bottom-right         
+		            { 0.0f,  0.0f, -1.0f}, // top-right
+		            { 0.0f,  0.0f, -1.0f}, // bottom-left
+		            { 0.0f,  0.0f, -1.0f}, // top-left
+		            // front face
+		            { 0.0f,  0.0f,  1.0f}, // bottom-left
+		            { 0.0f,  0.0f,  1.0f}, // bottom-right
+		            { 0.0f,  0.0f,  1.0f}, // top-right
+		            { 0.0f,  0.0f,  1.0f}, // top-right
+		            { 0.0f,  0.0f,  1.0f}, // top-left
+		            { 0.0f,  0.0f,  1.0f}, // bottom-left
+		            // left face
+		            {-1.0f,  0.0f,  0.0f}, // top-right
+		            {-1.0f,  0.0f,  0.0f}, // top-left
+		            {-1.0f,  0.0f,  0.0f}, // bottom-left
+		            {-1.0f,  0.0f,  0.0f}, // bottom-left
+		            {-1.0f,  0.0f,  0.0f}, // bottom-right
+		            {-1.0f,  0.0f,  0.0f}, // top-right
+		            // right face
+		            { 1.0f,  0.0f,  0.0f}, // top-left
+		            { 1.0f,  0.0f,  0.0f}, // bottom-right
+		            { 1.0f,  0.0f,  0.0f}, // top-right         
+		            { 1.0f,  0.0f,  0.0f}, // bottom-right
+		            { 1.0f,  0.0f,  0.0f}, // top-left
+		            { 1.0f,  0.0f,  0.0f}, // bottom-left     
+		            // bottom face
+		            { 0.0f, -1.0f,  0.0f}, // top-right
+		            { 0.0f, -1.0f,  0.0f}, // top-left
+		            { 0.0f, -1.0f,  0.0f}, // bottom-left
+		            { 0.0f, -1.0f,  0.0f}, // bottom-left
+		            { 0.0f, -1.0f,  0.0f}, // bottom-right
+		            { 0.0f, -1.0f,  0.0f}, // top-right
+		            // top face
+		            { 0.0f,  1.0f,  0.0f}, // top-left
+		            { 0.0f,  1.0f,  0.0f}, // bottom-right
+		            { 0.0f,  1.0f,  0.0f}, // top-right     
+		            { 0.0f,  1.0f,  0.0f}, // bottom-right
+		            { 0.0f,  1.0f,  0.0f}, // top-left
+		            { 0.0f,  1.0f,  0.0f}  // bottom-left   
+				};
+				//color array
+				double col[36][4]  = {
+					// back face
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-left
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-right         
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-left
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // top-left
+		            // front face
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-left
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-right
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // top-left
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-left
+		            // left face
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // top-left
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-left
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-left
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-right
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right
+		            // right face
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // top-left
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-right
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right         
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-right
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // top-left
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-left     
+		            // bottom face
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // top-left
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-left
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-left
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-right
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right
+		            // top face
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // top-left
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-right
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right     
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-right
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // top-left
+		            {1.0f, 1.0f, 1.0f, 1.0f}  // bottom-left 
+				};
+				//texture coordinate array
+				double st[36][2]  = {
+					// back face
+		            {0.0f, 0.0f}, // bottom-left
+		            {1.0f, 1.0f}, // top-right
+		            {1.0f, 0.0f}, // bottom-right         
+		            {1.0f, 1.0f}, // top-right
+		            {0.0f, 0.0f}, // bottom-left
+		            {0.0f, 1.0f}, // top-left
+		            // front face
+		            {0.0f, 0.0f}, // bottom-left
+		            {1.0f, 0.0f}, // bottom-right
+		            {1.0f, 1.0f}, // top-right
+		            {1.0f, 1.0f}, // top-right
+		            {0.0f, 1.0f}, // top-left
+		            {0.0f, 0.0f}, // bottom-left
+		            // left face
+		            {1.0f, 0.0f}, // top-right
+		            {1.0f, 1.0f}, // top-left
+		            {0.0f, 1.0f}, // bottom-left
+		            {0.0f, 1.0f}, // bottom-left
+		            {0.0f, 0.0f}, // bottom-right
+		            {1.0f, 0.0f}, // top-right
+		            // right face
+		            {1.0f, 0.0f}, // top-left
+		            {0.0f, 1.0f}, // bottom-right
+		            {1.0f, 1.0f}, // top-right         
+		            {0.0f, 1.0f}, // bottom-right
+		            {1.0f, 0.0f}, // top-left
+		            {0.0f, 0.0f}, // bottom-left     
+		            // bottom face
+		            {0.0f, 1.0f}, // top-right
+		            {1.0f, 1.0f}, // top-left
+		            {1.0f, 0.0f}, // bottom-left
+		            {1.0f, 0.0f}, // bottom-left
+		            {0.0f, 0.0f}, // bottom-right
+		            {0.0f, 1.0f}, // top-right
+		            // top face
+		            {0.0f, 1.0f}, // top-left
+		            {1.0f, 0.0f}, // bottom-right
+		            {1.0f, 1.0f}, // top-right     
+		            {1.0f, 0.0f}, // bottom-right
+		            {0.0f, 1.0f}, // top-left
+		            {0.0f, 0.0f}  // bottom-left 
+				};
+				//texture blending array
+				double blend[36][1]  = {
+					// back face
+		            {1.0f}, // bottom-left
+		            {1.0f}, // top-right
+		            {1.0f}, // bottom-right         
+		            {1.0f}, // top-right
+		            {1.0f}, // bottom-left
+		            {1.0f}, // top-left
+		            // front face
+		            {1.0f}, // bottom-left
+		            {1.0f}, // bottom-right
+		            {1.0f}, // top-right
+		            {1.0f}, // top-right
+		            {1.0f}, // top-left
+		            {1.0f}, // bottom-left
+		            // left face
+		            {1.0f}, // top-right
+		            {1.0f}, // top-left
+		            {1.0f}, // bottom-left
+		            {1.0f}, // bottom-left
+		            {1.0f}, // bottom-right
+		            {1.0f}, // top-right
+		            // right face
+		            {1.0f}, // top-left
+		            {1.0f}, // bottom-right
+		            {1.0f}, // top-right         
+		            {1.0f}, // bottom-right
+		            {1.0f}, // top-left
+		            {1.0f}, // bottom-left     
+		            // bottom face
+		            {1.0f}, // top-right
+		            {1.0f}, // top-left
+		            {1.0f}, // bottom-left
+		            {1.0f}, // bottom-left
+		            {1.0f}, // bottom-right
+		            {1.0f}, // top-right
+		            // top face
+		            {1.0f}, // top-left
+		            {1.0f}, // bottom-right
+		            {1.0f}, // top-right     
+		            {1.0f}, // bottom-right
+		            {1.0f}, // top-left
+		            {1.0f}  // bottom-left 
+				};
+				//Vertex Transparency array
+				double trans[36][1]  = {
+					// back face
+		            {0.2f}, // bottom-left
+		            {0.2f}, // top-right
+		            {0.2f}, // bottom-right         
+		            {0.2f}, // top-right
+		            {0.2f}, // bottom-left
+		            {0.2f}, // top-left
+		            // front face
+		            {0.2f}, // bottom-left
+		            {0.2f}, // bottom-right
+		            {0.2f}, // top-right
+		            {0.2f}, // top-right
+		            {0.2f}, // top-left
+		            {0.2f}, // bottom-left
+		            // left face
+		            {0.2f}, // top-right
+		            {0.2f}, // top-left
+		            {0.2f}, // bottom-left
+		            {0.2f}, // bottom-left
+		            {0.2f}, // bottom-right
+		            {0.2f}, // top-right
+		            // right face
+		            {0.2f}, // top-left
+		            {0.2f}, // bottom-right
+		            {0.2f}, // top-right         
+		            {0.2f}, // bottom-right
+		            {0.2f}, // top-left
+		            {0.2f}, // bottom-left     
+		            // bottom face
+		            {0.2f}, // top-right
+		            {0.2f}, // top-left
+		            {0.2f}, // bottom-left
+		            {0.2f}, // bottom-left
+		            {0.2f}, // bottom-right
+		            {0.2f}, // top-right
+		            // top face
+		            {0.2f}, // top-left
+		            {0.2f}, // bottom-right
+		            {0.2f}, // top-right     
+		            {0.2f}, // bottom-right
+		            {0.2f}, // top-left
+		            {0.2f}  // bottom-left 
+				};
+
+			    glGenVertexArrays(1, &cubeVAO);
+			    glBindVertexArray(cubeVAO);
+			    glGenBuffers(6, cubeVBO);
+
+			    //position
+			    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO[0]);
+				glBufferData(GL_ARRAY_BUFFER, 36*4*sizeof(double), vert, GL_STATIC_DRAW);
+				glVertexAttribPointer((GLuint)0, (GLuint)4, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
+			    glEnableVertexAttribArray((GLuint)0);
+
+			    //normal
+			    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO[1]);
+				glBufferData(GL_ARRAY_BUFFER, 36*3*sizeof(double), norm, GL_STATIC_DRAW);
+				glVertexAttribPointer((GLuint)1, (GLuint)3, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
+			    glEnableVertexAttribArray((GLuint)1);
+
+			    //color
+			    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO[2]);
+				glBufferData(GL_ARRAY_BUFFER, 36*4*sizeof(double), col, GL_STATIC_DRAW);
+				glVertexAttribPointer((GLuint)2, (GLuint)4, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
+			    glEnableVertexAttribArray((GLuint)2);
+
+			    //texture coordinate
+			    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO[3]);
+				glBufferData(GL_ARRAY_BUFFER, 36*2*sizeof(double), st, GL_STATIC_DRAW);
+				glVertexAttribPointer((GLuint)3, (GLuint)2, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
+			    glEnableVertexAttribArray((GLuint)3);
+
+			    //texture blend
+			    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO[4]);
+				glBufferData(GL_ARRAY_BUFFER, 36*1*sizeof(double), blend, GL_STATIC_DRAW);
+				glVertexAttribPointer((GLuint)4, (GLuint)1, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
+			    glEnableVertexAttribArray((GLuint)4);
+
+			    //transparency
+			    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO[5]);
+				glBufferData(GL_ARRAY_BUFFER, 36*1*sizeof(double), trans, GL_STATIC_DRAW);
+				glVertexAttribPointer((GLuint)5, (GLuint)1, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
+			    glEnableVertexAttribArray((GLuint)5);
+		    }
+		    // render Cube
+		    glBindVertexArray(cubeVAO);
+		    glDrawArrays(GL_TRIANGLES, 0, 36);
+		    glBindVertexArray(0);
+		}
+
+	/*--------------------------------------------//
+	Renders a 1x1 quad
+	//--------------------------------------------*/
+		void mesh::renderQuad(){
+		    if (quadVAO == 0){
+		        double vert[6][4] = {
+		            // front face
+		            {-1.0f, -1.0f,  0.0f, 1.0f}, // bottom-left
+		            { 1.0f, -1.0f,  0.0f, 1.0f}, // bottom-right
+		            { 1.0f,  1.0f,  0.0f, 1.0f}, // top-right
+		            { 1.0f,  1.0f,  0.0f, 1.0f}, // top-right
+		            {-1.0f,  1.0f,  0.0f, 1.0f}, // top-left
+		            {-1.0f, -1.0f,  0.0f, 1.0f}, // bottom-left  
+				};
+				//normal array
+				double norm[6][3] = {
+		            // front face
+		            { 0.0f,  0.0f,  1.0f}, // bottom-left
+		            { 0.0f,  0.0f,  1.0f}, // bottom-right
+		            { 0.0f,  0.0f,  1.0f}, // top-right
+		            { 0.0f,  0.0f,  1.0f}, // top-right
+		            { 0.0f,  0.0f,  1.0f}, // top-left
+		            { 0.0f,  0.0f,  1.0f}, // bottom-left 
+				};
+				//color array
+				double col[6][4]  = {
+		            // front face
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-left
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-right
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // top-right
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // top-left
+		            {1.0f, 1.0f, 1.0f, 1.0f}, // bottom-left
+				};
+				//texture coordinate array
+				double st[6][2]  = {
+		            // front face
+		            {0.0f, 0.0f}, // bottom-left
+		            {1.0f, 0.0f}, // bottom-right
+		            {1.0f, 1.0f}, // top-right
+		            {1.0f, 1.0f}, // top-right
+		            {0.0f, 1.0f}, // top-left
+		            {0.0f, 0.0f}, // bottom-left
+				};
+				//texture blending array
+				double blend[6][1]  = {
+		            // front face
+		            {1.0f}, // bottom-left
+		            {1.0f}, // bottom-right
+		            {1.0f}, // top-right
+		            {1.0f}, // top-right
+		            {1.0f}, // top-left
+		            {1.0f}, // bottom-left
+				};
+
+			    glGenVertexArrays(1, &quadVAO);
+			    glBindVertexArray(quadVAO);
+			    glGenBuffers(5, quadVBO);
+
+			    //position
+			    glBindBuffer(GL_ARRAY_BUFFER, quadVBO[0]);
+				glBufferData(GL_ARRAY_BUFFER, 6*4*sizeof(double), vert, GL_STATIC_DRAW);
+				glVertexAttribPointer((GLuint)0, (GLuint)4, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
+			    glEnableVertexAttribArray((GLuint)0);
+
+			    //normal
+			    glBindBuffer(GL_ARRAY_BUFFER, quadVBO[1]);
+				glBufferData(GL_ARRAY_BUFFER, 6*3*sizeof(double), norm, GL_STATIC_DRAW);
+				glVertexAttribPointer((GLuint)1, (GLuint)3, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
+			    glEnableVertexAttribArray((GLuint)1);
+
+			    //color
+			    glBindBuffer(GL_ARRAY_BUFFER, quadVBO[2]);
+				glBufferData(GL_ARRAY_BUFFER, 6*4*sizeof(double), col, GL_STATIC_DRAW);
+				glVertexAttribPointer((GLuint)2, (GLuint)4, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
+			    glEnableVertexAttribArray((GLuint)2);
+
+			    //texture coordinate
+			    glBindBuffer(GL_ARRAY_BUFFER, quadVBO[3]);
+				glBufferData(GL_ARRAY_BUFFER, 6*2*sizeof(double), st, GL_STATIC_DRAW);
+				glVertexAttribPointer((GLuint)3, (GLuint)2, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
+			    glEnableVertexAttribArray((GLuint)3);
+
+			    //texture blend
+			    glBindBuffer(GL_ARRAY_BUFFER, quadVBO[4]);
+				glBufferData(GL_ARRAY_BUFFER, 6*1*sizeof(double), blend, GL_STATIC_DRAW);
+				glVertexAttribPointer((GLuint)4, (GLuint)1, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
+			    glEnableVertexAttribArray((GLuint)4);
+		    }
+		    glBindVertexArray(quadVAO);
+		    glDrawArrays(GL_TRIANGLES, 0, 6);
+		    glBindVertexArray(0);
+		}
+
+	/*--------------------------------------------//
 	Drawing functions
 	this gets deferred to each triangle to draw
 	//--------------------------------------------*/
@@ -63,10 +479,10 @@ This is our basic object
 			model.Translate(Vec3(this->position.x, this->position.y, this->position.z));
 	    	shader->setMat4("ModelMatrix", model);
 			//draw geometry
-			for (int i = 0; i < this->getTriangleCount(); i++){
-				triangle* k = this->getTriangle(i);
-				k->draw(shader);
-			}
+			// for (int i = 0; i < this->getTriangleCount(); i++){
+			// 	getTriangle(i)->draw(shader);
+			// }
+			renderCube();
 		};
 
 	/*--------------------------------------------//

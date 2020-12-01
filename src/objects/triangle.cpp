@@ -81,39 +81,39 @@ Smallest object that can be drawn
 				{textblend[0][0]}
 			};
 
-		    glGenVertexArrays(1, &VAO);
-		    glBindVertexArray(VAO);
-		    glGenBuffers(5, VBO);
+			glGenVertexArrays(1, &VAO);
+			glBindVertexArray(VAO);
+			glGenBuffers(5, VBO);
 
-		    //position
-		    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+			//position
+			glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
 			glBufferData(GL_ARRAY_BUFFER, 3*4*sizeof(double), vert, GL_STREAM_DRAW);
 			glVertexAttribPointer((GLuint)0, (GLuint)4, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
-		    glEnableVertexAttribArray((GLuint)0);
+			glEnableVertexAttribArray((GLuint)0);
 
-		    //normal
-		    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
+			//normal
+			glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
 			glBufferData(GL_ARRAY_BUFFER, 3*3*sizeof(double), norm, GL_STREAM_DRAW);
 			glVertexAttribPointer((GLuint)1, (GLuint)3, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
-		    glEnableVertexAttribArray((GLuint)1);
+			glEnableVertexAttribArray((GLuint)1);
 
-		    //color
-		    glBindBuffer(GL_ARRAY_BUFFER, VBO[2]);
+			//color
+			glBindBuffer(GL_ARRAY_BUFFER, VBO[2]);
 			glBufferData(GL_ARRAY_BUFFER, 3*4*sizeof(double), col, GL_STREAM_DRAW);
 			glVertexAttribPointer((GLuint)2, (GLuint)4, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
-		    glEnableVertexAttribArray((GLuint)2);
+			glEnableVertexAttribArray((GLuint)2);
 
-		    //texture coordinate
-		    glBindBuffer(GL_ARRAY_BUFFER, VBO[3]);
+			//texture coordinate
+			glBindBuffer(GL_ARRAY_BUFFER, VBO[3]);
 			glBufferData(GL_ARRAY_BUFFER, 3*2*sizeof(double), st, GL_STREAM_DRAW);
 			glVertexAttribPointer((GLuint)3, (GLuint)2, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
-		    glEnableVertexAttribArray((GLuint)3);
+			glEnableVertexAttribArray((GLuint)3);
 
-		    //texture blend
-		    glBindBuffer(GL_ARRAY_BUFFER, VBO[4]);
+			//texture blend
+			glBindBuffer(GL_ARRAY_BUFFER, VBO[4]);
 			glBufferData(GL_ARRAY_BUFFER, 3*1*sizeof(double), blend, GL_STREAM_DRAW);
 			glVertexAttribPointer((GLuint)4, (GLuint)1, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
-		    glEnableVertexAttribArray((GLuint)4);
+			glEnableVertexAttribArray((GLuint)4);
 		};
 		triangle::triangle(vertex* a, vertex* b, vertex* c, Vec2* st1, double b1, Vec2* st2, double b2, Vec2* st3, double b3){
 			points = (vertex**)malloc(sizeof(vertex*)*3);
@@ -168,39 +168,39 @@ Smallest object that can be drawn
 				{textblend[0][0]}
 			};
 
-		    glGenVertexArrays(1, &VAO);
-		    glBindVertexArray(VAO);
-		    glGenBuffers(5, VBO);
+			glGenVertexArrays(1, &VAO);
+			glBindVertexArray(VAO);
+			glGenBuffers(5, VBO);
 
-		    //position
-		    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+			//position
+			glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
 			glBufferData(GL_ARRAY_BUFFER, 3*4*sizeof(double), vert, GL_STREAM_DRAW);
 			glVertexAttribPointer((GLuint)0, (GLuint)4, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
-		    glEnableVertexAttribArray((GLuint)0);
+			glEnableVertexAttribArray((GLuint)0);
 
-		    //normal
-		    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
+			//normal
+			glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
 			glBufferData(GL_ARRAY_BUFFER, 3*3*sizeof(double), norm, GL_STREAM_DRAW);
 			glVertexAttribPointer((GLuint)1, (GLuint)3, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
-		    glEnableVertexAttribArray((GLuint)1);
+			glEnableVertexAttribArray((GLuint)1);
 
-		    //color
-		    glBindBuffer(GL_ARRAY_BUFFER, VBO[2]);
+			//color
+			glBindBuffer(GL_ARRAY_BUFFER, VBO[2]);
 			glBufferData(GL_ARRAY_BUFFER, 3*4*sizeof(double), col, GL_STREAM_DRAW);
 			glVertexAttribPointer((GLuint)2, (GLuint)4, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
-		    glEnableVertexAttribArray((GLuint)2);
+			glEnableVertexAttribArray((GLuint)2);
 
-		    //texture coordinate
-		    glBindBuffer(GL_ARRAY_BUFFER, VBO[3]);
+			//texture coordinate
+			glBindBuffer(GL_ARRAY_BUFFER, VBO[3]);
 			glBufferData(GL_ARRAY_BUFFER, 3*2*sizeof(double), st, GL_STREAM_DRAW);
 			glVertexAttribPointer((GLuint)3, (GLuint)2, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
-		    glEnableVertexAttribArray((GLuint)3);
+			glEnableVertexAttribArray((GLuint)3);
 
-		    //texture blend
-		    glBindBuffer(GL_ARRAY_BUFFER, VBO[4]);
+			//texture blend
+			glBindBuffer(GL_ARRAY_BUFFER, VBO[4]);
 			glBufferData(GL_ARRAY_BUFFER, 3*1*sizeof(double), blend, GL_STREAM_DRAW);
 			glVertexAttribPointer((GLuint)4, (GLuint)1, GL_DOUBLE, GL_FALSE, 0, (void*)0); 
-		    glEnableVertexAttribArray((GLuint)4);
+			glEnableVertexAttribArray((GLuint)4);
 		};
 
 	/*--------------------------------------------//
@@ -307,7 +307,7 @@ Smallest object that can be drawn
 	//--------------------------------------------*/
 		void triangle::draw(Shader* shader){
 			//bind buffer object
-		    glBindVertexArray(VAO);
+			glBindVertexArray(VAO);
 
 			//Update buffer objects
 			vertex* verts[3] = {
@@ -317,44 +317,44 @@ Smallest object that can be drawn
 			};
 
 			//position
-		    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-		    for (int i = 0; i < 3; i++){
-		    	Vec4* pos = verts[i]->pos;
+			glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+			for (int i = 0; i < 3; i++){
+				Vec4* pos = verts[i]->pos;
 				glBufferSubData(GL_ARRAY_BUFFER, 4*i*sizeof(double), 4*sizeof(double), (void*)pos);
-		    }
+			}
 
-		    //normal
-		    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-		     for (int i = 0; i < 3; i++){
-		    	Vec3* norm = verts[i]->normal;
+			//normal
+			glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
+			 for (int i = 0; i < 3; i++){
+				Vec3* norm = verts[i]->normal;
 				glBufferSubData(GL_ARRAY_BUFFER, 3*i*sizeof(double), 3*sizeof(double), (void*)norm);
-		    }
+			}
 
-		    //color
-		    glBindBuffer(GL_ARRAY_BUFFER, VBO[2]);
-		     for (int i = 0; i < 3; i++){
-		     	Vec4* col = verts[i]->color;
+			//color
+			glBindBuffer(GL_ARRAY_BUFFER, VBO[2]);
+			 for (int i = 0; i < 3; i++){
+				Vec4* col = verts[i]->color;
 				glBufferSubData(GL_ARRAY_BUFFER, 4*i*sizeof(double), 4*sizeof(double), (void*)col);
-		    }
+			}
 
-		    //texture coordinate
-		    glBindBuffer(GL_ARRAY_BUFFER, VBO[3]);
-		     for (int i = 0; i < 3; i++){
-		     	Vec2* st = textcoord[i];
+			//texture coordinate
+			glBindBuffer(GL_ARRAY_BUFFER, VBO[3]);
+			 for (int i = 0; i < 3; i++){
+				Vec2* st = textcoord[i];
 				glBufferSubData(GL_ARRAY_BUFFER, 2*i*sizeof(double), 2*sizeof(double), (void*)st);
-		    }
+			}
 
-		    //texture blend
-		    glBindBuffer(GL_ARRAY_BUFFER, VBO[4]);
-		     for (int i = 0; i < 3; i++){
-		     	double* bl = textblend[i];
+			//texture blend
+			glBindBuffer(GL_ARRAY_BUFFER, VBO[4]);
+			 for (int i = 0; i < 3; i++){
+				double* bl = textblend[i];
 				glBufferSubData(GL_ARRAY_BUFFER, i*sizeof(double), sizeof(double), (void*)bl);
-		    }
+			}
 
-		  	//Bind Textures
+			//Bind Textures
 			if (materials[0] != NULL){
 				shader->setInt("texture1set", 1);
-	        	shader->setInt("texture1", materials[0]->index);
+				shader->setInt("texture1", materials[0]->index);
 				glActiveTexture(GL_TEXTURE0 + materials[0]->index);
 				materials[0]->use();
 			}else{
@@ -362,7 +362,7 @@ Smallest object that can be drawn
 			}
 			if (materials[1] != NULL){
 				shader->setInt("texture2set", 1);
-	        	shader->setInt("texture2", materials[1]->index);
+				shader->setInt("texture2", materials[1]->index);
 				glActiveTexture(GL_TEXTURE0 + materials[1]->index);
 				materials[1]->use();
 			}else{
@@ -371,7 +371,7 @@ Smallest object that can be drawn
 			glEnable(GL_TEXTURE_2D);
 
 			//Draw geometry
-       		glColor3f(1.0f, 1.0f, 1.0f);
+			glColor3f(1.0f, 1.0f, 1.0f);
 			glDrawArrays(GL_TRIANGLES, 0, 3);
 
 			//Unbind Textures
@@ -385,6 +385,6 @@ Smallest object that can be drawn
 			}
 
 			//Unbind ourself
-	        glBindVertexArray(0);
+			glBindVertexArray(0);
 		};
 #endif

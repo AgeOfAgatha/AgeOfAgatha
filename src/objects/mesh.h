@@ -48,6 +48,13 @@ class mesh{
 			double radius;//maximum distance away from COM for the purposes of faster collision detection
 			double mass;//amount of mass this object has
 			int timer;//time since last movement, used for deciding if awake
+
+			//init primatives
+			unsigned int cubeVAO = 0;
+			unsigned int cubeVBO[6] = {0,0,0,0,0,0};
+
+			unsigned int quadVAO = 0;
+			unsigned int quadVBO[5] = {0,0,0,0,0};
 	public:
 		/*--------------------------------------------//
 		Constructors
@@ -62,6 +69,8 @@ class mesh{
 		/*--------------------------------------------//
 		Functions
 		//--------------------------------------------*/
+			void renderQuad();
+			void renderCube();
 			void draw(Shader* shader);
 			//Misc Attributes
 				int getTimer();

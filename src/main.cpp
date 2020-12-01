@@ -26,7 +26,7 @@ Globals
 GLUT functions - passes down class stack
 //--------------------------------------------*/
 	void Draw(){app->PreDraw(); app->Draw(); app->PostDraw(); glFinish(); glutPostRedisplay();}
-	void Update(int value){value = app->Update(value); glutTimerFunc(UPDATE_TIMER, Update, value);}
+	void Update(int value){/*value = app->Update(value);*/ glutTimerFunc(UPDATE_TIMER, Update, value);}
 	void KeypressASCII(unsigned char pressedKey, int mouseXPosition, int mouseYPosition){app->KeypressASCII(pressedKey,mouseXPosition,mouseYPosition);}
 	void KeypressNonASCII(int pressedKey, int mouseXPosition, int mouseYPosition){app->KeypressNonASCII(pressedKey,mouseXPosition,mouseYPosition);}
 	void Visible(int v){app->Visible(v);}

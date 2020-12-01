@@ -50,14 +50,6 @@ class world{
 
 			//init shaders and buffers
 			Shader *DepthDirecShader, *DepthSpotShader, *ShadowNullMapping, *ShadowDirecMapping, *ShadowSpotMapping;
-
-			//init primatives
-			unsigned int cubeVAO = 0;
-			unsigned int cubeVBO[6] = {0,0,0,0,0,0};
-
-			unsigned int quadVAO = 0;
-			unsigned int quadVBO[5] = {0,0,0,0,0};
-
 		/*--------------------------------------------//
 		Functions
 		//--------------------------------------------*/
@@ -112,9 +104,6 @@ class world{
 				int getTimeStep();
 			//rendering
 				void draw(Mat4 projection, Mat4 view, Vec4 camera, GLint currWindowSize[2]);
-				void renderCube();
-				void renderQuad();
-				void RenderScene(Mat4 ViewMatrix, Shader* shade);
 			//Physics
 				void update();
 				void applyGravity(mesh* &obj);
