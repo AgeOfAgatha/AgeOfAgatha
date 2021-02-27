@@ -60,7 +60,7 @@ endif
 #assemble for my distro
 #########################
 main:
-	@echo making for `tput bold`$(DISTRO)`tput sgr0`... && $(MAKE) $(DISTRO) --no-print-directory
+	@echo -e making for `tput bold`$(DISTRO)`tput sgr0`... | awk '{sub(/-e /,""); print}' && $(MAKE) $(DISTRO) --no-print-directory
 
 #########################
 #assemble for all distros
@@ -68,61 +68,61 @@ main:
 deploy:
 	@mkdir -p deploy
 	@rm ./deploy/*.tar.gz -f 2>/dev/null
-	@echo deploying for `tput bold`linux`tput sgr0`... && tar -zcvf deploy/lin.tar.gz release/lin
-	@echo deploying for `tput bold`mac`tput sgr0`... && tar -zcvf deploy/mac.tar.gz release/mac
-	@echo deploying for `tput bold`windows 32 bit`tput sgr0`... && tar -zcvf deploy/w32.tar.gz release/w32
-	@echo deploying for `tput bold`windows 64 bit`tput sgr0`... && tar -zcvf deploy/w64.tar.gz release/w64
+	@echo -e deploying for `tput bold`linux`tput sgr0`... | awk '{sub(/-e /,""); print}' && tar -zcvf deploy/lin.tar.gz release/lin
+	@echo -e deploying for `tput bold`mac`tput sgr0`... | awk '{sub(/-e /,""); print}' && tar -zcvf deploy/mac.tar.gz release/mac
+	@echo -e deploying for `tput bold`windows 32 bit`tput sgr0`... | awk '{sub(/-e /,""); print}' && tar -zcvf deploy/w32.tar.gz release/w32
+	@echo -e deploying for `tput bold`windows 64 bit`tput sgr0`... | awk '{sub(/-e /,""); print}' && tar -zcvf deploy/w64.tar.gz release/w64
 
 all:
-	@echo making for `tput bold`linux`tput sgr0`... && $(MAKE) linux --no-print-directory
-	@echo making for `tput bold`mac`tput sgr0`... && $(MAKE) mac --no-print-directory
-	@echo making for `tput bold`windows 32 bit`tput sgr0`... && $(MAKE) windows32 --no-print-directory
-	@echo making for `tput bold`windows 64 bit`tput sgr0`... && $(MAKE) windows64 --no-print-directory
+	@echo -e making for `tput bold`linux`tput sgr0`... | awk '{sub(/-e /,""); print}' && $(MAKE) linux --no-print-directory
+	@echo -e making for `tput bold`mac`tput sgr0`... | awk '{sub(/-e /,""); print}' && $(MAKE) mac --no-print-directory
+	@echo -e making for `tput bold`windows 32 bit`tput sgr0`... | awk '{sub(/-e /,""); print}' && $(MAKE) windows32 --no-print-directory
+	@echo -e making for `tput bold`windows 64 bit`tput sgr0`... | awk '{sub(/-e /,""); print}' && $(MAKE) windows64 --no-print-directory
 
 #########################
 #Assemble OS specific
 #########################
 linux:
-	@echo -e '\t'Compiling object code...
+	@echo -e '\t'Compiling object code... | awk '{sub(/-e /,""); print}'
 	@$(MAKE) -C bin/binl all --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
-	@echo -e '\t'Done Compiling
+	@echo -e '\t'Done Compiling | awk '{sub(/-e /,""); print}'
 	@mkdir -p release/lin
-	@echo -e '\t'Assembling executable...
+	@echo -e '\t'Assembling executable... | awk '{sub(/-e /,""); print}'
 	@$(MAKE) release/lin/run$(EXTL) --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
-	@echo -e '\t'Done Assembling
+	@echo -e '\t'Done Assembling | awk '{sub(/-e /,""); print}'
 
 mac:
-	@echo -e '\t'Compiling object code...
+	@echo -e '\t'Compiling object code... | awk '{sub(/-e /,""); print}'
 	@$(MAKE) -C bin/binm all --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
-	@echo -e '\t'Done Compiling
+	@echo -e '\t'Done Compiling | awk '{sub(/-e /,""); print}'
 	@mkdir -p release/mac
-	@echo -e '\t'Assembling executable...
+	@echo -e '\t'Assembling executable... | awk '{sub(/-e /,""); print}'
 	@$(MAKE) release/mac/run$(EXTM) --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
-	@echo -e '\t'Done Assembling
+	@echo -e '\t'Done Assembling | awk '{sub(/-e /,""); print}'
 
 windows32:
-	@echo -e '\t'Compiling object code...
+	@echo -e '\t'Compiling object code... | awk '{sub(/-e /,""); print}'
 	@$(MAKE) -C bin/binw32 all --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
-	@echo -e '\t'Done Compiling
+	@echo -e '\t'Done Compiling | awk '{sub(/-e /,""); print}'
 	@mkdir -p release/w32
-	@echo -e '\t'Assembling executable...
+	@echo -e '\t'Assembling executable... | awk '{sub(/-e /,""); print}'
 	@$(MAKE) release/w32/run$(EXTW32) --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
-	@echo -e '\t'Done Assembling
+	@echo -e '\t'Done Assembling | awk '{sub(/-e /,""); print}'
 
 windows64:
-	@echo -e '\t'Compiling object code...
+	@echo -e '\t'Compiling object code... | awk '{sub(/-e /,""); print}'
 	@$(MAKE) -C bin/binw64 all --no-print-directory  | grep -vE "(Nothing to be done for|is up to date)"
-	@echo -e '\t'Done Compiling
+	@echo -e '\t'Done Compiling | awk '{sub(/-e /,""); print}'
 	@mkdir -p release/w64
-	@echo -e '\t'Assembling executable...
+	@echo -e '\t'Assembling executable... | awk '{sub(/-e /,""); print}'
 	@$(MAKE) release/w64/run$(EXTW64) --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
-	@echo -e '\t'Done Assembling
+	@echo -e '\t'Done Assembling | awk '{sub(/-e /,""); print}'
 
 #########################
 #Assemble executable
 #########################
 release/lin/run$(EXTL): bin/binl/*.o
-	@echo -e '\t\t'Executable is being assembled...
+	@echo -e '\t\t'Executable is being assembled... | awk '{sub(/-e /,""); print}'
 	@rm -rf ./release/lin/* 2>/dev/null
 	@$(CCL) $(CFLAGS) $(CFLAGSL) $^ -o $@ $(LIBSL)
 	@mkdir ./release/lin/shaders
@@ -137,7 +137,7 @@ release/lin/run$(EXTL): bin/binl/*.o
 	@cp bin/*.dll release/lin/ 2>/dev/null || :
 	
 release/mac/run$(EXTM): bin/binm/*.o
-	@echo -e '\t\t'Executable is being assembled...
+	@echo -e '\t\t'Executable is being assembled... | awk '{sub(/-e /,""); print}'
 	@rm -rf ./release/mac/* 2>/dev/null
 	@$(CCL) $(CFLAGS) $(CFLAGSL) $^ -o $@ $(LIBSM)
 	@mkdir ./release/mac/shaders
@@ -152,7 +152,7 @@ release/mac/run$(EXTM): bin/binm/*.o
 	@cp bin/*.dll release/mac/ 2>/dev/null || :
 	
 release/w32/run$(EXTW32): bin/binw32/*.o
-	@echo -e '\t\t'Executable is being assembled...
+	@echo -e '\t\t'Executable is being assembled... | awk '{sub(/-e /,""); print}'
 	@rm -rf ./release/w32/* 2>/dev/null
 	@$(CCW32) $(CFLAGS) $(CFLAGSW) $^ -o $@ $(LIBSW32)
 	@mkdir ./release/w32/shaders
@@ -167,7 +167,7 @@ release/w32/run$(EXTW32): bin/binw32/*.o
 	@cp bin/*.dll release/w32/ 2>/dev/null || :
 	
 release/w64/run$(EXTW64): bin/binw64/*.o
-	@echo -e '\t\t'Executable is being assembled...
+	@echo -e '\t\t'Executable is being assembled... | awk '{sub(/-e /,""); print}'
 	@rm -rf ./release/w64/* 2>/dev/null
 	@$(CCW64) $(CFLAGS) $(CFLAGSW) $^ -o $@ $(LIBSW64)
 	@mkdir ./release/w64/shaders
@@ -218,112 +218,112 @@ run: release/lin/run$(EXTL)
 	@cd release/lin && MESA_GL_VERSION_OVERRIDE=4.3 ./run$(EXTL)
 
 c:
-	@echo cleaning `tput bold`$(DISTRO)`tput sgr0`...
+	@echo cleaning `tput bold`$(DISTRO)`tput sgr0`... | awk '{sub(/-e /,""); print}'
 	@$(MAKE) clean-$(DISTRO)-shaders --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
-	@echo Done Cleaning
+	@echo Done Cleaning | awk '{sub(/-e /,""); print}'
 
 cl:
-	@echo cleaning `tput bold`$(DISTRO)`tput sgr0` shaders...
+	@echo cleaning `tput bold`$(DISTRO)`tput sgr0` shaders... | awk '{sub(/-e /,""); print}'
 	@$(MAKE) clean-$(DISTRO) --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
-	@echo Done Cleaning
+	@echo Done Cleaning | awk '{sub(/-e /,""); print}'
 
 clean:
-	@echo Cleaning...
-	@echo -e '\t'Cleaning `tput bold`linux`tput sgr0` shaders...
+	@echo Cleaning... | awk '{sub(/-e /,""); print}'
+	@echo -e '\t'Cleaning `tput bold`linux`tput sgr0` shaders... | awk '{sub(/-e /,""); print}'
 	@$(MAKE) clean-linux-shaders --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
-	@echo -e '\t'Done Cleaning
-	@echo -e '\t'Cleaning `tput bold`mac`tput sgr0` shaders...
+	@echo -e '\t'Done Cleaning | awk '{sub(/-e /,""); print}'
+	@echo -e '\t'Cleaning `tput bold`mac`tput sgr0` shaders... | awk '{sub(/-e /,""); print}'
 	@$(MAKE) clean-mac-shaders --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
-	@echo -e '\t'Done Cleaning
-	@echo -e '\t'Cleaning `tput bold`windows32`tput sgr0` shaders...
+	@echo -e '\t'Done Cleaning | awk '{sub(/-e /,""); print}'
+	@echo -e '\t'Cleaning `tput bold`windows32`tput sgr0` shaders... | awk '{sub(/-e /,""); print}'
 	@$(MAKE) clean-windows32-shaders --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
-	@echo -e '\t'Done Cleaning
-	@echo -e '\t'Cleaning `tput bold`windows64`tput sgr0` shaders...
+	@echo -e '\t'Done Cleaning | awk '{sub(/-e /,""); print}'
+	@echo -e '\t'Cleaning `tput bold`windows64`tput sgr0` shaders... | awk '{sub(/-e /,""); print}'
 	@$(MAKE) clean-windows64-shaders --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
-	@echo -e '\t'Done Cleaning
-	@echo Done cleaning
+	@echo -e '\t'Done Cleaning | awk '{sub(/-e /,""); print}'
+	@echo Done cleaning | awk '{sub(/-e /,""); print}'
 
 clean-all:
-	@echo Cleaning...
-	@echo -e '\t'Cleaning `tput bold`linux`tput sgr0`...
+	@echo Cleaning... | awk '{sub(/-e /,""); print}'
+	@echo -e '\t'Cleaning `tput bold`linux`tput sgr0`... | awk '{sub(/-e /,""); print}'
 	@$(MAKE) clean-linux --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
-	@echo -e '\t'Done Cleaning
-	@echo -e '\t'Cleaning `tput bold`mac`tput sgr0`... 
+	@echo -e '\t'Done Cleaning | awk '{sub(/-e /,""); print}'
+	@echo -e '\t'Cleaning `tput bold`mac`tput sgr0`...  | awk '{sub(/-e /,""); print}'
 	@$(MAKE) clean-mac --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
-	@echo -e '\t'Done Cleaning
-	@echo -e '\t'Cleaning `tput bold`windows32`tput sgr0`... 
+	@echo -e '\t'Done Cleaning | awk '{sub(/-e /,""); print}'
+	@echo -e '\t'Cleaning `tput bold`windows32`tput sgr0`...  | awk '{sub(/-e /,""); print}'
 	@$(MAKE) clean-windows32 --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
-	@echo -e '\t'Done Cleaning
-	@echo -e '\t'Cleaning `tput bold`windows64`tput sgr0`...
+	@echo -e '\t'Done Cleaning | awk '{sub(/-e /,""); print}'
+	@echo -e '\t'Cleaning `tput bold`windows64`tput sgr0`... | awk '{sub(/-e /,""); print}'
 	@$(MAKE) clean-windows64 --no-print-directory | grep -vE "(Nothing to be done for|is up to date)"
-	@echo -e '\t'Done Cleaning
-	@echo Done cleaning
+	@echo -e '\t'Done Cleaning | awk '{sub(/-e /,""); print}'
+	@echo Done cleaning | awk '{sub(/-e /,""); print}'
 
 clean-linux:
-	@echo -e '\t'Cleaning object files in binl...
-	@rm ./bin/binl/*.o -f 2>/dev/null
-	@echo -e '\t'Cleaning files in release...
-	@rm -rf ./release/lin/* -f 2>/dev/null
+	@echo -e '\t\t'Cleaning object files in binl... | awk '{sub(/-e /,""); print}'
+	@rm ./bin/binl/*.o -f 2>/dev/null || :
+	@echo -e '\t\t'Cleaning files in release... | awk '{sub(/-e /,""); print}'
+	@rm -rf ./release/lin/* -f 2>/dev/null || :
 
 clean-mac:
-	@echo -e '\t'Cleaning object files in binm...
-	@rm ./bin/binm/*.o -f 2>/dev/null
-	@echo -e '\t'Cleaning files in release...
-	@rm -rf ./release/mac/* -f 2>/dev/null
+	@echo -e '\t\t'Cleaning object files in binm... | awk '{sub(/-e /,""); print}'
+	@rm ./bin/binm/*.o -f 2>/dev/null || :
+	@echo -e '\t\t'Cleaning files in release... | awk '{sub(/-e /,""); print}'
+	@rm -rf ./release/mac/* -f 2>/dev/null || :
 
 clean-windows32:
-	@echo -e '\t'Cleaning object files in binw32...
-	@rm ./bin/binw32/*.o -f 2>/dev/null
-	@echo -e '\t'Cleaning files in release...
-	@rm -rf ./release/w32/* -f 2>/dev/null
+	@echo -e '\t\t'Cleaning object files in binw32... | awk '{sub(/-e /,""); print}'
+	@rm ./bin/binw32/*.o -f 2>/dev/null || :
+	@echo -e '\t\t'Cleaning files in release... | awk '{sub(/-e /,""); print}'
+	@rm -rf ./release/w32/* -f 2>/dev/null || :
 
 clean-windows64:
-	@echo -e '\t'Cleaning object files in binw64...
-	@rm ./bin/binw64/*.o -f 2>/dev/null
-	@echo -e '\t'Cleaning files in release...
-	@rm -rf ./release/w64/* -f 2>/dev/null
+	@echo -e '\t\t'Cleaning object files in binw64... | awk '{sub(/-e /,""); print}'
+	@rm ./bin/binw64/*.o -f 2>/dev/null || :
+	@echo -e '\t\t'Cleaning files in release... | awk '{sub(/-e /,""); print}'
+	@rm -rf ./release/w64/* -f 2>/dev/null || :
 
 clean-linux-shaders:
-	@echo -e '\t'Cleaning shader files in release...
-	@rm ./release/lin/*.bin -f 2>/dev/null
-	@rm ./release/lin/*.format -f 2>/dev/null
-	@rm ./release/lin/shaders/* -f 2>/dev/null
-	@mkdir -p ./release/lin/shaders 2>/dev/null
-	@cp src/shaders/*.fragment release/lin/shaders
-	@cp src/shaders/*.vertex release/lin/shaders
-	@cp src/shaders/*.geometry release/lin/shaders
+	@echo -e '\t\t'Cleaning shader files in release... | awk '{sub(/-e /,""); print}'
+	@rm ./release/lin/*.bin -f 2>/dev/null || :
+	@rm ./release/lin/*.format -f 2>/dev/null || :
+	@rm ./release/lin/shaders/* -f 2>/dev/null || :
+	@mkdir -p ./release/lin/shaders 2>/dev/null || :
+	@cp src/shaders/*.fragment release/lin/shaders 2>/dev/null || :
+	@cp src/shaders/*.vertex release/lin/shaders 2>/dev/null || :
+	@cp src/shaders/*.geometry release/lin/shaders 2>/dev/null || :
 
 clean-mac-shaders:
-	@echo -e '\t'Cleaning shader files in release...
-	@rm ./release/mac/*.bin -f 2>/dev/null
-	@rm ./release/mac/*.format -f 2>/dev/null
-	@rm ./release/mac/shaders/* -f 2>/dev/null
-	@mkdir -p ./release/mac/shaders 2>/dev/null
-	@cp src/shaders/*.fragment release/mac/shaders
-	@cp src/shaders/*.vertex release/mac/shaders
-	@cp src/shaders/*.geometry release/mac/shaders
+	@echo -e '\t\t'Cleaning shader files in release... | awk '{sub(/-e /,""); print}'
+	@rm ./release/mac/*.bin -f 2>/dev/null || :
+	@rm ./release/mac/*.format -f 2>/dev/null || :
+	@rm ./release/mac/shaders/* -f 2>/dev/null || :
+	@mkdir -p ./release/mac/shaders 2>/dev/null || :
+	@cp src/shaders/*.fragment release/mac/shaders 2>/dev/null || :
+	@cp src/shaders/*.vertex release/mac/shaders 2>/dev/null || :
+	@cp src/shaders/*.geometry release/mac/shaders 2>/dev/null || :
 
 clean-windows32-shaders:
-	@echo -e '\t'Cleaning shader files in release...
-	@rm ./release/w32/*.bin -f 2>/dev/null
-	@rm ./release/w32/*.format -f 2>/dev/null
-	@rm ./release/w32/shaders/* -f 2>/dev/null
-	@mkdir -p ./release/w32/shaders 2>/dev/null
-	@cp src/shaders/*.fragment release/w32/shaders
-	@cp src/shaders/*.vertex release/w32/shaders
-	@cp src/shaders/*.geometry release/w32/shaders
+	@echo -e '\t\t'Cleaning shader files in release... | awk '{sub(/-e /,""); print}'
+	@rm ./release/w32/*.bin -f 2>/dev/null || :
+	@rm ./release/w32/*.format -f 2>/dev/null || :
+	@rm ./release/w32/shaders/* -f 2>/dev/null || :
+	@mkdir -p ./release/w32/shaders 2>/dev/null || :
+	@cp src/shaders/*.fragment release/w32/shaders 2>/dev/null || :
+	@cp src/shaders/*.vertex release/w32/shaders 2>/dev/null || :
+	@cp src/shaders/*.geometry release/w32/shaders 2>/dev/null || :
 
 clean-windows64-shaders:
-	@echo -e '\t'Cleaning shader files in release...
-	@rm ./release/w64/*.bin -f 2>/dev/null
-	@rm ./release/w64/*.format -f 2>/dev/null
-	@rm ./release/w64/shaders/* -f 2>/dev/null
-	@mkdir -p ./release/w64/shaders 2>/dev/null
-	@cp src/shaders/*.fragment release/w64/shaders
-	@cp src/shaders/*.vertex release/w64/shaders
-	@cp src/shaders/*.geometry release/w64/shaders
+	@echo -e '\t\t'Cleaning shader files in release... | awk '{sub(/-e /,""); print}'
+	@rm ./release/w64/*.bin -f 2>/dev/null || :
+	@rm ./release/w64/*.format -f 2>/dev/null || :
+	@rm ./release/w64/shaders/* -f 2>/dev/null || :
+	@mkdir -p ./release/w64/shaders 2>/dev/null || :
+	@cp src/shaders/*.fragment release/w64/shaders 2>/dev/null || :
+	@cp src/shaders/*.vertex release/w64/shaders 2>/dev/null || :
+	@cp src/shaders/*.geometry release/w64/shaders 2>/dev/null || :
 
 
 fix:
-	@echo Replacing spaces with tabs in source files
+	@echo Replacing spaces with tabs in source files | awk '{sub(/-e /,""); print}'
 	@./scripts/fix.sh src
